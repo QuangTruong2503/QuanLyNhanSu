@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyNhanSu.Models;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace QuanLyNhanSu.Controllers
 {
@@ -15,6 +16,17 @@ namespace QuanLyNhanSu.Controllers
 
         public IActionResult Index()
         {
+            // Kiểm tra xem cookie EmployeeData có tồn tại không
+            if (Request.Cookies.ContainsKey("EmployeeData"))
+            {
+                var employeeDataJson = Request.Cookies["EmployeeData"];
+
+                // Chuyển đổi chuỗi JSON thành đối tượng Employee
+                var employee = JsonSerializer.Deserialize<EmployeesModel>(employeeDataJson);
+                
+                // Sử dụng dữ liệu employee trong View
+                ViewData["EmployeeName"] = employee.first_name;
+            }
             return View();
         }
 
