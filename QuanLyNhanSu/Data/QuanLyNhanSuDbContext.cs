@@ -10,6 +10,10 @@ namespace QuanLyNhanSu.Data
         {
         }
 
-        public DbSet<departmentsModel> departments{ get; set; }
+        public DbSet<departmentsModel> departments { get; set; }
+        //Bảng login
+        public DbSet<Login> login{ get; set; }
+        //Bảng employees
+        public DbSet<EmployeesModel> employees { get; set; }
     }
 }
