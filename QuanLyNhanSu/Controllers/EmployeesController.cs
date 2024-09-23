@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
+using QuanLyNhanSu.Models;
 
 namespace QuanLyNhanSu.Controllers
 {
@@ -27,18 +29,33 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: EmployeesController/Create
-        public ActionResult Create()
+        public async Task<IActionResult> DangKyNhanVien()
         {
+            var departments = await _context.departments.ToListAsync();
+			// Tạo danh sách SelectListItem để hiển thị trong dropdown
+			ViewBag.Departments = new SelectList(departments, "department_id", "department_name");
             return View();
         }
 
         // POST: EmployeesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> DangKyNhanVien(EmployeesModel employees)
         {
             try
             {
+                if (employees == null)
+                {
+                    return BadRequest("Employee model is null");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    employees.hire_date = DateOnly.MinValue;
+                    _context.Add(employees);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
