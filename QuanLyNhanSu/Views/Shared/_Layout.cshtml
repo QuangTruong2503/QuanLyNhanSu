@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using System.Text.Json;
+@using QuanLyNhanSu.Models
+@{
+    var employeeData = Context.Request.Cookies["EmployeeData"];
+    var employeeConverted = new EmployeesModel();
+    if(employeeData != null)
+    {
+        // Chuyển đổi chuỗi JSON thành đối tượng Employee
+        employeeConverted = JsonSerializer.Deserialize<EmployeesModel>(employeeData);
+    }
+
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +23,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+            <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuanLyNhanSu</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -25,16 +37,43 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="departments" asp-action="Index">Phòng ban</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Nhân viên</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Đăng nhập</a>
-                        </li>
+                        @if(employeeData != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="departments" asp-action="Index">Phòng ban</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Nhân viên</a>
+                            </li>
+                            
+                        }
                     </ul>
+                    <!--Kiểm tra có dữ liệu người dùng đăng nhập hay không-->
+                    @if (employeeData != null)
+                    {
+                        <!-- Example single danger button -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Xin chào @employeeConverted.last_name
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Login" asp-action="Logout" method="post">
+                                        <button class="dropdown-item text-danger">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    <!--Hiện mục đăng nhập nếu không có dữ liệu người dùng-->
+                    @if (employeeData == null)
+                    {
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Đăng nhập</a>
+                    }
                 </div>
             </div>
         </nav>

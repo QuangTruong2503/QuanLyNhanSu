@@ -20,12 +20,16 @@ namespace QuanLyNhanSu.Controllers
             if (Request.Cookies.ContainsKey("EmployeeData"))
             {
                 var employeeDataJson = Request.Cookies["EmployeeData"];
-
-                // Chuyển đổi chuỗi JSON thành đối tượng Employee
-                var employee = JsonSerializer.Deserialize<EmployeesModel>(employeeDataJson);
+                var employee = new EmployeesModel();
+                if (employeeDataJson != null)
+                {
+                    // Chuyển đổi chuỗi JSON thành đối tượng Employee
+                    employee = JsonSerializer.Deserialize<EmployeesModel>(employeeDataJson);
+                    // Sử dụng dữ liệu employee trong View
+                    ViewData["EmployeeName"] = employee.first_name;
+                }
                 
-                // Sử dụng dữ liệu employee trong View
-                ViewData["EmployeeName"] = employee.first_name;
+                
             }
             return View();
         }
