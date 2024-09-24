@@ -16,15 +16,6 @@ namespace QuanLyNhanSu.Controllers
         {
             _context = context;
         }
-        // GET: LoginController
-        public ActionResult Index()
-        {
-            if (Request.Cookies["EmployeeData"] != null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            return View();
-        }
 
         // GET: LoginController/Details/5
         public ActionResult Details(int id)
@@ -37,8 +28,16 @@ namespace QuanLyNhanSu.Controllers
         {
             return View();
         }
-
-        // POST: LoginController/Create
+        // GET: LoginController
+        public IActionResult Login()
+        {
+            if (Request.Cookies["EmployeeData"] != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+        // POST: LoginController/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -50,35 +49,30 @@ namespace QuanLyNhanSu.Controllers
             }
             // Kiểm tra xem đầu vào là employee_id hay username
             var isNumeric = int.TryParse(model.UsernameOrEmployeeId, out int employeeId);
-            // Truy vấn người dùng từ bảng login
-            Login login;
-            if (isNumeric)
-            {
-                login = await _context.login.FirstOrDefaultAsync(l => l.employee_id == employeeId);
-            }
-            else
-            {
-                login = await _context.login.FirstOrDefaultAsync(l => l.username == model.UsernameOrEmployeeId);
-            }
+            // Truy vấn người dùng từ bảng login (giả sử đã tạo chỉ mục)
+            var login = await _context.login
+                .FirstOrDefaultAsync(l =>
+                    (isNumeric && l.employee_id == employeeId) ||
+                    (!isNumeric && l.username == model.UsernameOrEmployeeId));
             if (login != null && PasswordHasher.VerifyPassword(model.Password, login.hashed_password))
             {
-                EmployeesModel employees = await _context.employees.FirstOrDefaultAsync(e => e.employee_id == login.employee_id);
-                // So sánh hashed password
-                if(employees != null)
+                var employees = await _context.employees
+                       .FirstOrDefaultAsync(e => e.employee_id == login.employee_id);
+                //Nếu tồn tại employee trùng với thông tin đăng nhập, lấy dữ liệu
+                if (employees != null)
                 {
                     // Chuyển đối tượng Employee thành chuỗi JSON
                     var employeeDataJson = JsonSerializer.Serialize(employees);
                     // Lưu chuỗi JSON vào cookies
-                    CookieOptions cookieOptions = new CookieOptions
+                    CookieOptions cookieOptions = new()
                     {
                         HttpOnly = true,
-                        Expires = DateTimeOffset.UtcNow.AddHours(3) // Thời gian hết hạn cookie (1 giờ)
+                        Expires = DateTimeOffset.UtcNow.AddHours(3) // Thời gian hết hạn cookie (3 giờ)
                     };
                     Response.Cookies.Append("EmployeeData", employeeDataJson, cookieOptions);
                     // Redirect sau khi đăng nhập thành công
                     return RedirectToAction("Index", "Home");
                 }
-                
             }
             // Nếu không thành công, trả về view với thông báo lỗi
             ModelState.AddModelError("", "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
