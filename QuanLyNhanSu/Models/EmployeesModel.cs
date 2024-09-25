@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,9 +7,9 @@ namespace QuanLyNhanSu.Models
 {
 	public class EmployeesModel
 	{
-		[Key]
+        [Key]
 		[Display(Name = "Mã nhân viên")]
-		public int employee_id { get; set; }
+		public string? employee_id { get; set; }
 
 		[Required(ErrorMessage = "Họ và đệm là bắt buộc.")]
 		[Display(Name = "Họ và đệm")]
@@ -27,6 +28,9 @@ namespace QuanLyNhanSu.Models
 		[Display(Name = "SĐT")]
 		public string phone { get; set; }
 
+		[Display(Name = "Mật khẩu")]
+		public string? hashed_password { get; set; }
+
 		[Display(Name = "Ngày sinh")]
 		public DateOnly? date_of_birth { get; set; }
 
@@ -43,9 +47,8 @@ namespace QuanLyNhanSu.Models
 
 		[Required(ErrorMessage = "Ngày bắt đầu là bắt buộc.")]
 		[Display(Name = "Ngày bắt đầu")]
-		public DateOnly hire_date { get; set; }
+		public DateTime hire_date { get; set; }
 
-		[Required(ErrorMessage = "Vị trí là bắt buộc.")]
 		[Display(Name = "Vị trí")]
 		public string position { get; set; }
 

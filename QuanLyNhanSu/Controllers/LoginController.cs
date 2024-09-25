@@ -47,13 +47,11 @@ namespace QuanLyNhanSu.Controllers
             {
                 return View(model);
             }
-            // Kiểm tra xem đầu vào là employee_id hay username
-            var isNumeric = int.TryParse(model.UsernameOrEmployeeId, out int employeeId);
             // Truy vấn người dùng từ bảng login (giả sử đã tạo chỉ mục)
-            var login = await _context.login
+            var login = await _context.employees
                 .FirstOrDefaultAsync(l =>
-                    (isNumeric && l.employee_id == employeeId) ||
-                    (!isNumeric && l.username == model.UsernameOrEmployeeId));
+                    (l.employee_id == model.EmployeeIDorPhone) ||
+                    (l.phone == model.EmployeeIDorPhone));
             if (login != null && PasswordHasher.VerifyPassword(model.Password, login.hashed_password))
             {
                 var employees = await _context.employees

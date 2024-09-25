@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
+using QuanLyNhanSu.Helpers;
 using QuanLyNhanSu.Models;
 
 namespace QuanLyNhanSu.Controllers
@@ -29,6 +30,7 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: EmployeesController/Create
+        [HttpGet]
         public async Task<IActionResult> DangKyNhanVien()
         {
             var departments = await _context.departments.ToListAsync();
@@ -51,17 +53,30 @@ namespace QuanLyNhanSu.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    employees.hire_date = DateOnly.MinValue;
+                    //Tạo mã nhân viên ngẫu nhiên
+                    var randomCode = EmployeeHelpers.EmployeeCodeRandom();
+                    employees.employee_id = randomCode;
+                    //Thiết lập ngày bắt đầu làm việc
+                    employees.hire_date = DateTime.Now;
+                    //Thiết lập mật khẩu mặc định
+                    var defaultPassword = "123456";
+                    employees.hashed_password = PasswordHasher.HashPassword(defaultPassword);
                     _context.Add(employees);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                return View(employees);
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                // Xử lý lỗi khi lưu vào cơ sở dữ liệu
+                ModelState.AddModelError(string.Empty, "Có lỗi xảy ra khi lưu dữ liệu: " + ex.Message);
             }
+            // Nếu có lỗi, quay lại view với thông tin lỗi trong ModelState
+            var departments = await _context.departments.ToListAsync();
+            // Tạo danh sách SelectListItem để hiển thị trong dropdown
+            ViewBag.Departments = new SelectList(departments, "department_id", "department_name");
+            return View(employees);
         }
 
         // GET: EmployeesController/Edit/5
