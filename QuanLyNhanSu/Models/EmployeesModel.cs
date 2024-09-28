@@ -49,11 +49,18 @@ namespace QuanLyNhanSu.Models
 		[Display(Name = "Ngày bắt đầu")]
 		public DateTime hire_date { get; set; }
 
+		[Display(Name = "Ngày kết thúc")]
+		[NotMapped]
+		public DateTime? expired_date { get; set; }
+
 		[Display(Name = "Vị trí")]
 		public string position { get; set; }
 
 		[Display(Name = "Mã phòng ban")]
 		public int department_id { get; set; }
+		[Display(Name = "Vai trò")]
+		[NotMapped]
+		public string? role_id { get; set; }
 	}
 
 }
