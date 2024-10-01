@@ -27,6 +27,7 @@ namespace QuanLyNhanSu.Controllers
                     employee = JsonSerializer.Deserialize<EmployeesModel>(employeeDataJson);
                     // Sử dụng dữ liệu employee trong View
                     ViewData["EmployeeName"] = employee.first_name;
+                    Console.WriteLine(employee.employee_id);
                 }
                 
                 

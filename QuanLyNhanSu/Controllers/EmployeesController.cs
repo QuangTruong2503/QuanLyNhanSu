@@ -24,18 +24,39 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: EmployeesController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(string id)
         {
+            var details = await _context.employees.FindAsync(id);
+            if (details != null)
+            {
+                return View(details);
+            }
             return View();
         }
+        // Action để lấy danh sách vị trí (position) theo department_id
+        [HttpGet]
+        public JsonResult GetPositionsByDepartmentId(int departmentId)
+        {
+            // Giả sử bạn có một bảng Positions trong database, liên kết với Department
+            var positions = _context.positions
+                                    .Where(p => p.department_id == departmentId)
+                                    .Select(p => new SelectListItem
+                                    {
+                                        Value = p.position_id.ToString(),
+                                        Text = p.position_name,
+                                    })
+                                    .ToList();
 
+            // Trả về danh sách position dưới dạng JSON
+            return Json(positions);
+        }
         // GET: EmployeesController/Create
         [HttpGet]
         public async Task<IActionResult> DangKyNhanVien()
         {
             var departments = await _context.departments.ToListAsync();
 			// Tạo danh sách SelectListItem để hiển thị trong dropdown
-			ViewBag.Departments = new SelectList(departments, "department_id", "department_name");
+			ViewBag.Departments = new SelectList(departments, "department_id", "department_name", "");
             return View();
         }
 
@@ -80,9 +101,18 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: EmployeesController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(string id)
         {
-            return View();
+            var detail = await _context.employees.FindAsync(id);
+            
+            if (detail == null)
+            {
+                return NotFound();
+            }
+            var departments = await _context.departments.ToListAsync();
+            // Tạo danh sách SelectListItem để hiển thị trong dropdown
+            ViewBag.Departments = new SelectList(departments, "department_id", "department_name", detail.department_id);
+            return View(detail);
         }
 
         // POST: EmployeesController/Edit/5
@@ -101,9 +131,16 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: EmployeesController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            return View();
+            var employee = await _context.employees.FindAsync(id);
+            if (employee != null)
+            {
+                _context.employees.Remove(employee);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+            
         }
 
         // POST: EmployeesController/Delete/5

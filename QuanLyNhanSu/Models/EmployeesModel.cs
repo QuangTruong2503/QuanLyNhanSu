@@ -58,9 +58,6 @@ namespace QuanLyNhanSu.Models
 
 		[Display(Name = "Mã phòng ban")]
 		public int department_id { get; set; }
-		[Display(Name = "Vai trò")]
-		[NotMapped]
-		public string? role_id { get; set; }
 	}
 
 }

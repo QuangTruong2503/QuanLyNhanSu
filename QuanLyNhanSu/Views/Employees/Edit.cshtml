@@ -1,69 +1,78 @@
 ﻿@model QuanLyNhanSu.Models.EmployeesModel
 
 @{
-    ViewData["Title"] = "ĐĂNG KÝ NHÂN SỰ MỚI";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>Edit</h1>
 
+<h4>EmployeesModel</h4>
 <hr />
 <div class="row">
-        <form asp-action="DangKyNhanVien" class="row">
-            <div class="form-group col-md-4">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="employee_id" class="control-label"></label>
+                <input asp-for="employee_id" class="form-control" readonly />
+                <span asp-validation-for="employee_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="first_name" class="control-label"></label>
                 <input asp-for="first_name" class="form-control" />
                 <span asp-validation-for="first_name" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group">
                 <label asp-for="last_name" class="control-label"></label>
                 <input asp-for="last_name" class="form-control" />
                 <span asp-validation-for="last_name" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group">
                 <label asp-for="email" class="control-label"></label>
                 <input asp-for="email" class="form-control" />
                 <span asp-validation-for="email" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group">
                 <label asp-for="phone" class="control-label"></label>
                 <input asp-for="phone" class="form-control" />
                 <span asp-validation-for="phone" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
-                <label asp-for="date_of_birth" class="control-label"></label>
-                <input asp-for="date_of_birth" class="form-control" type="date"/>
+            <div class="form-group">
+                <label asp-for="gender" class="control-label"></label>
+                <input asp-for="gender" class="form-control" />
+                <span asp-validation-for="gender" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
-                <label asp-for="gender"></label>
-                <select asp-for="gender" class="form-control">
-                    <option value="Nam">Nam</option>
-                    <option value="Nữ">Nữ</option>
-                    <option value="Khác">Khác</option>
-                </select>
-
+            <div class="form-group">
+                <label asp-for="hire_date" class="control-label"></label>
+                <input asp-for="hire_date" class="form-control" />
+                <span asp-validation-for="hire_date" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group">
+                <label asp-for="expired_date" class="control-label"></label>
+                <input asp-for="expired_date" class="form-control" />
+                <span asp-validation-for="expired_date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="department_id" class="control-label"></label>
-                <select asp-for="department_id" class="form-control" asp-items="ViewBag.Departments" id="departmentSelect">
-                    <option value="">Chọn phòng ban</option>
-                </select>
+                <select asp-for="department_id" class="form-control" asp-items="ViewBag.Departments" id="departmentSelect"></select>
                 <span asp-validation-for="department_id" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group">
                 <label asp-for="position" class="control-label"></label>
                 <select id="positionSelect" name="position" class="form-control">
                     <option value="">Chọn Vị trí</option>
                 </select>
                 <span asp-validation-for="position" class="text-danger"></span>
             </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group col-md-12">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
+</div>
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Hủy bỏ</a>
 </div>
 
 @section Scripts {

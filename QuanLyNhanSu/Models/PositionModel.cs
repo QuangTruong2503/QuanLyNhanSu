@@ -15,5 +15,6 @@ namespace QuanLyNhanSu.Models
         [Display(Name = "Mã phòng ban")]
 
         public int department_id { get; set; }
+        public departmentsModel departments { get; set; }
     }
 }
