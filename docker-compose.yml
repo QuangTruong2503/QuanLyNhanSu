@@ -1,0 +1,6 @@
+services:
+  quanlynhansu:
+    image: ${DOCKER_REGISTRY-}quanlynhansu
+    build:
+      context: .
+      dockerfile: QuanLyNhanSu/Dockerfile

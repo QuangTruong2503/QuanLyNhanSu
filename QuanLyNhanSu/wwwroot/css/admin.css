@@ -1,0 +1,55 @@
+﻿body {
+    background-color: #eff1f3;
+}
+
+.sidebar {
+    background-color: #fff;
+    min-height: 80vh;
+    border-radius: 6px;
+}
+
+    .sidebar a {
+        text-decoration: none;
+        color: #333;
+    }
+
+        .sidebar a:hover {
+            background-color: #f8f9fa;
+        }
+
+.main-content {
+    padding: 20px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.progress {
+    height: 5px;
+}
+
+.priority-badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.high-priority {
+    background-color: #ff4d4f;
+    color: white;
+}
+
+.medium-priority {
+    background-color: #ffec3d;
+    color: black;
+}
+
+.low-priority {
+    background-color: #52c41a;
+    color: white;
+}
+.main-content {
+    background-color: #fff;
+    border-radius: 6px;
+}
