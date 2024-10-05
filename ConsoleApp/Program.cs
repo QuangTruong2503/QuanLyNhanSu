@@ -10,7 +10,10 @@ class Program
 {
     static void Main(string[] args)
     {
-        
+        var dateJoin = DateTime.Now;
+        var dateLeave = DateTime.Now.AddHours(8);
+        var workTime = dateLeave.Hour - dateJoin.Hour;
+        Console.WriteLine(workTime);
     }
 
 }

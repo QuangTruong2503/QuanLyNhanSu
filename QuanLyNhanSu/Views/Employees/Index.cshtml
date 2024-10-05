@@ -30,7 +30,10 @@
                 @Html.DisplayNameFor(model => model.gender)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.position)
+                @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.departments.department_name)
             </th>
             <th></th>
         </tr>
@@ -57,8 +60,11 @@
                 @Html.DisplayFor(modelItem => item.gender)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.position)
+                @Html.DisplayFor(modelItem => item.Role.Role_Name)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.departments.department_name)
+                </td>
             <td>
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -65,10 +65,16 @@
             @Html.DisplayFor(model => model.position)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.department_id)
+            @Html.DisplayNameFor(model => model.departments.department_name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.department_id)
+            @Html.DisplayFor(model => model.departments.department_name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Role.Role_Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Role.Role_Name)
         </dd>
     </dl>
 </div>
