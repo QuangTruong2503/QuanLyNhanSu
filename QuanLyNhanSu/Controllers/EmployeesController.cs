@@ -19,14 +19,20 @@ namespace QuanLyNhanSu.Controllers
         // GET: EmployeesController
         public async Task<IActionResult> Index()
         {
-            var employees = await _context.employees.ToListAsync();
+            var employees = await _context.employees
+                                  .Include(e => e.Role)       // Include Role
+                                  .Include(e => e.departments) // Include Department
+                                  .ToListAsync();
             return View(employees);
         }
 
         // GET: EmployeesController/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            var details = await _context.employees.FindAsync(id);
+            var details = await _context.employees
+                .Include(e => e.Role)
+                .Include(e => e.departments)
+                .FirstOrDefaultAsync(m => m.employee_id == id);
             if (details != null)
             {
                 return View(details);
