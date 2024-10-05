@@ -56,8 +56,15 @@ namespace QuanLyNhanSu.Models
 		[Display(Name = "Vị trí")]
 		public string position { get; set; }
 
-		[Display(Name = "Mã phòng ban")]
+        [Display(Name = "Mã phòng ban")]
 		public int department_id { get; set; }
+
+		[Display(Name = "Mã Vãi trò")]
+		public int role_id { get; set; }
+
+        [Display(Name = "Vãi trò")]
+        public RoleModel Role { get; set; }
+		public departmentsModel departments { get; set; }
 	}
 
 }
