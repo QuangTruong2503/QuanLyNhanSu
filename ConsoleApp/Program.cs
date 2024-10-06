@@ -8,12 +8,21 @@ using QuanLyNhanSu.Helpers;
 
 class Program
 {
+    // Hàm tính số ngày giữa hai ngày a và b
+    static int TinhSoNgay(DateTime ngayA, DateTime ngayB)
+    {
+        // Tính sự khác biệt giữa hai ngày
+        TimeSpan khoangThoiGian = ngayB - ngayA;
+
+        // Trả về số ngày dưới dạng số nguyên
+        return Math.Abs(khoangThoiGian.Days);
+    }
     static void Main(string[] args)
     {
-        var dateJoin = DateTime.Now;
-        var dateLeave = DateTime.Now.AddHours(8);
-        var workTime = dateLeave.Hour - dateJoin.Hour;
-        Console.WriteLine(workTime);
+        var dateStart = new DateTime(2024, 09, 11, 0, 0, 0, DateTimeKind.Utc);
+        var dateLeave = DateTime.Now;
+        var date = TinhSoNgay(dateStart, dateLeave);
+        Console.WriteLine(date);
     }
 
 }

@@ -39,23 +39,7 @@ namespace QuanLyNhanSu.Controllers
             }
             return View();
         }
-        // Action để lấy danh sách vị trí (position) theo department_id
-        [HttpGet]
-        public JsonResult GetPositionsByDepartmentId(int departmentId)
-        {
-            // Giả sử bạn có một bảng Positions trong database, liên kết với Department
-            var positions = _context.positions
-                                    .Where(p => p.department_id == departmentId)
-                                    .Select(p => new SelectListItem
-                                    {
-                                        Value = p.position_id.ToString(),
-                                        Text = p.position_name,
-                                    })
-                                    .ToList();
-
-            // Trả về danh sách position dưới dạng JSON
-            return Json(positions);
-        }
+        
         // GET: EmployeesController/Create
         [HttpGet]
         public async Task<IActionResult> DangKyNhanVien()
@@ -115,24 +99,48 @@ namespace QuanLyNhanSu.Controllers
             {
                 return NotFound();
             }
-            var departments = await _context.departments.ToListAsync();
-            // Tạo danh sách SelectListItem để hiển thị trong dropdown
-            ViewBag.Departments = new SelectList(departments, "department_id", "department_name", detail.department_id);
             return View(detail);
         }
 
         // POST: EmployeesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(EmployeesModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                // Nếu dữ liệu không hợp lệ, trả về view kèm theo model để người dùng có thể thấy lỗi
+                return View(model);
+            }
+
             try
             {
+
+                // Cập nhật thông tin nhân viên
+                _context.employees.Update(model);
+                await _context.SaveChangesAsync();
+
+                // Chuyển hướng về trang Index sau khi cập nhật thành công
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (DbUpdateException ex)
             {
-                return View();
+                // Log lỗi để theo dõi (có thể dùng log framework như Serilog, NLog, hoặc log mặc định)
+                // _logger.LogError(ex, "Lỗi khi cập nhật thông tin nhân viên");
+
+                // Thêm thông tin lỗi vào ModelState để hiển thị cho người dùng
+                ModelState.AddModelError("", $"{ex.Message}");
+
+                // Trả về lại view kèm theo dữ liệu gốc để người dùng không mất thông tin
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi chung (ví dụ: log lỗi, gửi email cảnh báo...)
+                // _logger.LogError(ex, "Lỗi không xác định.");
+
+                ModelState.AddModelError("", $"{ex.Message}");
+                return View(model);
             }
         }
 
@@ -162,6 +170,52 @@ namespace QuanLyNhanSu.Controllers
             {
                 return View();
             }
+        }
+
+        // Action để lấy danh sách vị trí (position) theo department_id
+        [HttpGet]
+        public JsonResult GetPositionsByDepartmentId(int departmentId)
+        {
+            // Giả sử bạn có một bảng Positions trong database, liên kết với Department
+            var positions = _context.positions
+                                    .Where(p => p.department_id == departmentId)
+                                    .Select(p => new SelectListItem
+                                    {
+                                        Value = p.position_id.ToString(),
+                                        Text = p.position_name,
+                                    })
+                                    .ToList();
+
+            // Trả về danh sách position dưới dạng JSON
+            return Json(positions);
+        }
+        //Action lấy dữ liệu department
+        [HttpGet]
+        public JsonResult GetDepartments()
+        {
+            var departments = _context.departments
+                                    .Select(d => new SelectListItem
+                                    {
+                                        Value = d.department_id.ToString(),
+                                        Text = d.department_name,
+                                    })
+                                    .ToList();
+
+            return Json(departments);
+        }
+        //Action lấy dữ liệu role
+        [HttpGet]
+        public JsonResult GetRoles()
+        {
+            var roles = _context.role
+                                    .Select(r => new SelectListItem
+                                    {
+                                        Value = r.Role_Id.ToString(),
+                                        Text = r.Role_Name,
+                                    })
+                                    .ToList();
+
+            return Json(roles);
         }
     }
 }

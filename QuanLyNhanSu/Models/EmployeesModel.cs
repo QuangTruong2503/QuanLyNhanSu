@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,6 +29,7 @@ namespace QuanLyNhanSu.Models
 		[Display(Name = "SĐT")]
 		public string phone { get; set; }
 
+		[NotMapped]
 		[Display(Name = "Mật khẩu")]
 		public string? hashed_password { get; set; }
 
@@ -62,9 +64,12 @@ namespace QuanLyNhanSu.Models
 		[Display(Name = "Mã Vãi trò")]
 		public int role_id { get; set; }
 
-        [Display(Name = "Vãi trò")]
+		[NotMapped]
+		[ValidateNever]
         public RoleModel Role { get; set; }
-		public departmentsModel departments { get; set; }
+        [NotMapped]
+		[ValidateNever]
+        public departmentsModel departments { get; set; }
 	}
 
 }

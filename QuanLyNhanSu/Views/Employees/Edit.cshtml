@@ -11,10 +11,10 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="employee_id" class="control-label"></label>
-                <input asp-for="employee_id" class="form-control" readonly />
+                <input asp-for="employee_id" class="form-control" readonly/>
                 <span asp-validation-for="employee_id" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -38,6 +38,11 @@
                 <span asp-validation-for="phone" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="hashed_password" class="control-label"></label>
+                <input asp-for="hashed_password" class="form-control" />
+                <span asp-validation-for="hashed_password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="gender" class="control-label"></label>
                 <input asp-for="gender" class="form-control" />
                 <span asp-validation-for="gender" class="text-danger"></span>
@@ -53,16 +58,19 @@
                 <span asp-validation-for="expired_date" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="position" class="control-label"></label>
+                <input asp-for="position" class="form-control" />
+                <span asp-validation-for="position" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="department_id" class="control-label"></label>
-                <select asp-for="department_id" class="form-control" asp-items="ViewBag.Departments" id="departmentSelect"></select>
+                <input asp-for="department_id" class="form-control" />
                 <span asp-validation-for="department_id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="position" class="control-label"></label>
-                <select id="positionSelect" name="position" class="form-control">
-                    <option value="">Chọn Vị trí</option>
-                </select>
-                <span asp-validation-for="position" class="text-danger"></span>
+                <label asp-for="role_id" class="control-label"></label>
+                <input asp-for="role_id" class="form-control" />
+                <span asp-validation-for="role_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -72,42 +80,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Hủy bỏ</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#departmentSelect').change(function () {
-            var departmentId = $(this).val();
-
-            if (departmentId) {
-                $.ajax({
-                    url: '@Url.Action("GetPositionsByDepartmentId", "Employees")',
-                    type: 'GET',
-                    data: { departmentId: departmentId },
-                    success: function (response) {
-                        // Reset the position dropdown
-                        $('#positionSelect').empty();
-                        $('#positionSelect').append('<option value="">Chọn Vị trí</option>');
-
-                        // Add new positions to the dropdown
-                        $.each(response, function (index, value) {
-                            $('#positionSelect').append('<option value="' + value.text + '">' + value.text + '</option>');
-                        });
-                    },
-                    error: function () {
-                        alert('Lỗi khi tải dữ liệu vị trí.');
-                    }
-                });
-            } else {
-                // Reset dropdown if no department is selected
-                $('#positionSelect').empty();
-                $('#positionSelect').append('<option value="">Chọn Vị trí</option>');
-            }
-        });
-    });
-</script>
