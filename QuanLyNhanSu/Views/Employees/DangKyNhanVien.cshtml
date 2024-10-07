@@ -44,7 +44,7 @@
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="department_id" class="control-label"></label>
-                <select asp-for="department_id" class="form-control" asp-items="ViewBag.Departments" id="departmentSelect">
+                <select asp-for="department_id" class="form-control" id="departmentSelect">
                     <option value="">Chọn phòng ban</option>
                 </select>
                 <span asp-validation-for="department_id" class="text-danger"></span>
@@ -72,6 +72,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        loadDepartment();
         $('#departmentSelect').change(function () {
             var departmentId = $(this).val();
 
@@ -101,4 +102,23 @@
             }
         });
     });
+    function loadDepartment() {
+        $.ajax({
+            url: '@Url.Action("GetDepartments", "Employees")',
+            type: 'GET',
+            success: function (response) {
+                // Reset the position dropdown
+                $('#departmentSelect').empty();
+                $('#departmentSelect').append('<option value="">Chọn phòng ban</option>');
+
+                // Add new positions to the dropdown
+                $.each(response, function (index, value) {
+                    $('#departmentSelect').append('<option value="' + value.value + '">' + value.text + '</option>');
+                });
+            },
+            error: function () {
+                alert('Lỗi khi tải dữ liệu vị trí.');
+            }
+        });
+    };
 </script>

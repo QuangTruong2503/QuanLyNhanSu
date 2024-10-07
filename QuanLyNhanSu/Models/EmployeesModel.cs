@@ -29,7 +29,6 @@ namespace QuanLyNhanSu.Models
 		[Display(Name = "SĐT")]
 		public string phone { get; set; }
 
-		[NotMapped]
 		[Display(Name = "Mật khẩu")]
 		public string? hashed_password { get; set; }
 

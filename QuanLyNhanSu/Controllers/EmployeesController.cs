@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
 using QuanLyNhanSu.Helpers;
 using QuanLyNhanSu.Models;
+using QuanLyNhanSu.ViewModels;
 
 namespace QuanLyNhanSu.Controllers
 {
@@ -81,12 +83,9 @@ namespace QuanLyNhanSu.Controllers
             catch (Exception ex)
             {
                 // Xử lý lỗi khi lưu vào cơ sở dữ liệu
-                ModelState.AddModelError(string.Empty, "Có lỗi xảy ra khi lưu dữ liệu: " + ex.Message);
+                ModelState.AddModelError(string.Empty, "Có lỗi xảy ra: " + ex.Message);
             }
             // Nếu có lỗi, quay lại view với thông tin lỗi trong ModelState
-            var departments = await _context.departments.ToListAsync();
-            // Tạo danh sách SelectListItem để hiển thị trong dropdown
-            ViewBag.Departments = new SelectList(departments, "department_id", "department_name");
             return View(employees);
         }
 
@@ -115,7 +114,6 @@ namespace QuanLyNhanSu.Controllers
 
             try
             {
-
                 // Cập nhật thông tin nhân viên
                 _context.employees.Update(model);
                 await _context.SaveChangesAsync();
@@ -147,14 +145,21 @@ namespace QuanLyNhanSu.Controllers
         // GET: EmployeesController/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            var employee = await _context.employees.FindAsync(id);
-            if (employee != null)
+            try
             {
-                _context.employees.Remove(employee);
-                await _context.SaveChangesAsync();
+                var employee = await _context.employees.FirstOrDefaultAsync(e => e.employee_id == id);
+                if (employee != null)
+                {
+                    _context.employees.Remove(employee);
+                    await _context.SaveChangesAsync();
+
+                    // Sau khi xóa thành công, chuyển hướng về trang Index
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
-            
+            catch { return RedirectToAction(nameof(Index)); }
         }
 
         // POST: EmployeesController/Delete/5
@@ -216,6 +221,53 @@ namespace QuanLyNhanSu.Controllers
                                     .ToList();
 
             return Json(roles);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string id)
+        {
+            var employee = await _context.employees.FindAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            var model = new ResetPasswordViewModel
+            {
+                EmployeeId = employee.employee_id
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var employee = await _context.employees.FindAsync(model.EmployeeId);
+                    if (employee == null)
+                    {
+                        return NotFound();
+                    }
+                    if (model.NewPassword != model.ConfirmPassword)
+                    {
+                        ModelState.AddModelError("", "Mật khẩu không trùng khớp.");
+                        return View(model);
+                    }
+                    // Băm mật khẩu mới
+                    employee.hashed_password = PasswordHasher.HashPassword(model.NewPassword);
+                    // Cập nhật mật khẩu
+                    _context.Update(employee);
+                    await _context.SaveChangesAsync();
+                    ViewData["SuccessMessage"] = $"Đổi mật khẩu tài khoản: {employee.employee_id} thành công.";
+                    return View(); // Điều hướng sau khi thành công
+                }
+                return View(model);
+            }
+            catch (Exception ex) 
+            {
+                ModelState.AddModelError("", $"{ex.Message}");
+                return View(model);
+            }
         }
     }
 }
