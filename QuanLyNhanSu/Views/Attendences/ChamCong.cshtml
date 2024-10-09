@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Chấm Công";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Chấm Công</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<form asp-action="ChamCong" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <button type="submit" class="btn btn-primary">Chấm Công</button>
+</form>

@@ -18,6 +18,10 @@ namespace QuanLyNhanSu.Data
         public DbSet<PositionModel> positions { get; set; }
         //Bảng Role
         public DbSet<RoleModel> role { get; set; }
+        //Bảng Attendence
+        public DbSet<AttendanceModel> attendences { get; set; }
+
+        public DbSet<AttendenceStatusModel> attendence_status { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -135,7 +139,7 @@ namespace QuanLyNhanSu.Data
                 entity.Property(e => e.Attendance_Id).HasColumnName("attendance_id");
                 entity.Property(e => e.Employee_Id).HasColumnName("employee_id").IsRequired();
                 entity.Property(e => e.Attendance_Date).HasColumnName("attendance_date").IsRequired();
-                entity.Property(e => e.Status).HasColumnName("status").IsRequired();
+                entity.Property(e => e.status_id).HasColumnName("status_id").IsRequired();
 
                 // Foreign key to Employee
                 entity.HasOne(e => e.Employee)
@@ -160,6 +164,13 @@ namespace QuanLyNhanSu.Data
                       .WithMany()
                       .HasForeignKey(e => e.Employee_Id)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<AttendenceStatusModel>(entity =>
+            {
+                entity.ToTable("attendence_status");
+                entity.HasKey(e => e.status_id);
+                entity.Property(e => e.status_id).HasColumnName("status_id");
+                entity.Property(e => e.status_name).HasColumnName("status_name");
             });
         }
 
