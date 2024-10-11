@@ -4,13 +4,13 @@
     ViewData["Title"] = "Danh Sách Chấm Công";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>@ViewData["Title"] Ngày @ViewBag.SelectedDate</h1>
 
 <!-- Form chọn ngày -->
 <form asp-action="DanhSach" method="get">
     <div class="form-group col-md-4">
         <label for="dateSelect">Chọn ngày:</label>
-        <input type="date" id="dateSelect" name="selectedDate" value="@ViewBag.SelectedDate" class="form-control" />
+        <input type="date" id="dateSelect" name="selectedDate" value=@ViewBag.SelectedDate class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Xem</button>
 </form>
@@ -22,6 +22,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Employee_Id)
+            </th>
+            <th>
+                Họ và tên
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Attendance_Date)
@@ -40,6 +43,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Employee_Id)
+            </td>
+            <td>
+                @Html.Raw(item.Employee.first_name + " " + item.Employee.last_name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Attendance_Date)

@@ -33,7 +33,7 @@ namespace QuanLyNhanSu.Controllers
                 .Include(a => a.Employee)
                 .Include(a => a.AttendanceStatus).ToListAsync();
             // Truyền danh sách và ngày đã chọn vào View
-            ViewBag.SelectedDate = selectDateTime.ToString("dd-MM-yyyy");
+            ViewBag.SelectedDate = selectDateTime.ToString("dd/MM/yyyy");
             return View(attendancesList);
         }
 
@@ -53,7 +53,7 @@ namespace QuanLyNhanSu.Controllers
         // POST: AttendencesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChamCong(AttendanceModel model)
+        public async Task<IActionResult> ChamCongVao(AttendanceModel model)
         {
             try
             {
@@ -63,14 +63,14 @@ namespace QuanLyNhanSu.Controllers
                 if (employeeData == null)
                 {
                     ModelState.AddModelError("", "Mã nhân viên không hợp lệ!");
-                    return View(model);
+                    return View("ChamCong", model);
                 }
                 //Kiểm tra nhân sự đã chấm công hôm nay hay chưa
                 var existsEmployee = await _context.attendances.FirstOrDefaultAsync(m => m.Employee_Id == employeeID && m.Attendance_Date.Date == DateTime.Now.Date);
                 if (existsEmployee != null)
                 {
                     ModelState.AddModelError("", $"Nhân viên {employeeID} đã chấm công hôm nay!");
-                    return View(model);
+                    return View("ChamCong", model);
                 }
 
                 //Tiến hành chấm công
@@ -96,16 +96,72 @@ namespace QuanLyNhanSu.Controllers
                 _context.attendances.Add(attendance);
                 await _context.SaveChangesAsync();
                 TempData["Message"] = "Chấm công thành công!";
-                return RedirectToAction("ChamCong");
+                return View("ChamCong", model);
             }
             catch(Exception ex)
             {
                 ModelState.AddModelError("", "Lỗi: " + ex.Message);
-                return View(model);
+                return View("ChamCong", model);
             }
         }
+
+        //Chấm công ra
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChamCongRa(AttendanceModel model)
+        {
+            try
+            {
+                var employeeID = model.Employee_Id;
+                //Giá trị trạng thái chấm công "Rời"(có thể thay đổi theo database)
+                var checkOutStatusID = 3;
+                //Kiểm tra tính hợp lệ của employeeID
+                var employeeData = await _context.employees.FirstOrDefaultAsync(m => m.employee_id == employeeID);
+                if (employeeData == null)
+                {
+                    ModelState.AddModelError("", "Mã nhân viên không hợp lệ!");
+                    return View("ChamCong", model);
+                }
+                //Kiểm tra nhân sự đã chấm công hôm nay hay chưa
+                var existsEmployee = await _context.attendances.FirstOrDefaultAsync(m => m.Employee_Id == employeeID && m.Attendance_Date.Date == DateTime.Now.Date);
+                if (existsEmployee == null)
+                {
+                    ModelState.AddModelError("", $"Nhân viên {employeeID} chưa chấm công vào!");
+                    return View("ChamCong", model);
+                }
+
+                //Kiểm tra nhân sự đã chấm công ra hay chưa
+                var checkedOutEmployee = await _context.attendances.FirstOrDefaultAsync(m => m.Employee_Id == employeeID && m.Attendance_Date.Date == DateTime.Now.Date && m.status_id == checkOutStatusID);
+                if (checkedOutEmployee != null)
+                {
+                    ModelState.AddModelError("", $"Nhân viên {employeeID} đã chấm công ra!");
+                    return View("ChamCong", model);
+                }
+                //Tiến hành chấm công
+                DateTime currentDateTime = DateTime.Now;
+                
+                // Tạo mới Attendance
+                AttendanceModel attendance = new AttendanceModel
+                {
+                    Employee_Id = employeeID,
+                    Attendance_Date = currentDateTime,
+                    status_id = checkOutStatusID
+                };
+                _context.attendances.Add(attendance);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Chấm công ra thành công!";
+                return RedirectToAction("ChamCong");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Lỗi: " + ex.Message);
+                return RedirectToAction("ChamCong");
+            }
+        }
+
         //Kết thúc chấm công
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> KetThucChamCong()
         {
             // Lấy ngày hiện tại
