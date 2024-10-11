@@ -19,9 +19,9 @@ namespace QuanLyNhanSu.Data
         //Bảng Role
         public DbSet<RoleModel> role { get; set; }
         //Bảng Attendence
-        public DbSet<AttendanceModel> attendences { get; set; }
+        public DbSet<AttendanceModel> attendances { get; set; }
 
-        public DbSet<AttendenceStatusModel> attendence_status { get; set; }
+        public DbSet<AttendanceStatusModel> attendance_status { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -146,6 +146,10 @@ namespace QuanLyNhanSu.Data
                       .WithMany()
                       .HasForeignKey(e => e.Employee_Id)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.AttendanceStatus)
+                      .WithMany()
+                      .HasForeignKey(e => e.status_id);
             });
 
             // Define the Deductions table with foreign key to Employees
@@ -165,9 +169,9 @@ namespace QuanLyNhanSu.Data
                       .HasForeignKey(e => e.Employee_Id)
                       .OnDelete(DeleteBehavior.Cascade);
             });
-            modelBuilder.Entity<AttendenceStatusModel>(entity =>
+            modelBuilder.Entity<AttendanceStatusModel>(entity =>
             {
-                entity.ToTable("attendence_status");
+                entity.ToTable("attendance_status");
                 entity.HasKey(e => e.status_id);
                 entity.Property(e => e.status_id).HasColumnName("status_id");
                 entity.Property(e => e.status_name).HasColumnName("status_name");

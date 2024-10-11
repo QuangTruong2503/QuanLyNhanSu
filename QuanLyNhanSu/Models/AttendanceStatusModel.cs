@@ -2,12 +2,12 @@
 
 namespace QuanLyNhanSu.Models
 {
-    public class AttendenceStatusModel
+    public class AttendanceStatusModel
     {
         [Key]
         public int status_id { get; set; }
 
-        [Display(Name ="Tên chấm công")]
+        [Display(Name ="Trạng thái")]
         public string? status_name { get; set; }
     }
 }

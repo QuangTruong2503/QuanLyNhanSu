@@ -1,0 +1,58 @@
+﻿@model IEnumerable<QuanLyNhanSu.Models.AttendanceModel>
+
+@{
+    ViewData["Title"] = "Danh Sách Chấm Công";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<!-- Form chọn ngày -->
+<form asp-action="DanhSach" method="get">
+    <div class="form-group col-md-4">
+        <label for="dateSelect">Chọn ngày:</label>
+        <input type="date" id="dateSelect" name="selectedDate" value="@ViewBag.SelectedDate" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Xem</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Attendance_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Attendance_Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status_id)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Attendance_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Attendance_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AttendanceStatus.status_name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

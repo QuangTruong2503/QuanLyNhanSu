@@ -20,13 +20,10 @@ namespace QuanLyNhanSu.Models
         [Display(Name = "Trạng thái")]
         public int status_id { get; set; }
 
-        [NotMapped]
-        [ValidateNever]
+        
         // Navigation Property
         public EmployeesModel Employee { get; set; }
 
-        [NotMapped]
-        [ValidateNever]
-        public AttendenceStatusModel AttendenceStatus { get; set; }
+        public AttendanceStatusModel AttendanceStatus { get; set; }
     }
 }
