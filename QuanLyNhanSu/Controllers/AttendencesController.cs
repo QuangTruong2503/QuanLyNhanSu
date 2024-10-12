@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
 using QuanLyNhanSu.Models;
@@ -8,14 +9,14 @@ using System.Text.Json;
 
 namespace QuanLyNhanSu.Controllers
 {
-    public class AttendencesController : Controller
+    public class AttendancesController : Controller
     {
         private readonly QuanLyNhanSuDbContext _context;
-        public AttendencesController(QuanLyNhanSuDbContext context)
+        public AttendancesController(QuanLyNhanSuDbContext context)
         {
             _context = context;
         }
-        // GET: AttendencesController
+        // GET: AttendancesController
         public async Task<IActionResult> DanhSach(string? selectedDate = null)
         {
             DateTime selectDateTime;
@@ -30,27 +31,27 @@ namespace QuanLyNhanSu.Controllers
                 selectDateTime = DateTime.Parse(selectedDate);
             }
             var attendancesList = await _context.attendances.Where(m => m.Attendance_Date.Date == selectDateTime.Date)
-                .Include(a => a.Employee)
-                .Include(a => a.AttendanceStatus).ToListAsync();
+               .Include(a => a.Employee)
+               .Include(a => a.AttendanceStatus).ToListAsync();
             // Truyền danh sách và ngày đã chọn vào View
             ViewBag.SelectedDate = selectDateTime.ToString("dd/MM/yyyy");
             return View(attendancesList);
         }
 
-        // GET: AttendencesController/Details/5
+        // GET: AttendancesController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: AttendencesController/Create
+        // GET: AttendancesController/Create
         public ActionResult ChamCong()
         {
             TempData["DateNow"] = DateTime.Now.ToString("dd-MM-yyyy");
             return View();
         }
 
-        // POST: AttendencesController/Create
+        // POST: AttendancesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChamCongVao(AttendanceModel model)
@@ -193,13 +194,13 @@ namespace QuanLyNhanSu.Controllers
             TempData["Message"] = "Kết thúc chấm công, nhân viên chưa chấm công đã được ghi vắng!";
             return RedirectToAction("ChamCong");
         }
-        // GET: AttendencesController/Edit/5
+        // GET: AttendancesController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: AttendencesController/Edit/5
+        // POST: AttendancesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -214,25 +215,16 @@ namespace QuanLyNhanSu.Controllers
             }
         }
 
-        // GET: AttendencesController/Delete/5
-        public ActionResult Delete(int id)
+        //Lấy dữ liệu Attendance_status
+        [HttpGet]
+        public JsonResult GetAttendanceStatus()
         {
-            return View();
-        }
-
-        // POST: AttendencesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+            var status = _context.attendance_status.Select(a => new SelectListItem
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+                Value = a.status_id.ToString(),
+                Text = a.status_name
+            }).ToList();
+            return Json(status);
         }
     }
 }
