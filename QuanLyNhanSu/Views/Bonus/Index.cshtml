@@ -1,0 +1,59 @@
+﻿@model IEnumerable<QuanLyNhanSu.Models.BonusModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Bonus_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bonus_Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bonus_Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reason)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bonus_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bonus_Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bonus_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reason)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                <a class="text-danger" href="@Url.Action("Delete", new {id= item.Bonus_Id})">Xóa</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

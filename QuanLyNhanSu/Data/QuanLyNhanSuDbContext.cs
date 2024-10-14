@@ -23,6 +23,8 @@ namespace QuanLyNhanSu.Data
 
         public DbSet<AttendanceStatusModel> attendance_status { get; set; }
 
+        public DbSet<BonusModel> bonuses { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

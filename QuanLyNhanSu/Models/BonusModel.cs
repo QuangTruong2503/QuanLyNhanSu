@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyNhanSu.Models
 {
@@ -21,6 +22,7 @@ namespace QuanLyNhanSu.Models
         [Display(Name = "Lý do thưởng")]
         public string Reason { get; set; }
 
+        [ValidateNever]
         // Navigation Property
         public EmployeesModel Employee { get; set; }
     }
