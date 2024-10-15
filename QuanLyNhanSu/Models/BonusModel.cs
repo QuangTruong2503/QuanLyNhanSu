@@ -11,16 +11,17 @@ namespace QuanLyNhanSu.Models
         public int Bonus_Id { get; set; }
 
         [Display(Name = "Mã nhân viên")]
-        public string Employee_Id { get; set; }
+        public required string Employee_Id { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         [Display(Name = "Tiền thưởng")]
         public decimal Bonus_Amount { get; set; }
 
-        [Display(Name = "Ngày thưởng")]
+        [Display(Name = "Ngày thưởng")] 
         public DateTime Bonus_Date { get; set; }
 
         [Display(Name = "Lý do thưởng")]
-        public string Reason { get; set; }
+        public string? Reason { get; set; }
 
         [ValidateNever]
         // Navigation Property

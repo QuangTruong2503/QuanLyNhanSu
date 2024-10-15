@@ -54,23 +54,18 @@ namespace QuanLyNhanSu.Controllers
                     (l.phone == model.EmployeeIDorPhone));
             if (login != null && PasswordHasher.VerifyPassword(model.Password, login.hashed_password))
             {
-                var employees = await _context.employees
-                       .FirstOrDefaultAsync(e => e.employee_id == login.employee_id);
-                //Nếu tồn tại employee trùng với thông tin đăng nhập, lấy dữ liệu
-                if (employees != null)
+
+                // Chuyển đối tượng Employee thành chuỗi JSON
+                var employeeDataJson = JsonSerializer.Serialize(login);
+                // Lưu chuỗi JSON vào cookies
+                CookieOptions cookieOptions = new()
                 {
-                    // Chuyển đối tượng Employee thành chuỗi JSON
-                    var employeeDataJson = JsonSerializer.Serialize(employees);
-                    // Lưu chuỗi JSON vào cookies
-                    CookieOptions cookieOptions = new()
-                    {
-                        HttpOnly = true,
-                        Expires = DateTimeOffset.UtcNow.AddHours(3) // Thời gian hết hạn cookie (3 giờ)
-                    };
-                    Response.Cookies.Append("EmployeeData", employeeDataJson, cookieOptions);
-                    // Redirect sau khi đăng nhập thành công
-                    return RedirectToAction("Index", "Home");
-                }
+                    HttpOnly = true,
+                    Expires = DateTimeOffset.UtcNow.AddHours(3) // Thời gian hết hạn cookie (3 giờ)
+                };
+                Response.Cookies.Append("EmployeeData", employeeDataJson, cookieOptions);
+                // Redirect sau khi đăng nhập thành công
+                return RedirectToAction("Index", "Home");
             }
             // Nếu không thành công, trả về view với thông báo lỗi
             ModelState.AddModelError("", "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");

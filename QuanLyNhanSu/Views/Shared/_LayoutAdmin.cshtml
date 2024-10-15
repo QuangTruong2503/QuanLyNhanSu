@@ -97,7 +97,7 @@
                         <a class="nav-link" href="@Url.Action("Index", "Bonus")">Thưởng Nhân Viên</a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">Reports</a>
+                        <a class="nav-link" href="@Url.Action("Index", "Deduction")">Khấu trừ lương</a>
                     </li>
                     <li class="nav-item mb-2">
                         <a class="nav-link" href="#">Settings</a>
@@ -119,6 +119,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/formatCurrency.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyNhanSu.Models
 {
@@ -10,8 +11,9 @@ namespace QuanLyNhanSu.Models
         public int Deduction_Id { get; set; }
 
         [Display(Name = "Mã nhân viên")]
-        public string Employee_Id { get; set; }
+        public required string Employee_Id { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         [Display(Name = "Tiền khấu trừ")]
         public decimal Deduction_Amount { get; set; }
 
@@ -22,6 +24,7 @@ namespace QuanLyNhanSu.Models
         public string Reason { get; set; }
 
         // Navigation Property
-        public EmployeesModel Employee { get; set; }
+        [ValidateNever]
+        public EmployeesModel? Employee { get; set; }
     }
 }

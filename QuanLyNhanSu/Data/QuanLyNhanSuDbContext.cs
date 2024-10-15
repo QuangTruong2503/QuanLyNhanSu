@@ -25,6 +25,8 @@ namespace QuanLyNhanSu.Data
 
         public DbSet<BonusModel> bonuses { get; set; }
 
+        public DbSet<DeductionModel> deductions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -88,6 +90,7 @@ namespace QuanLyNhanSu.Data
                 entity.Property(e => e.Employee_Id).HasColumnName("employee_id");
                 entity.Property(e => e.Base_Salary).HasColumnName("base_salary");
                 entity.Property(e => e.Bonus).HasColumnName("bonus");
+                entity.Property(e => e.Deduction).HasColumnName("deduction");
                 entity.Property(e => e.Total_Salary).HasColumnName("total_salary");
                 entity.Property(e => e.Salary_Date).HasColumnName("salary_date");
 

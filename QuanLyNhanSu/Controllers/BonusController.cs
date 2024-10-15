@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
+using QuanLyNhanSu.Helpers;
 using QuanLyNhanSu.Models;
 
 namespace QuanLyNhanSu.Controllers
@@ -65,22 +66,35 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: BonusController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var bonusDetail = await _context.bonuses.FirstOrDefaultAsync(b => b.Bonus_Id == id);
+            if (bonusDetail == null)
+            {
+                return NotFound();
+            }
+            return View(bonusDetail);
         }
 
         // POST: BonusController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(BonusModel model)
         {
+            if (!ModelState.IsValid) 
+            {
+                return View(model);
+            }
             try
             {
-                return RedirectToAction(nameof(Index));
+                _context.bonuses.Update(model);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = $"Cập nhật dữ liệu thành công";
+                return View(model);
             }
-            catch
+            catch(Exception ex)
             {
+                ModelState.AddModelError("", "Gặp lỗi: " + ex.Message);
                 return View();
             }
         }

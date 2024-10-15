@@ -1,4 +1,4 @@
-﻿@model IEnumerable<QuanLyNhanSu.Models.BonusModel>
+﻿@model IEnumerable<QuanLyNhanSu.Models.DeductionModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,16 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Bonus_Id)
+                @Html.DisplayNameFor(model => model.Deduction_Id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Employee_Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bonus_Amount)
+                @Html.DisplayNameFor(model => model.Deduction_Amount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bonus_Date)
+                @Html.DisplayNameFor(model => model.Deduction_Date)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Reason)
@@ -34,24 +34,24 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Bonus_Id)
+                @Html.DisplayFor(modelItem => item.Deduction_Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Employee_Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Bonus_Amount)
+                @Html.DisplayFor(modelItem => item.Deduction_Amount)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Bonus_Date)
+                @Html.DisplayFor(modelItem => item.Deduction_Date)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Bonus_Id }) |
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                <a class="text-danger" href="@Url.Action("Delete", new {id= item.Bonus_Id})">Xóa</a>
+                @Html.ActionLink("Delete", "Delete", new {  id=item.Deduction_Id })
             </td>
         </tr>
 }

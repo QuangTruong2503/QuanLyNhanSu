@@ -24,6 +24,7 @@ namespace QuanLyNhanSu.Models
         // Navigation Property
         [ValidateNever]
         public EmployeesModel Employee { get; set; }
+
         [ValidateNever]
         public AttendanceStatusModel AttendanceStatus { get; set; }
     }
