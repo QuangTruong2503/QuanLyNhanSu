@@ -20,7 +20,7 @@ class Program
     static void Main(string[] args)
     {
         var dateStart = new DateTime(2024, 09, 11, 0, 0, 0, DateTimeKind.Utc);
-        var dateLeave = DateTime.Now;
+        var dateLeave = new DateTime(2024, 10, 10, 0, 0, 0, DateTimeKind.Utc);
         var date = TinhSoNgay(dateStart, dateLeave);
         Console.WriteLine(date);
     }

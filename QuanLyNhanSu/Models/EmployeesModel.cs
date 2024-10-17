@@ -54,11 +54,11 @@ namespace QuanLyNhanSu.Models
 		[NotMapped]
 		public DateTime? expired_date { get; set; }
 
-		[Display(Name = "Vị trí")]
-		public string position { get; set; }
+		[Display(Name = "Mã vị trí")]
+		public int? position_id { get; set; }
 
         [Display(Name = "Mã phòng ban")]
-		public int department_id { get; set; }
+		public int? department_id { get; set; }
 
 		[Display(Name = "Mã Vãi trò")]
 		public int role_id { get; set; }
@@ -66,9 +66,13 @@ namespace QuanLyNhanSu.Models
 		[NotMapped]
 		[ValidateNever]
         public RoleModel Role { get; set; }
-        [NotMapped]
+		[NotMapped]
 		[ValidateNever]
-        public departmentsModel departments { get; set; }
+		public departmentsModel departments { get; set; }
+
+		[NotMapped]
+		[ValidateNever]
+		public PositionModel Positions { get; set; }
 	}
 
 }

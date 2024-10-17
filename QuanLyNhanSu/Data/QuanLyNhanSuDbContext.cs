@@ -27,6 +27,7 @@ namespace QuanLyNhanSu.Data
 
         public DbSet<DeductionModel> deductions { get; set; }
 
+        public DbSet<SalaryModel> salaries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,7 +66,7 @@ namespace QuanLyNhanSu.Data
                 entity.Property(e => e.gender).HasColumnName("gender");
                 entity.Property(e => e.hire_date).HasColumnName("hire_date").IsRequired();
                 entity.Property(e => e.expired_date).HasColumnName("expired_date");
-                entity.Property(e => e.position).HasColumnName("position");
+                entity.Property(e => e.position_id).HasColumnName("position_id");
                 entity.Property(e => e.department_id).HasColumnName("department_id");
                 entity.Property(e => e.role_id).HasColumnName("role_id").HasDefaultValue(1);
 
@@ -79,6 +80,8 @@ namespace QuanLyNhanSu.Data
                 entity.HasOne(e => e.Role)
                       .WithMany()
                       .HasForeignKey(e => e.role_id);
+                //Foreign key to PositionsTable
+                entity.HasOne(e => e.Positions).WithMany().HasForeignKey(e => e.position_id);
             });
 
             // Define the Salaries table with foreign key to Employees
@@ -92,7 +95,8 @@ namespace QuanLyNhanSu.Data
                 entity.Property(e => e.Bonus).HasColumnName("bonus");
                 entity.Property(e => e.Deduction).HasColumnName("deduction");
                 entity.Property(e => e.Total_Salary).HasColumnName("total_salary");
-                entity.Property(e => e.Salary_Date).HasColumnName("salary_date");
+                entity.Property(e => e.Begin_Date).HasColumnName("begin_date");
+                entity.Property(e => e.End_Date).HasColumnName("end_date");
 
                 // Foreign key to Employee
                 entity.HasOne(e => e.Employee)

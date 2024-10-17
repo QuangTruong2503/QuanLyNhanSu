@@ -34,6 +34,7 @@ namespace QuanLyNhanSu.Controllers
             var details = await _context.employees
                 .Include(e => e.Role)
                 .Include(e => e.departments)
+                .Include(e => e.Positions)
                 .FirstOrDefaultAsync(m => m.employee_id == id);
             if (details != null)
             {
@@ -160,21 +161,6 @@ namespace QuanLyNhanSu.Controllers
                 return RedirectToAction(nameof(Index));
             }
             catch { return RedirectToAction(nameof(Index)); }
-        }
-
-        // POST: EmployeesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // Action để lấy danh sách vị trí (position) theo department_id

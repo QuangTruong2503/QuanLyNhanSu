@@ -188,6 +188,7 @@ namespace QuanLyNhanSu.Controllers
                     Attendance_Date = today,
                     status_id = 4
                 };
+                //Thêm vào bảng Attendance
                 _context.attendances.Add(attendance);
             }
             await _context.SaveChangesAsync();

@@ -28,8 +28,11 @@ namespace QuanLyNhanSu.Models
         [Display(Name = "Tổng tiền lương")]
         public decimal? Total_Salary { get; set; }
 
-        [Display(Name = "Ngày tính lương")]
-        public DateTime? Salary_Date { get; set; }
+        [Display(Name = "Từ ngày")]
+        public DateTime Begin_Date { get; set; }
+
+        [Display(Name = "Đến ngày")]
+        public DateTime End_Date { get; set; }
 
         [ValidateNever]
         // Navigation Property
