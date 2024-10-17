@@ -62,18 +62,17 @@ namespace QuanLyNhanSu.Controllers
                     var totalBonus = await _context.bonuses
                         .Where(e => e.Employee_Id == employee.employee_id && e.Bonus_Date >= fromDate && e.Bonus_Date <= toDate)
                         .SumAsync(e => e.Bonus_Amount);
-                    //Tính tổng tiền khấu trừ
+
+                    // Lấy tổng tiền khấu trừ của nhân viên từ bảng Bonus trong khoảng fromDate đến toDate
                     var totalDeduction = await _context.deductions
                         .Where(e => e.Employee_Id == employee.employee_id && e.Deduction_Date >= fromDate && e.Deduction_Date <= toDate)
                         .SumAsync(e => e.Deduction_Amount);
 
                     //Tổng số ngày đi làm từ fromDate đến toDate
-                    var attendancesList = await _context.attendances
+                    var workingDays = await _context.attendances
                         .Where(a => a.Employee_Id == employee.employee_id && a.Attendance_Date >= fromDate 
-                                && a.Attendance_Date <= toDate)
-                        .ToListAsync();
-                    var workingDays = attendancesList.Where(a => a.status_id == 1 || a.status_id == 2).Count();
-
+                                && a.Attendance_Date <= toDate && (a.status_id == 1 || a.status_id == 2))
+                        .CountAsync();
                     //Số tiền nhận được dựa trên ngày đi làm
                     var amountByWorkingDays = baseSalary / 26 * workingDays;
                     //Tính tổng tiền thực nhận
