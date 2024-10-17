@@ -190,8 +190,27 @@ namespace QuanLyNhanSu.Controllers
                 };
                 //Thêm vào bảng Attendance
                 _context.attendances.Add(attendance);
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
+            //Lấy dữ liệu chấm công ngày hôm nay
+            var attendancesList = await _context.attendances.Where(a => a.Attendance_Date == today).ToListAsync();
+
+            foreach (var attendance in attendancesList)
+            {
+                //Nếu nhân sự đi trễ
+                if (attendance.status_id == 2)
+                {
+                    DeductionModel deduction = new DeductionModel()
+                    {
+                        Employee_Id = attendance.Employee_Id,
+                        Deduction_Amount = 50000,
+                        Deduction_Date = attendance.Attendance_Date,
+                        Reason = "Đi trễ"
+                    };
+                    _context.deductions.Add(deduction);
+                    await _context.SaveChangesAsync();
+                }
+            }
             TempData["Message"] = "Kết thúc chấm công, nhân viên chưa chấm công đã được ghi vắng!";
             return RedirectToAction("ChamCong");
         }

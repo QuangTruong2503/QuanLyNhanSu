@@ -62,50 +62,22 @@ namespace QuanLyNhanSu.Controllers
                     var totalBonus = await _context.bonuses
                         .Where(e => e.Employee_Id == employee.employee_id && e.Bonus_Date >= fromDate && e.Bonus_Date <= toDate)
                         .SumAsync(e => e.Bonus_Amount);
-
-                    //Lấy danh sách chấm công từ fromDate đến toDate
-                    var attendances = await _context.attendances
-                        .Where(a => a.Employee_Id == employee.employee_id && a.Attendance_Date >= fromDate && a.Attendance_Date <= toDate)
-                        .ToListAsync();
-
-                    //Khấu trừ lương do đi trễ
-                    decimal deductionByLate = 50000;
-                    foreach (var attendance in attendances)
-                    {
-                        if (attendance.status_id == 2)
-                        {
-                            DeductionModel deduction = new DeductionModel
-                            {
-                                Employee_Id = employee.employee_id,
-                                Deduction_Amount = deductionByLate,
-                                Deduction_Date = attendance.Attendance_Date,
-                                Reason = "Đi trễ"
-                            };
-                            //thêm dữ liệu vào bảng deductions
-                            _context.deductions.Add(deduction);
-                        }
-                        else if (attendance.status_id == 4)
-                        {
-                            DeductionModel deduction = new DeductionModel
-                            {
-                                Employee_Id = employee.employee_id,
-                                Deduction_Amount = baseSalary/totalDays,
-                                Deduction_Date = attendance.Attendance_Date,
-                                Reason = "Vắng mặt"
-                            };
-                            //thêm dữ liệu vào bảng deductions
-                            _context.deductions.Add(deduction);
-                        }
-                    }
-                    await _context.SaveChangesAsync();
-
-                    //Tính tổng tiền đi trễ
+                    //Tính tổng tiền khấu trừ
                     var totalDeduction = await _context.deductions
                         .Where(e => e.Employee_Id == employee.employee_id && e.Deduction_Date >= fromDate && e.Deduction_Date <= toDate)
                         .SumAsync(e => e.Deduction_Amount);
 
+                    //Tổng số ngày đi làm từ fromDate đến toDate
+                    var attendancesList = await _context.attendances
+                        .Where(a => a.Employee_Id == employee.employee_id && a.Attendance_Date >= fromDate 
+                                && a.Attendance_Date <= toDate)
+                        .ToListAsync();
+                    var workingDays = attendancesList.Where(a => a.status_id == 1 || a.status_id == 2).Count();
+
+                    //Số tiền nhận được dựa trên ngày đi làm
+                    var amountByWorkingDays = baseSalary / 26 * workingDays;
                     //Tính tổng tiền thực nhận
-                    var totalSalary = baseSalary + totalBonus - totalDeduction;
+                    var totalSalary = amountByWorkingDays + totalBonus - totalDeduction;
 
                     //Tạo bản ghi Salary mới
                     SalaryModel salary = new SalaryModel
@@ -118,10 +90,8 @@ namespace QuanLyNhanSu.Controllers
                         Begin_Date = fromDate,
                         End_Date = toDate
                     };
-
                     //Thêm vào bảng Salary
                     _context.salaries.Add(salary);
-
                 }
                 //Lưu thay đổi vào database
                 await _context.SaveChangesAsync();
