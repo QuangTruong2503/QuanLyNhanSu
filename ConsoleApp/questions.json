@@ -1,0 +1,17 @@
+[
+  {
+    "question_text": "Câu 1: Đâu là thủ đô của Việt Nam? ",
+    "answers": [ "A. Hà Nội ", "B. TP. Hồ Chí Minh ", "C. Đà Nẵng ", "D. Huế " ],
+    "correct_answer": "A"
+  },
+  {
+    "question_text": "Câu 2: Con số Pi có giá trị gần đúng là? ",
+    "answers": [ "A. 3.14 ", "B. 3.15 ", "C. 3.16 ", "D. 3.17 " ],
+    "correct_answer": "A"
+  },
+  {
+    "question_text": "Câu 3: Con số Pi có giá trị gần đúng là? ",
+    "answers": [ "A. 3.14 ", "B. 3.15 ", "C. 3.16 ", "D. 3.17 " ],
+    "correct_answer": "A"
+  }
+]

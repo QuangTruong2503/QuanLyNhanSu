@@ -1,0 +1,53 @@
+﻿@model IEnumerable<QuanLyNhanSu.ViewModels.PositionViewModel>
+
+@{
+    ViewData["Title"] = "ChucVu";
+}
+
+<h1>Danh Sách Chức Vụ</h1>
+
+<p>
+    <a asp-action="ThemMoiChucVu">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.position_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.position_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.base_salary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.department_name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.position_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.position_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.base_salary)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.department_name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
