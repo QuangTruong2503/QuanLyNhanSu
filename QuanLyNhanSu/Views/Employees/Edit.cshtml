@@ -97,6 +97,7 @@
             url: '@Url.Action("GetDepartments", "Employees")',
             type: 'GET',
             success: function (response) {
+                var dropdown = $('#departmentSelect')
                 // Reset the position dropdown
                 $('#departmentSelect').empty();
                 $('#departmentSelect').append('<option value="">Chọn phòng ban</option>');
@@ -105,6 +106,8 @@
                 $.each(response, function (index, value) {
                     $('#departmentSelect').append('<option value="' + value.value + '">' + value.text + '</option>');
                 });
+                dropdown.val(@ViewData["DepartmentID"])
+                
             },
             error: function () {
                 alert('Lỗi khi tải dữ liệu vị trí.');
@@ -116,6 +119,7 @@
             url: '@Url.Action("GetRoles", "Employees")',
             type: 'GET',
             success: function (response) {
+                var dropdown = $('#roleSelect');
                 // Reset the position dropdown
                 $('#roleSelect').empty();
                 $('#roleSelect').append('<option value="">Chọn vai trò</option>');
@@ -124,6 +128,7 @@
                 $.each(response, function (index, value) {
                     $('#roleSelect').append('<option value="' + value.value + '">' + value.text + '</option>');
                 });
+                dropdown.val(@ViewData["RoleID"]);
             },
             error: function () {
                 alert('Lỗi khi tải dữ liệu vị trí.');
@@ -133,13 +138,17 @@
 
     function loadPositions() {
         var departmentId = $('#departmentSelect').val();
-
+        if(departmentId == null)
+        {
+            departmentId = @ViewData["DepartmentID"];
+        }
         if (departmentId) {
             $.ajax({
                 url: '@Url.Action("GetPositionsByDepartmentId", "Employees")',
                 type: 'GET',
                 data: { departmentId: departmentId },
                 success: function (response) {
+                    var dropdown = $('#positionSelect');
                     // Reset the position dropdown
                     $('#positionSelect').empty();
                     $('#positionSelect').append('<option value="">Chọn Vị trí</option>');
@@ -148,6 +157,7 @@
                     $.each(response, function (index, value) {
                         $('#positionSelect').append('<option value="' + value.value + '">' + value.text + '</option>');
                     });
+                    dropdown.val(@ViewData["PositionID"]);
                 },
                 error: function () {
                     alert('Lỗi khi tải dữ liệu vị trí.');

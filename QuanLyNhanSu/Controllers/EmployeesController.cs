@@ -94,7 +94,9 @@ namespace QuanLyNhanSu.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             var detail = await _context.employees.FindAsync(id);
-            
+            ViewData["DepartmentID"] = detail.department_id;
+            ViewData["PositionID"] = detail.position_id;
+            ViewData["RoleID"] = detail.role_id;
             if (detail == null)
             {
                 return NotFound();
