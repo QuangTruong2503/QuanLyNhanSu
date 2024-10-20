@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
+using QuanLyNhanSu.Models;
 
 namespace QuanLyNhanSu.Controllers
 {
@@ -34,35 +35,51 @@ namespace QuanLyNhanSu.Controllers
         // POST: departmentsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(departmentsModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             try
             {
+                _context.departments.Add(model);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Có lỗi xảy ra: " + ex.Message);
+                return View(model);
             }
         }
 
         // GET: departmentsController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var details = await _context.departments.FindAsync(id);
+            return View(details);
         }
 
         // POST: departmentsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, departmentsModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             try
             {
-                return RedirectToAction(nameof(Index));
+                _context.Update(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Cập nhật thông tin thành công";
+                return RedirectToAction(nameof(Edit));
             }
-            catch
+            catch(Exception ex)
             {
+                ModelState.AddModelError("", "Có lỗi xảy ra: " + ex.Message);
                 return View();
             }
         }
@@ -76,15 +93,24 @@ namespace QuanLyNhanSu.Controllers
         // POST: departmentsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
+                var model = await _context.departments.FindAsync(id);
+                if (model == null)
+                {
+                    TempData["Error"] = $"Không tìm thấy phòng ban với ID = {id}";
+                    return RedirectToAction(nameof(Index));
+                }
+                _context.departments.Remove(model);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = "Có lỗi xảy ra: " + ex.Message;
+                return RedirectToAction(nameof(Index));
             }
         }
     }

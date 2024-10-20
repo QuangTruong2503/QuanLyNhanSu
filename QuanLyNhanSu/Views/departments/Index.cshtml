@@ -9,6 +9,10 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+@if(TempData["ErrorMessage"] != null)
+{
+    <p class="alert alert-danger">@TempData["ErrorMessage"]</p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -31,11 +35,66 @@
                 @Html.DisplayFor(modelItem => item.department_name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tùy chỉnh
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new {id = item.department_id})">Chi tiết</a></li>
+                        <li>
+                            <button class="dropdown-item text-danger" onclick="openDeleteModal(@item.department_id)">Xóa</button>
+                        </li>
+                    </ul>
+                </div>
             </td>
         </tr>
 }
     </tbody>
 </table>
+<!-- Modal xác nhận xoá -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xoá danh mục này? Sau khi xóa sẽ xóa các nhân sự ở trong phòng ban. Hãy di chuyển nhân sự sang phòng ban khác.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var deleteCategoryId;
+
+    function openDeleteModal(id) {
+        deleteCategoryId = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+        deleteCategory(deleteCategoryId);
+    });
+
+    function deleteCategory(id) {
+        // Gửi yêu cầu POST để xoá
+        $.ajax({
+            url: '/departments/Delete/' + id,
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Để hỗ trợ AntiForgeryToken
+            },
+            success: function () {
+                location.reload(); // Làm mới trang sau khi xoá
+            },
+            error: function () {
+                alert('Xoá không thành công!');
+            }
+        });
+    }
+</script>
