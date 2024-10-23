@@ -168,7 +168,7 @@ namespace QuanLyNhanSu.Data
                 entity.HasKey(e => e.Deduction_Id);
                 entity.Property(e => e.Deduction_Id).HasColumnName("deduction_id");
                 entity.Property(e => e.Employee_Id).HasColumnName("employee_id").IsRequired();
-                entity.Property(e => e.Deduction_Amount).HasColumnName("deduction-amount").IsRequired();
+                entity.Property(e => e.Deduction_Amount).HasColumnName("deduction_amount").IsRequired();
                 entity.Property(e => e.Deduction_Date).HasColumnName("deduction_date").IsRequired();
                 entity.Property(e => e.Reason).HasColumnName("reason").IsRequired();
 

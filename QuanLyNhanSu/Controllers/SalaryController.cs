@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
+using QuanLyNhanSu.Helpers;
 using QuanLyNhanSu.Models;
 
 namespace QuanLyNhanSu.Controllers
@@ -106,22 +107,101 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: SalaryContronller/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> CapNhatLuongNhanSu(int id)
         {
-            return View();
+            var salaryByID = await _context.salaries.FirstOrDefaultAsync(s => s.Salary_Id == id);
+            if (salaryByID == null)
+            {
+                ModelState.AddModelError("", "Không tìm thấy lương của nhân viên này");
+                return View();
+            }
+            //Lấy dữ liệu lương cơ bản của nhân viên
+            var baseSalaryQuery = from salary in _context.salaries
+                                  join emp in _context.employees on salary.Employee_Id equals emp.employee_id
+                                  join pos in _context.positions on emp.position_id equals pos.position_id
+                                  where emp.employee_id == salaryByID.Employee_Id
+                                  select pos.base_salary;
+            var baseSalary = await baseSalaryQuery.FirstOrDefaultAsync();
+            //Lấy dữ liệu thưởng của nhân viên dựa theo ngày bắt đầu tính lương và kết thúc tính lương
+            var bonus = await _context.bonuses
+                .Where(b => b.Employee_Id == salaryByID.Employee_Id && b.Bonus_Date >= salaryByID.Begin_Date 
+                && b.Bonus_Date <= salaryByID.End_Date)
+                .ToListAsync();
+
+            //Lấy dữ liệu phạt của nhân viên dựa theo ngày bắt đầu tính lương và kết thúc tính lương
+            var deduction = await _context.deductions
+                .Where(d => d.Employee_Id == salaryByID.Employee_Id && d.Deduction_Date >= salaryByID.Begin_Date
+                && d.Deduction_Date <= salaryByID.End_Date)
+                .ToListAsync();
+            //Tính tổng số ngày đi làm theo nhân viên từ ngày bắt đầu tính lương đến ngày kết thúc tính lương
+            var workingDays = await _context.attendances.Where(a => a.Employee_Id == salaryByID.Employee_Id
+                && a.Attendance_Date >= salaryByID.Begin_Date && a.Attendance_Date <= salaryByID.End_Date
+                && (a.status_id == 1 || a.status_id == 2))
+                .CountAsync();
+            //Số tiền nhận được dựa trên ngày đi làm
+            var amountByWorkingDays = baseSalary / 26 * workingDays;
+            //Truyền dữ liệu vào ViewData
+            ViewData["Bonuses"] = bonus;
+            ViewData["Deductions"] = deduction;
+            ViewData["WorkingDays"] = workingDays;
+            ViewData["AmountWorkingDays"] = FormatHelpers.FormatCurrencyVND(amountByWorkingDays);
+            return View(salaryByID);
         }
 
         // POST: SalaryContronller/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> CapNhatLuongNhanSu(int id, IFormCollection collection)
         {
+            var salaryByID = await _context.salaries.FirstOrDefaultAsync(s => s.Salary_Id == id);
+            if (salaryByID == null)
+            {
+                ModelState.AddModelError("", "Không tìm thấy lương của nhân viên này");
+                return View();
+            }
             try
             {
-                return RedirectToAction(nameof(Index));
+                //Lấy tổng tiền thưởng theo nhân viên từ ngày bắt đầu tính lương đến ngày kết thúc tính lương
+                var totalBonuses = await _context.bonuses
+                    .Where(b => b.Employee_Id == salaryByID.Employee_Id && b.Bonus_Date >= salaryByID.Begin_Date 
+                    && b.Bonus_Date <= salaryByID.End_Date)
+                    .SumAsync(b => b.Bonus_Amount);
+                //Lấy tổng tiền phạt theo nhân viên từ ngày bắt đầu tính lương đến ngày kết thúc tính lương
+                var totalDeductions = await _context.deductions
+                    .Where(d => d.Employee_Id == salaryByID.Employee_Id 
+                    && d.Deduction_Date >= salaryByID.Begin_Date && d.Deduction_Date <= salaryByID.End_Date)
+                    .SumAsync(d => d.Deduction_Amount);
+                //Tính tổng số ngày đi làm theo nhân viên từ ngày bắt đầu tính lương đến ngày kết thúc tính lương
+                var workingDays = await _context.attendances.Where(a => a.Employee_Id == salaryByID.Employee_Id
+                    && a.Attendance_Date >= salaryByID.Begin_Date && a.Attendance_Date <= salaryByID.End_Date
+                    && (a.status_id == 1 || a.status_id == 2))
+                    .CountAsync();
+                //Lấy dữ liệu lương cơ bản của nhân viên
+                var baseSalaryQuery = from salary in _context.salaries
+                                      join emp in _context.employees on salary.Employee_Id equals emp.employee_id
+                                      join pos in _context.positions on emp.position_id equals pos.position_id
+                                      where emp.employee_id == salaryByID.Employee_Id
+                                      select pos.base_salary;
+                var baseSalary = await baseSalaryQuery.FirstOrDefaultAsync();
+                //Số tiền nhận được dựa trên ngày đi làm
+                var amountByWorkingDays = baseSalary / 26 * workingDays;
+                //Tính tổng tiền thực nhận
+                var totalSalary = amountByWorkingDays + totalBonuses - totalDeductions;
+
+                //Gán dữ liệu để cập nhật
+                salaryByID.Base_Salary = baseSalary;
+                salaryByID.Bonus = totalBonuses;
+                salaryByID.Deduction = totalDeductions;
+                salaryByID.Total_Salary = totalSalary;
+
+                _context.salaries.Update(salaryByID);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Cập nhật dữ liệu lương với Mã số lương: {salaryByID.Salary_Id} thành công!";
+                return RedirectToAction(nameof(CapNhatLuongNhanSu));
             }
-            catch
+            catch(Exception ex)
             {
+                ModelState.AddModelError("", "Có lỗi xảy ra: " + ex.Message);
                 return View();
             }
         }
