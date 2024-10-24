@@ -86,46 +86,7 @@ namespace QuanLyNhanSu.Controllers
         {
             return View();
         }
-        //Đổi mật khẩu
-        [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            if(model.NewPassword != model.ConfirmPassword)
-            {
-                ModelState.AddModelError("", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
-                return View(model);
-            }
-            if (Request.Cookies.ContainsKey("EmployeeData"))
-            {
-                var employeeDataJson = Request.Cookies["EmployeeData"];
-                var employee = new EmployeesModel();
-                if (employeeDataJson != null)
-                {
-                    // Chuyển đổi chuỗi JSON thành đối tượng Employee
-                    employee = JsonSerializer.Deserialize<EmployeesModel>(employeeDataJson);
-                    var employeeID = employee.employee_id;
-                    var login = await _context.employees.FirstOrDefaultAsync(l => l.employee_id == employeeID);
-                    if (login == null)
-                    {
-                        ModelState.AddModelError("", "Không tìm thấy thông tin nhân viên.");
-                        return View(model);
-                    }
-                    if(PasswordHasher.VerifyPassword(model.CurrentPassword, login.hashed_password))
-                    {
-                        login.hashed_password = PasswordHasher.HashPassword(model.NewPassword);
-                        _context.employees.Update(login);
-                        await _context.SaveChangesAsync();
-                        TempData["ThongBao"] = "Đổi mật khẩu thành công";
-                        return View(model);
-                    }
-                }
-            }
-            return RedirectToAction("Index", "Home");
-        }
+        
         // GET: LoginController/Edit/5
         public ActionResult Edit(int id)
         {
