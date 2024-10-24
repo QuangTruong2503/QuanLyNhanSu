@@ -6,6 +6,7 @@
     {
         // Chuyển đổi chuỗi JSON thành đối tượng Employee
         employeeConverted = JsonSerializer.Deserialize<EmployeesModel>(employeeData);
+        var roleID = employeeConverted.role_id;
     }
 
 }
@@ -119,6 +120,13 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/formatCurrency.js"></script>
+    <script type="text/javascript">
+        var roleID = '@employeeConverted.role_id'; // Lấy role_id từ Model
+        if (roleID != 2) {
+            window.location.href = '/Home/Index'; // Chuyển hướng đến trang khác
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

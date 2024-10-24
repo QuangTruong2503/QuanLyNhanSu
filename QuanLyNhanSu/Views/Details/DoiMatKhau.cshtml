@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Đổi Mật Khẩu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -9,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="ChangePassword">
+        <form asp-action="DoiMatKhau">
             <div class="form-group">
                 <label asp-for="CurrentPassword"  class="control-label">Mật khẩu cũ</label>
                 <input asp-for="CurrentPassword" class="form-control" type="password"/>
