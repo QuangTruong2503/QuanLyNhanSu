@@ -73,7 +73,9 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new {id=item.employee_id})">Chỉnh sửa</a></li>
                             <li><a class="dropdown-item text-warning" href="@Url.Action("Details", new {id=item.employee_id})">Chi tiết</a></li>
-                            <li><a class="dropdown-item text-danger" href="@Url.Action("Delete", new {id=item.employee_id})">Xóa</a></li>
+                            <li>
+                                <button class="dropdown-item text-danger" onclick="openDeleteModal('@item.employee_id')">Xóa</button>
+                            </li>
                             <li><a class="dropdown-item text-secondary" href="@Url.Action("ResetPassword", new {id=item.employee_id})">Đặt lại mật khẩu</a></li>
                         </ul>
                     </div>
@@ -82,3 +84,50 @@
 }
     </tbody>
 </table>
+<!-- Modal xác nhận xoá -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xoá danh mục này? Sau khi xóa các thông tin liên quan đến nhân sự này sẽ bị mất.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var employeeID;
+
+    function openDeleteModal(id) {
+        employeeID = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+        deleteCategory(employeeID);
+    });
+
+    function deleteCategory(id) {
+        // Gửi yêu cầu POST để xoá
+        $.ajax({
+            url: '/Employees/Delete/' + id,
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Để hỗ trợ AntiForgeryToken
+            },
+            success: function () {
+                location.reload(); // Làm mới trang sau khi xoá
+            },
+            error: function () {
+                alert('Xoá không thành công!');
+            }
+        });
+    }
+</script>

@@ -52,7 +52,6 @@ namespace QuanLyNhanSu.Controllers
             }
             try
             {
-                model.Bonus_Date = DateTime.Now;
                 _context.bonuses.Add(model);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"Thêm dữ liệu thưởng thành công, Mã số NV: {model.Employee_Id}. Lý do: {model.Reason}";

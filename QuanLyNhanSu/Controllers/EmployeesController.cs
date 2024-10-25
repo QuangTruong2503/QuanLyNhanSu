@@ -145,7 +145,7 @@ namespace QuanLyNhanSu.Controllers
             }
         }
 
-        // GET: EmployeesController/Delete/5
+        [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
             try

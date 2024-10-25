@@ -7,8 +7,15 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Tạo mới</a>
 </p>
+<form asp-action="Index" method="get" class="col-md-4">
+    <div class="form-group row flex-nowrap gap-2 mx-0">
+        <input type="search" id="searchID" name="searchID" class="form-control col-md-8" placeholder="Tìm mã nhân sự" />
+        <button type="submit" class="btn btn-primary col-md-3">Xem</button>
+    </div>
+    
+</form>
 <table class="table">
     <thead>
         <tr>

@@ -23,6 +23,11 @@
                 <span asp-validation-for="Bonus_Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Bonus_Date" class="control-label"></label>
+                <input asp-for="Bonus_Date" type="date" class="form-control" required />
+                <span asp-validation-for="Bonus_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Reason" class="control-label"></label>
                 <textarea asp-for="Reason" class="form-control" ></textarea>
                 <span asp-validation-for="Reason" class="text-danger"></span>

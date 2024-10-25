@@ -14,9 +14,15 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: DeductionController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchID = null)
         {
-            var deductions = await _context.deductions.ToListAsync();
+            var deductions = new List<DeductionModel>();
+            if (searchID != null)
+            {
+                deductions = await _context.deductions.Where(d => d.Employee_Id.Contains(searchID)).ToListAsync();
+                return View(deductions);
+            }
+            deductions = await _context.deductions.ToListAsync();
             return View(deductions);
         }
 
@@ -43,7 +49,6 @@ namespace QuanLyNhanSu.Controllers
             }
             try
             {
-                model.Deduction_Date = DateTime.Now;
                 _context.deductions.Add(model);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"Thêm dữ liệu khấu trừ thành công! NV: {model.Employee_Id}, Lý do: {model.Reason}";
