@@ -40,30 +40,38 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction_Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new {  id=item.Deduction_Id })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deduction_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deduction_Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deduction_Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reason)
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tùy chỉnh
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new { id = item.Deduction_Id })">Chỉnh sửa</a></li>
+                            <li><a class="dropdown-item text-warning" href="@Url.Action("Details", new { id = item.Deduction_Id })">Chi tiết</a></li>
+                            <li><button class="dropdown-item text-danger" onclick="openDeleteModal(@item.Deduction_Id)">Xóa</button></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

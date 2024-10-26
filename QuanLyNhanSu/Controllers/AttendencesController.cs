@@ -216,13 +216,14 @@ namespace QuanLyNhanSu.Controllers
             {
                 return NotFound();
             }
+            ViewData["AttendanceStatus"] = attendance.status_id;
             return View(attendance);
         }
 
         // POST: AttendancesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AttendanceModel model)
+        public async Task<IActionResult> Edit(AttendanceModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -233,10 +234,11 @@ namespace QuanLyNhanSu.Controllers
                 _context.attendances.Update(model);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Cập nhật thành công!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Edit));
             }
-            catch
+            catch(Exception ex)
             {
+                ModelState.AddModelError("", "Lỗi: " + ex.Message);
                 return View();
             }
         }

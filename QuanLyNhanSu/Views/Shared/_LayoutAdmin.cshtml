@@ -87,21 +87,54 @@
                     <li class="nav-item mb-2">
                         <a class="nav-link" href="@Url.Action("Index", "Employees")">Nhân sự</a>
                     </li>
+
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="@Url.Action("ChamCong", "Attendances")">Chấm Công</a>
+                        <div class="accordion accordion-flush" id="accordionChamCong">
+                            <div class="accordion-item cursor-pointer">
+                                <div class="accordion-header">
+                                    <a class="accordion-button collapsed"  data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                        Chấm Công
+                                    </a>
+                                </div>
+                                <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
+                                    <div class="accordion-body">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item mb-2">
+                                                <a class="nav-link" href="@Url.Action("ChamCong", "Attendances")">Chấm Công</a>
+                                            </li>
+                                            <li class="nav-item mb-2">
+                                                <a class="nav-link" href="@Url.Action("DanhSach", "Attendances")">Danh Sách</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item cursor-pointer">
+                                <div class="accordion-header">
+                                    <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                        Lương Thưởng
+                                    </a>
+                                </div>
+                                <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
+                                    <div class="accordion-body">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item mb-2">
+                                                <a class="nav-link" href="@Url.Action("Index", "Bonus")">Tiền Thưởng</a>
+                                            </li>
+                                            <li class="nav-item mb-2">
+                                                <a class="nav-link" href="@Url.Action("Index", "Deduction")">Tiền Khấu Trừ</a>
+                                            </li>
+                                            <li class="nav-item mb-2">
+                                                <a class="nav-link" href="@Url.Action("Index", "Salary")">Tính Lương</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="@Url.Action("DanhSach", "Attendances")">Danh Sách Chấm Công</a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="@Url.Action("Index", "Bonus")">Thưởng Nhân Viên</a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="@Url.Action("Index", "Deduction")">Khấu Trừ Lương</a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="@Url.Action("Index", "Salary")">Tính Lương Nhân Viên</a>
-                    </li>
+                    
                 </ul>
             </div>
 

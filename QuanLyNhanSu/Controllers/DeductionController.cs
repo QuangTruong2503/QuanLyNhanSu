@@ -95,6 +95,7 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: DeductionController/Delete/5
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var deduction = await _context.deductions.FindAsync(id);
@@ -106,19 +107,5 @@ namespace QuanLyNhanSu.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: DeductionController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

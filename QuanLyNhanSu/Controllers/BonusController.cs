@@ -15,9 +15,15 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: BonusController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string? searchID = null)
         {
-            var listBonus = await _context.bonuses.ToListAsync();
+            var listBonus = new List<BonusModel>();
+            if (searchID != null)
+            {
+                listBonus = await _context.bonuses.Where(b => b.Employee_Id == searchID).ToListAsync();
+                return View(listBonus);
+            }
+            listBonus = await _context.bonuses.ToListAsync();
             return View(listBonus);
         }
 

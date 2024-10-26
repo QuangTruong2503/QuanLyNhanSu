@@ -60,9 +60,15 @@
                 @Html.DisplayFor(modelItem => item.AttendanceStatus.status_name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tùy chỉnh
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new { id = item.Attendance_Id })">Chỉnh sửa</a></li>
+                        <li><button class="dropdown-item text-danger" onclick="openDeleteModal(@item.Attendance_Id)">Xóa</button></li>
+                    </ul>
+                </div>
             </td>
         </tr>
 }
