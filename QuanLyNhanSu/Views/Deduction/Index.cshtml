@@ -4,18 +4,20 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Khấu Trừ Lương</h1>
 
 <p>
-    <a asp-action="Create">Tạo mới</a>
+    <a asp-action="Create" class="btn btn-primary">Thêm Khấu Trừ Lương</a>
 </p>
+
+<!-- Form tìm kiếm -->
 <form asp-action="Index" method="get" class="col-md-4">
     <div class="form-group row flex-nowrap gap-2 mx-0">
         <input type="search" id="searchID" name="searchID" class="form-control col-md-8" placeholder="Tìm mã nhân sự" />
         <button type="submit" class="btn btn-primary col-md-3">Xem</button>
     </div>
-    
 </form>
+
 <table class="table">
     <thead>
         <tr>
@@ -38,29 +40,86 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction_Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new {  id=item.Deduction_Id })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deduction_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deduction_Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deduction_Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reason)
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tùy chỉnh
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new { id = item.Deduction_Id })">Chỉnh sửa</a></li>
+                            <li><a class="dropdown-item text-warning" href="@Url.Action("Details", new { id = item.Deduction_Id })">Chi tiết</a></li>
+                            <li><button class="dropdown-item text-danger" onclick="openDeleteModal('@item.Deduction_Id')">Xóa</button></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<!-- Modal xác nhận xoá -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xoá khoản khấu trừ này? Sau khi xoá, thông tin này sẽ bị mất.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var deductionID;
+
+    function openDeleteModal(id) {
+        deductionID = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+        deleteDeduction(deductionID);
+    });
+
+    function deleteDeduction(id) {
+        $.ajax({
+            url: '/Deduction/Delete/' + id,
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Hỗ trợ AntiForgeryToken
+            },
+            success: function () {
+                $('#deleteModal').modal('hide'); // Ẩn modal sau khi xoá
+                location.reload(); // Làm mới trang sau khi xoá thành công
+            },
+            error: function () {
+                alert('Xoá không thành công!'); // Thông báo lỗi nếu có
+            }
+        });
+    }
+</script>
