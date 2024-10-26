@@ -4,15 +4,18 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Phòng Ban</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Thêm Phòng Ban</a>
 </p>
-@if(TempData["ErrorMessage"] != null)
+
+
+@if (TempData["ErrorMessage"] != null)
 {
     <p class="alert alert-danger">@TempData["ErrorMessage"]</p>
 }
+
 <table class="table">
     <thead>
         <tr>
@@ -26,31 +29,34 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.department_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.department_name)
-            </td>
-            <td>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        Tùy chỉnh
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new {id = item.department_id})">Chi tiết</a></li>
-                        <li>
-                            <button class="dropdown-item text-danger" onclick="openDeleteModal(@item.department_id)">Xóa</button>
-                        </li>
-                    </ul>
-                </div>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.department_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.department_name)
+                </td>
+                <td>
+                    <!-- Dropdown menu -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tùy chỉnh
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new { id = item.department_id })">Chi tiết</a></li>
+                            <li>
+                                <button class="dropdown-item text-danger" onclick="openDeleteModal(@item.department_id)">Xóa</button>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
 <!-- Modal xác nhận xoá -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -69,6 +75,7 @@
         </div>
     </div>
 </div>
+
 <script>
     var deleteCategoryId;
 
@@ -90,10 +97,11 @@
                 __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Để hỗ trợ AntiForgeryToken
             },
             success: function () {
-                location.reload(); // Làm mới trang sau khi xoá
+                $('#deleteModal').modal('hide'); // Ẩn modal sau khi xoá
+                location.reload(); // Làm mới trang sau khi xoá thành công
             },
             error: function () {
-                alert('Xoá không thành công!');
+                alert('Xoá không thành công!'); // Thông báo lỗi nếu có
             }
         });
     }
