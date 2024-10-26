@@ -62,22 +62,34 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: DeductionController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var deduction = await _context.deductions.FindAsync(id);
+            if (deduction == null) {
+                return NotFound();
+            }
+            return View(deduction);
         }
 
         // POST: DeductionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, DeductionModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             try
             {
-                return RedirectToAction(nameof(Index));
+                _context.deductions.Update(model);
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = $"Cập nhật dữ liệu thành công! NV: {model.Employee_Id}, Lý do: {model.Reason}";
+                return RedirectToAction(nameof(Edit));
             }
-            catch
+            catch (Exception ex)
             {
+                ModelState.AddModelError("", "Gặp lỗi: " + ex.Message);
                 return View();
             }
         }

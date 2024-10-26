@@ -9,11 +9,11 @@
 <!-- Form chọn ngày -->
 <div class="row">
     <form asp-action="DanhSach" method="get" class="col-md-6">
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-6">
             <label for="dateSelect">Chọn ngày:</label>
             <input type="date" id="dateSelect" name="selectedDate" value="@ViewBag.SelectedDate" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary">Xem</button>
+        <button type="submit" class="btn btn-primary my-2">Xem</button>
     </form>
     <div class="col-md-4 form-group">
         <label class="control-label" for="statusID">Chọn trạng thái</label>

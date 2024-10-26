@@ -38,12 +38,6 @@ namespace QuanLyNhanSu.Controllers
             return View(attendancesList);
         }
 
-        // GET: AttendancesController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
         // GET: AttendancesController/Create
         public ActionResult ChamCong()
         {
@@ -215,18 +209,30 @@ namespace QuanLyNhanSu.Controllers
             return RedirectToAction("ChamCong");
         }
         // GET: AttendancesController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var attendance = await _context.attendances.FindAsync(id);
+            if (attendance == null)
+            {
+                return NotFound();
+            }
+            return View(attendance);
         }
 
         // POST: AttendancesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, AttendanceModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             try
             {
+                _context.attendances.Update(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Cập nhật thành công!";
                 return RedirectToAction(nameof(Index));
             }
             catch
