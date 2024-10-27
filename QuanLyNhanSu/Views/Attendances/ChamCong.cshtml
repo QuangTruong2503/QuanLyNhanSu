@@ -25,18 +25,6 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-        // Lấy verifyCode từ ViewBag và truyền vào URL
-        const verifyCode = "@ViewBag.VerifyCode";  // Tham số verifyCode từ ViewBag
-        const url = `https://quangtruongstore.netlify.app/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
-
-        // Khởi tạo mã QR với URL trên
-        new QRCode(document.getElementById("qrcode"), {
-            text: url,
-            width: 200,
-            height: 200,
-        });
-    </script>
-<script>
     // Chuyển đổi ViewBag.Expiration thành đối tượng Date
     let expirationTimeString ="@expirationConvert";
     expirationTimeString = expirationTimeString.replace(' SA', ' AM').replace(' CH', ' PM');
@@ -90,5 +78,14 @@
         })
         .catch(error => console.error('Lỗi tạo mã mới:', error));
     }
+    // Lấy verifyCode từ ViewBag và truyền vào URL
+        const verifyCode = "@ViewBag.VerifyCode";  // Tham số verifyCode từ ViewBag
+        const url = `https://quanlynhansu-latest.onrender.com/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
 
+        // Khởi tạo mã QR với URL trên
+        new QRCode(document.getElementById("qrcode"), {
+            text: url,
+            width: 200,
+            height: 200,
+        });
 </script>

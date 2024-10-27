@@ -21,10 +21,10 @@ namespace QuanLyNhanSu.Controllers
         {
             _context = context;
         }
-
+        TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         public async Task<IActionResult> DanhSach()
         {
-            DateTime selectedDateTime = DateTime.Now;
+            DateTime selectedDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
             ViewData["AttendanceDate"] = selectedDateTime.ToString("dd-MM-yyyy");
             var employees = await _context.employees.Where(e => e.employee_id != "admin" && e.expired_date == null).ToListAsync();
             var attendances = await _context.attendances.Where(a => a.Attendance_Date.Date == selectedDateTime.Date).ToListAsync();
@@ -51,8 +51,8 @@ namespace QuanLyNhanSu.Controllers
             DateTime selectedDateTime;
             if (string.IsNullOrEmpty(attendanceDate))
             {
-                selectedDateTime = DateTime.Today;
-               ViewData["AttendanceDate"] = DateTime.Today.ToString("dd-MM-yyyy");
+                selectedDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
+               ViewData["AttendanceDate"] = selectedDateTime.ToString("dd-MM-yyyy");
             }
             else
             {
@@ -162,7 +162,7 @@ namespace QuanLyNhanSu.Controllers
 
         public ActionResult ChamCong()
         {
-            DateTime today = DateTime.Today;
+            DateTime today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
             ViewBag.ToDay = today.ToString("dd-MM-yyyy");
             return View();
         }
@@ -171,7 +171,7 @@ namespace QuanLyNhanSu.Controllers
         [HttpPost]
         public ActionResult BatDauChamCong()
         {
-            DateTime today = DateTime.Today;
+            DateTime today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
             var token = GenerateAttendanceToken();
             ViewBag.ToDay = today.ToString("dd-MM-yyyy");
             ViewBag.VerifyCode = token.Result.Verify_Code;
@@ -182,10 +182,11 @@ namespace QuanLyNhanSu.Controllers
         private async Task<TokenAttendanceModel> GenerateAttendanceToken()
         {
             var codeOTP = GetVerifyRandom.GenerateOTP();
+            DateTime dateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
             var token = new TokenAttendanceModel
             {
                 Verify_Code = codeOTP,
-                Expiration = DateTime.Now.AddMinutes(2) //Hạn mã OTP là 2phut
+                Expiration = dateTime.AddMinutes(2) //Hạn mã OTP là 2phut
             };
             //Làm sạch token cũ
             _context.token_attendance.RemoveRange(_context.token_attendance);
@@ -208,9 +209,15 @@ namespace QuanLyNhanSu.Controllers
         }
 
 
+        [HttpGet]
+        public ActionResult ChamCongQRCode(string verifyCode)
+        {
+            ViewBag.VerifyCode = verifyCode;
+            return View();
+        }
 
         //Xác nhận chấm công của nhân viên khi nhập mã OTP
-        [HttpPost]
+        [HttpPost, HttpGet]
         public async Task<IActionResult> XacNhanChamCong(string verifyCode)
         {
             var employee = KiemTraDangNhap();
