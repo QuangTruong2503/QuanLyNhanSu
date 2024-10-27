@@ -56,3 +56,7 @@
 .cursor-pointer{
     cursor: pointer;
 }
+
+#qrcode img{
+    margin: 0 auto;
+}

@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container h-75">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px; margin: 200px auto">
+        <h4 class="text-center mb-4">Nhập mã chấm công</h4>
+        <form id="attendanceForm" method="post" asp-action="XacNhanChamCong">
+            <div class="form-group position-relative m-1">
+                <label for="attendanceCode">Mã Xác Nhận</label>
+                <input type="text" class="form-control" name="verifyCode" id="attendanceCode" placeholder="Nhập mã xác nhận" required />
+            </div>
+            <div class="form-group">
+                @if (TempData["Message"] != null)
+                {
+                    <p class="text-success">@TempData["Message"]</p>
+                }
+                @if (TempData["MessageError"] != null)
+                {
+                    <p class="text-danger">@TempData["MessageError"]</p>
+                }
+            </div>
+            <div class="text-danger" asp-validation-summary="All"></div>
+            <div class="form-group row justify-content-center">
+                <button type="submit" class="btn btn-primary btn-block col-md-8">Xác nhận</button>
+            </div>
+        </form>
+    </div>

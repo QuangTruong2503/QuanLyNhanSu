@@ -1,75 +1,94 @@
 ﻿@{
     string expirationConvert = @ViewBag.Expiration;
 }
-        <h3>Chấm Công Ngày @ViewBag.ToDay</h3>
-        @if(ViewBag.VerifyCode != null)
-        {
-            <h5>Mã số: <span class="text-primary" id="verifyCode">@ViewBag.VerifyCode</span></h5>
-            <h5>Thời gian còn lại: <span class="text-primary" id="countdown"></span></h5>
-            <form method="post" asp-action="KetThucChamCong">
-                <button type="submit" class="btn btn-danger">Kết thúc</button>
-            </form>
-        }
-        @if (ViewBag.VerifyCode == null)
-        {
-            <form method="post" asp-action="BatDauChamCong">
-                <button type="submit" class="btn btn-primary">Bắt đầu</button>
-            </form>
-        }
+<div class="container my-5 p-4 bg-light shadow rounded">
+    <h3 class="text-center mb-4">Chấm Công Ngày @ViewBag.ToDay</h3>
 
-        <script>
-            // Chuyển đổi ViewBag.Expiration thành đối tượng Date
-            let expirationTimeString ="@expirationConvert";
-            expirationTimeString = expirationTimeString.replace(' SA', ' AM').replace(' CH', ' PM');
+    @if(ViewBag.VerifyCode != null)
+    {
+        <div class="alert alert-success text-center">
+            <div class="mb-3" id="qrcode"></div>
+            <h5>Mã số: <span class="text-primary font-weight-bold" id="verifyCode">@ViewBag.VerifyCode</span></h5>
+            <h5>Thời gian còn lại: <span class="text-danger font-weight-bold" id="countdown"></span></h5>
+        </div>
+            
+        <form method="post" asp-action="KetThucChamCong" class="text-center mt-4">
+            <button type="submit" class="btn btn-lg btn-danger px-5">Kết thúc</button>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-action="BatDauChamCong" class="text-center mt-4">
+            <button type="submit" class="btn btn-lg btn-primary px-5">Bắt đầu</button>
+        </form>
+    }
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+        // Lấy verifyCode từ ViewBag và truyền vào URL
+        const verifyCode = "@ViewBag.VerifyCode";  // Tham số verifyCode từ ViewBag
+        const url = `https://quangtruongstore.netlify.app/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
 
-            // Kiểm tra nếu chuỗi có định dạng hợp lệ, nếu không thì báo lỗi
-            let expirationTime = new Date(expirationTimeString);
+        // Khởi tạo mã QR với URL trên
+        new QRCode(document.getElementById("qrcode"), {
+            text: url,
+            width: 200,
+            height: 200,
+        });
+    </script>
+<script>
+    // Chuyển đổi ViewBag.Expiration thành đối tượng Date
+    let expirationTimeString ="@expirationConvert";
+    expirationTimeString = expirationTimeString.replace(' SA', ' AM').replace(' CH', ' PM');
 
-            if (isNaN(expirationTime)) {
-                console.error("Định dạng thời gian không hợp lệ:", expirationTimeString);
-            } else {
-                //expirationTime = expirationTime.getTime();
+    // Kiểm tra nếu chuỗi có định dạng hợp lệ, nếu không thì báo lỗi
+    let expirationTime = new Date(expirationTimeString);
 
-                // Hàm bắt đầu đếm ngược
-                function startCountdown() {
-                    let countdownInterval = setInterval(() => {
-                        let currentTime = new Date();
-                        let timeRemaining = expirationTime - currentTime;
+    if (isNaN(expirationTime)) {
+        console.error("Định dạng thời gian không hợp lệ:", expirationTimeString);
+    } else {
+        //expirationTime = expirationTime.getTime();
 
-                        // Tính toán số giờ, phút, giây còn lại
-                        let hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        let minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                        let seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        // Hàm bắt đầu đếm ngược
+        function startCountdown() {
+            let countdownInterval = setInterval(() => {
+                let currentTime = new Date();
+                let timeRemaining = expirationTime - currentTime;
 
-                        // Hiển thị thời gian đếm ngược
-                        if (timeRemaining > 0) {
-                            document.getElementById("countdown").innerText = `${minutes}:${seconds}`;
-                        } else {
-                            //Khi hết thời gian, dừng đếm ngược và làm mới mã
-                            clearInterval(countdownInterval);
-                            refreshAttendanceToken();
+                // Tính toán số giờ, phút, giây còn lại
+                let hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                // Hiển thị thời gian đếm ngược
+                if (timeRemaining > 0) {
+                    document.getElementById("countdown").innerText = `${minutes}:${seconds}`;
+                } else {
+                    //Khi hết thời gian, dừng đếm ngược và làm mới mã
+                    clearInterval(countdownInterval);
+                    refreshAttendanceToken();
 }
-                    }, 1000); // Cập nhật mỗi giây
-                }
+            }, 1000); // Cập nhật mỗi giây
+        }
 
-                // Gọi hàm để bắt đầu đếm ngược
-                startCountdown();
+        // Gọi hàm để bắt đầu đếm ngược
+        startCountdown();
+    }
+
+    function refreshAttendanceToken() {
+        fetch('/Attendances/RefreshAttendanceToken', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("verifyCode").innerText = data.code;
+            expirationTime = new Date(data.expiration).getTime();
+            startCountdown(); // Bắt đầu lại đếm ngược
+        })
+        .catch(error => console.error('Lỗi tạo mã mới:', error));
+    }
 
-            function refreshAttendanceToken() {
-                fetch('/Attendances/RefreshAttendanceToken', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("verifyCode").innerText = data.code;
-                    expirationTime = new Date(data.expiration).getTime();
-                    startCountdown(); // Bắt đầu lại đếm ngược
-                })
-                .catch(error => console.error('Lỗi tạo mã mới:', error));
-            }
-
-        </script>
+</script>

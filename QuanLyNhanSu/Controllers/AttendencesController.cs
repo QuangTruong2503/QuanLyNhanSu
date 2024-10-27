@@ -6,7 +6,11 @@ using QuanLyNhanSu.Data;
 using QuanLyNhanSu.Helpers;
 using QuanLyNhanSu.Models;
 using QuanLyNhanSu.ViewModels;
+using System.Drawing.Imaging;
 using System.Text.Json;
+using QRCoder;
+using System.IO;
+using System.Drawing;
 
 namespace QuanLyNhanSu.Controllers
 {
@@ -18,11 +22,29 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
 
-        public ActionResult DanhSach()
+        public async Task<IActionResult> DanhSach()
         {
-            return View(new List<AttendanceViewModel>());
-        }
+            DateTime selectedDateTime = DateTime.Now;
+            ViewData["AttendanceDate"] = selectedDateTime.ToString("dd-MM-yyyy");
+            var employees = await _context.employees.Where(e => e.employee_id != "admin" && e.expired_date == null).ToListAsync();
+            var attendances = await _context.attendances.Where(a => a.Attendance_Date.Date == selectedDateTime.Date).ToListAsync();
 
+            var viewModel = employees.Select(e => {
+                var attendance = attendances.FirstOrDefault(a => a.Employee_Id == e.employee_id);
+                return new AttendanceViewModel
+                {
+                    EmployeeId = e.employee_id,
+                    FullName = e.first_name + " " + e.last_name,
+                    IsPresent = attendance != null && attendance.status_id == 1,
+                    IsLate = attendance != null && attendance.status_id == 2,
+                    IsAbsent = attendance != null && attendance.status_id == 4,
+                    HasAttendanceData = attendance != null
+                };
+            }).ToList();
+
+            return View(viewModel);
+        }
+        //Cập nhật dữ liệu chấm công của nhân viên
         [HttpPost]
         public async Task<IActionResult> DanhSach(string? attendanceDate = null)
         {
@@ -54,6 +76,12 @@ namespace QuanLyNhanSu.Controllers
             }).ToList();
 
             return View(viewModel);
+        }
+
+        //Hiển thị chức năng chấm công với từng nhân viên
+        public ActionResult NhanVienChamCong()
+        {
+            return View();
         }
 
         //Lưu thay đổi chấm công trong danh sách
@@ -134,10 +162,12 @@ namespace QuanLyNhanSu.Controllers
 
         public ActionResult ChamCong()
         {
+            DateTime today = DateTime.Today;
+            ViewBag.ToDay = today.ToString("dd-MM-yyyy");
             return View();
         }
 
-        //Bắt đầu chấm công
+        //Bắt đầu chấm công, hiển thị mã để nhân viên nhập
         [HttpPost]
         public ActionResult BatDauChamCong()
         {
@@ -148,6 +178,7 @@ namespace QuanLyNhanSu.Controllers
             ViewBag.Expiration = token.Result.Expiration.ToString("yyyy-MM-dd HH:mm:ss");
             return View("ChamCong");
         }
+        //Tạo mã OTP với thời hạn để chấm công
         private async Task<TokenAttendanceModel> GenerateAttendanceToken()
         {
             var codeOTP = GetVerifyRandom.GenerateOTP();
@@ -176,7 +207,9 @@ namespace QuanLyNhanSu.Controllers
             });
         }
 
-        //Xác nhận chấm công của nhân viên
+
+
+        //Xác nhận chấm công của nhân viên khi nhập mã OTP
         [HttpPost]
         public async Task<IActionResult> XacNhanChamCong(string verifyCode)
         {
@@ -185,19 +218,19 @@ namespace QuanLyNhanSu.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
-            
             try
             {
                 var token = await _context.token_attendance.FirstOrDefaultAsync();
-                if(token != null && token.Verify_Code == verifyCode && token.Expiration > DateTime.UtcNow)
+                //Nếu mã OTP hợp lệ và còn thời hạn
+                if(token != null && token.Verify_Code == verifyCode && token.Expiration > DateTime.Now)
                 {
                     var today = DateTime.Today;
                     var existsAttendance = await _context.attendances.FirstOrDefaultAsync(a => a.Employee_Id == employee.employee_id && a.Attendance_Date.Date == today.Date);
                     //Kiểm tra nhân viên đã chấm công hay chưa
                     if(existsAttendance != null)
                     {
-                        TempData["Message"] = "Bạn đã chấm công hôm nay rồi!";
-                        return View("ChamCong");
+                        TempData["MessageError"] = "Bạn đã chấm công hôm nay rồi!";
+                        return RedirectToAction(nameof(NhanVienChamCong));
                     }
                     var attendance = new AttendanceModel
                     {
@@ -208,14 +241,16 @@ namespace QuanLyNhanSu.Controllers
                     };
                     _context.attendances.Add(attendance);
                     await _context.SaveChangesAsync();
-                    return View("ChamCong");
+                    TempData["Message"] = "Chấm công thành công!";
+                    return RedirectToAction(nameof(NhanVienChamCong));
                 }
-                return View("ChamCong");
+                TempData["MessageError"] = "Mã OTP không hợp lệ !";
+                return RedirectToAction(nameof(NhanVienChamCong));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi: " + ex.Message);
-                return View("ChamCong");
+                return RedirectToAction(nameof(NhanVienChamCong));
             }
         }
 
@@ -224,7 +259,51 @@ namespace QuanLyNhanSu.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> KetThucChamCong()
         {
-            return RedirectToAction("ChamCong");
+            // Lấy ngày hiện tại
+            DateTime today = DateTime.Today;
+            // Lấy tất cả employee_id từ bảng employees
+            var allEmployees = await _context.employees.Where(m => m.employee_id != "admin").Select(m => m.employee_id).ToListAsync();
+
+            // Lấy tất cả employee_id đã chấm công trong ngày hôm nay
+            var employeeCheckedIn = await _context.attendances
+                .Where(m => m.Attendance_Date.Date == today.Date)
+                .Select(m => m.Employee_Id)
+                .ToListAsync();
+            // So sánh để tìm những employee_id chưa chấm công
+            var employeeNotCheckedIn = allEmployees.Except(employeeCheckedIn).ToList();
+            // Đánh dấu là vắng (status = 4) cho những nhân viên chưa chấm công
+            foreach (var employeeId in employeeNotCheckedIn)
+            {
+                AttendanceModel attendance = new AttendanceModel
+                {
+                    Employee_Id = employeeId,
+                    Attendance_Date = today,
+                    status_id = 4
+                };
+                //Thêm vào bảng Attendance
+                _context.attendances.Add(attendance);
+                await _context.SaveChangesAsync();
+            }
+            //Lấy dữ liệu chấm công ngày hôm nay
+            var attendancesList = await _context.attendances.Where(a => a.Attendance_Date == today).ToListAsync();
+
+            foreach (var attendance in attendancesList)
+            {
+                //Nếu nhân sự đi trễ
+                if (attendance.status_id == 2)
+                {
+                    DeductionModel deduction = new DeductionModel()
+                    {
+                        Employee_Id = attendance.Employee_Id,
+                        Deduction_Amount = 50000,
+                        Deduction_Date = attendance.Attendance_Date,
+                        Reason = "Đi trễ"
+                    };
+                    _context.deductions.Add(deduction);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("DanhSach");
         }
 
         //Kiểm tra đăng nhập trong Cookies
