@@ -29,6 +29,7 @@ namespace QuanLyNhanSu.Data
 
         public DbSet<SalaryModel> salaries { get; set; }
 
+        public DbSet<TokenAttendanceModel> token_attendance { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -184,6 +185,14 @@ namespace QuanLyNhanSu.Data
                 entity.HasKey(e => e.status_id);
                 entity.Property(e => e.status_id).HasColumnName("status_id");
                 entity.Property(e => e.status_name).HasColumnName("status_name");
+            });
+            modelBuilder.Entity<TokenAttendanceModel>(entity =>
+            {
+                entity.ToTable("token_attendance");
+                entity.HasKey(e => e.Token_ID);
+                entity.Property(e => e.Token_ID).HasColumnName("token_id");
+                entity.Property(e => e.Verify_Code).HasColumnName("verify_code");
+                entity.Property(e => e.Expiration).HasColumnName("expiration");
             });
         }
 
