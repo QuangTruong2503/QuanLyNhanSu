@@ -42,7 +42,7 @@
                             <td>@employee.EmployeeId</td>
                             <td>@employee.FullName</td>
                              <!-- Hidden input để gửi EmployeeId -->
-        <input type="hidden" name="model[@Model.IndexOf(employee)].EmployeeId" value="@employee.EmployeeId" />
+                                <input type="hidden" name="model[@Model.IndexOf(employee)].EmployeeId" value="@employee.EmployeeId" />
                             <td>
                                 <input type="checkbox" name="model[@Model.IndexOf(employee)].IsPresent" value="true"
                                        class="form-check-input"
