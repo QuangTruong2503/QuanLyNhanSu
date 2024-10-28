@@ -244,7 +244,7 @@ namespace QuanLyNhanSu.Controllers
                         Employee_Id = employee.employee_id,
                         Attendance_Date = DateTime.Now,
                         //Nếu giờ hiện tại lớn hơn 8AM thì status_id = 2 (Đi trễ)
-                        status_id = DateTime.Now.TimeOfDay >= new TimeSpan(8, 0, 0) ? 2 : 1
+                        status_id = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone).TimeOfDay >= new TimeSpan(8, 0, 0) ? 2 : 1
                     };
                     _context.attendances.Add(attendance);
                     await _context.SaveChangesAsync();

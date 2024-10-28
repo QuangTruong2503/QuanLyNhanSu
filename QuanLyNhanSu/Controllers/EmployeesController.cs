@@ -73,11 +73,13 @@ namespace QuanLyNhanSu.Controllers
                     //Thiết lập ngày bắt đầu làm việc
                     employees.hire_date = DateTime.Now;
                     //Thiết lập mật khẩu mặc định
-                    var defaultPassword = "123456";
-                    employees.hashed_password = PasswordHasher.HashPassword(defaultPassword);
+                    DateTime dateOfBirth = employees.date_of_birth;
+                    var defaultPassword = dateOfBirth.Day + "" + dateOfBirth.Month + "" + dateOfBirth.Year;
+                    employees.hashed_password = PasswordHasher.HashPassword(defaultPassword.ToString());
                     _context.Add(employees);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    TempData["SuccessMessage"] = "Đăng ký nhân viên thành công. Mật khẩu là ngày tháng năm sinh của nhân viên";
+                    return RedirectToAction(nameof(DangKyNhanVien));
                 }
                 return View(employees);
             }

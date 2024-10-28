@@ -2,15 +2,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container h-75">
-    <div class="card shadow p-4" style="width: 100%; max-width: 400px; margin: 200px auto">
+<div class="container h-100 d-flex align-items-center justify-content-center">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
         <h4 class="text-center mb-4">Nhập mã chấm công</h4>
         <form id="attendanceForm" method="post" asp-action="XacNhanChamCong">
-            <div class="form-group position-relative m-1">
-                <label for="attendanceCode">Mã Xác Nhận</label>
+            <div class="form-group position-relative mb-3">
+                <label for="attendanceCode" class="form-label">Mã Xác Nhận</label>
                 <input type="text" class="form-control" name="verifyCode" id="attendanceCode" placeholder="Nhập mã xác nhận" required />
             </div>
-            <div class="form-group">
+            <div class="form-group text-center">
                 @if (TempData["Message"] != null)
                 {
                     <p class="text-success">@TempData["Message"]</p>
@@ -20,9 +20,65 @@
                     <p class="text-danger">@TempData["MessageError"]</p>
                 }
             </div>
-            <div class="text-danger" asp-validation-summary="All"></div>
-            <div class="form-group row justify-content-center">
-                <button type="submit" class="btn btn-primary btn-block col-md-8">Xác nhận</button>
+            <div class="text-danger text-center mb-3" asp-validation-summary="All"></div>
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-outline-primary w-100">Xác nhận</button>
             </div>
+            <div class="text-center my-3">
+                <p>Hoặc</p>
+                <a id="openCameraBtn" class="btn btn-outline-secondary w-100" onclick="startCamera()">
+                    Quét Mã QR
+                    <i class="bi bi-qr-code-scan"></i>
+                </a>
+            </div>
+            <div id="reader" class="d-flex justify-content-center my-3" style="width: 100%; max-height: 300px; display: none;"></div>
+            <a id="closeCameraBtn" class="btn btn-outline-danger" onclick="closeCamera()" style="display: none;">Tắt Camera</a>
         </form>
     </div>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.2.1/html5-qrcode.min.js"></script>
+
+    <script>
+        let qrCodeReader;
+        function startCamera() {
+            qrCodeReader = new Html5Qrcode("reader");
+            document.getElementById("reader").style.display = "block";
+            document.getElementById("openCameraBtn").style.display = "none";
+            document.getElementById("closeCameraBtn").style.display = "block";
+            qrCodeReader.start(
+                { facingMode: "environment" }, // Dùng camera sau nếu có
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 }
+                },
+                qrCodeMessage => {
+                    // Khi quét thành công, điều hướng đến URL
+                    window.location.href = qrCodeMessage;
+                    qrCodeReader.stop();
+                },
+                errorMessage => {
+                    // Xử lý lỗi nếu cần
+                    console.log("Quét thất bại:", errorMessage);
+                }
+            ).catch(err => {
+                console.log("Lỗi mở camera:", err);
+            });
+        }
+        //Tắt camera
+    function closeCamera() {
+        // Ẩn khung hiển thị camera và thay đổi nút
+        document.getElementById("reader").style.display = "none";
+        document.getElementById("openCameraBtn").style.display = "block";
+        document.getElementById("closeCameraBtn").style.display = "none";
+        if (qrCodeReader) {
+            qrCodeReader.stop().then(() => {
+                console.log("Camera đã tắt thành công");
+            }).catch(err => {
+                console.log("Lỗi khi tắt camera:", err);
+            });
+        }
+
+        
+    }
+
+    </script>

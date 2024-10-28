@@ -33,7 +33,7 @@ namespace QuanLyNhanSu.Models
 		public string? hashed_password { get; set; }
 
 		[Display(Name = "Ngày sinh")]
-		public DateOnly? date_of_birth { get; set; }
+		public DateTime date_of_birth { get; set; }
 
 		public enum Gender
 		{

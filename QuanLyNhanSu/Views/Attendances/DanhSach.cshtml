@@ -1,6 +1,7 @@
 ﻿@model List<QuanLyNhanSu.ViewModels.AttendanceViewModel>
 
 @{
+    ViewData["Title"] = "Danh Sách Chấm Công";
     DateTime? parseDate = ViewData["AttendanceDate"] != null
         ? DateTime.Parse(ViewData["AttendanceDate"].ToString())
         : (DateTime?)null;

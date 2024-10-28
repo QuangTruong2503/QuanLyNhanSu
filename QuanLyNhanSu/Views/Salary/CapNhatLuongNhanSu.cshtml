@@ -1,6 +1,7 @@
 ﻿@model QuanLyNhanSu.Models.SalaryModel
 
 @{
+    ViewData["Title"] = "Xem Chi Tiết Lương";
     var bonuses = ViewData["Bonuses"] as IEnumerable<QuanLyNhanSu.Models.BonusModel>;
     var deductions = ViewData["Deductions"] as IEnumerable<QuanLyNhanSu.Models.DeductionModel>;
 }
