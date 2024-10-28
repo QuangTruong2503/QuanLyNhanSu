@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,13 +37,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-// Thiết lập múi giờ mặc định cho ứng dụng
-TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-app.Use(async (context, next) =>
-{
-    CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = new CultureInfo("vi-VN");
-    await next();
-});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -8,7 +8,6 @@ using QuanLyNhanSu.Models;
 using QuanLyNhanSu.ViewModels;
 using System.Drawing.Imaging;
 using System.Text.Json;
-using QRCoder;
 using System.IO;
 using System.Drawing;
 
