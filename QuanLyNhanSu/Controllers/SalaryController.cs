@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
 using QuanLyNhanSu.Helpers;
@@ -16,9 +17,17 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: SalaryContronller
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? employeeID = null)
         {
-            var salaryList = await _context.salaries.ToListAsync();
+            var salaryList = new List<SalaryModel>();
+            if (!string.IsNullOrEmpty(employeeID))
+            {
+                 salaryList = await _context.salaries
+                    .Where(s => s.Employee_Id == employeeID)
+                    .ToListAsync();
+                return View(salaryList);
+            };
+            salaryList = await _context.salaries.ToListAsync();
             return View(salaryList);
         }
 
@@ -37,12 +46,15 @@ namespace QuanLyNhanSu.Controllers
         // POST: SalaryContronller/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TinhLuong(DateTime fromDate, DateTime toDate)
+        public async Task<ActionResult> TinhLuong(int month)
         {
+            //Ngày bắt đầu lấy từ ngày 11 tháng trước
+            DateTime startDate = new DateTime(DateTime.Now.Year, month - 1, 11);
+            DateTime endDate = new DateTime(DateTime.Now.Year, month, 10);
             try
             {
                 // Tổng số ngày cần tính lương
-                int totalDays = (toDate-fromDate).Days + 1;
+                int totalDays = CalculateWorkingDays(startDate, endDate);
                 // Lấy danh sách nhân viên
                 var employees = await _context.employees.Where(e => e.employee_id != "admin").ToListAsync();
 
@@ -59,20 +71,20 @@ namespace QuanLyNhanSu.Controllers
                         continue;
                     }
 
-                    // Lấy tổng tiền thưởng của nhân viên từ bảng Bonus trong khoảng fromDate đến toDate
+                    // Lấy tổng tiền thưởng của nhân viên từ bảng Bonus trong khoảng startDate đến endDate
                     var totalBonus = await _context.bonuses
-                        .Where(e => e.Employee_Id == employee.employee_id && e.Bonus_Date >= fromDate && e.Bonus_Date <= toDate)
+                        .Where(e => e.Employee_Id == employee.employee_id && e.Bonus_Date >= startDate && e.Bonus_Date <= endDate)
                         .SumAsync(e => e.Bonus_Amount);
 
-                    // Lấy tổng tiền khấu trừ của nhân viên từ bảng Bonus trong khoảng fromDate đến toDate
+                    // Lấy tổng tiền khấu trừ của nhân viên từ bảng Bonus trong khoảng startDate đến endDate
                     var totalDeduction = await _context.deductions
-                        .Where(e => e.Employee_Id == employee.employee_id && e.Deduction_Date >= fromDate && e.Deduction_Date <= toDate)
+                        .Where(e => e.Employee_Id == employee.employee_id && e.Deduction_Date >= startDate && e.Deduction_Date <= endDate)
                         .SumAsync(e => e.Deduction_Amount);
 
-                    //Tổng số ngày đi làm từ fromDate đến toDate
+                    //Tổng số ngày đi làm từ startDate đến endDate
                     var workingDays = await _context.attendances
-                        .Where(a => a.Employee_Id == employee.employee_id && a.Attendance_Date >= fromDate 
-                                && a.Attendance_Date <= toDate && (a.status_id == 1 || a.status_id == 2))
+                        .Where(a => a.Employee_Id == employee.employee_id && a.Attendance_Date >= startDate 
+                                && a.Attendance_Date <= endDate && (a.status_id == 1 || a.status_id == 2))
                         .CountAsync();
                     //Số tiền nhận được dựa trên ngày đi làm
                     var amountByWorkingDays = baseSalary / 26 * workingDays;
@@ -87,8 +99,8 @@ namespace QuanLyNhanSu.Controllers
                         Bonus = totalBonus,
                         Deduction = totalDeduction,
                         Total_Salary = totalSalary,
-                        Begin_Date = fromDate,
-                        End_Date = toDate
+                        Begin_Date = startDate,
+                        End_Date = endDate
                     };
                     //Thêm vào bảng Salary
                     _context.salaries.Add(salary);
@@ -225,6 +237,44 @@ namespace QuanLyNhanSu.Controllers
             {
                 return View();
             }
+        }
+        //Tính toán số ngày cần tính lương ngoại trừ Chủ Nhật
+        static int CalculateWorkingDays(DateTime start, DateTime end)
+        {
+            int totalDays = 0;
+
+            for (DateTime date = start; date <= end; date = date.AddDays(1))
+            {
+                // Kiểm tra nếu ngày hiện tại không phải là Chủ Nhật
+                if (date.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    totalDays++;
+                }
+            }
+
+            return totalDays;
+        }
+        //Tạo dữ liệu tháng theo danh sách
+        [HttpGet]
+        public JsonResult GetMonths()
+        {
+            // Tạo danh sách các tháng
+            var months = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Tháng 1" },
+                new SelectListItem { Value = "2", Text = "Tháng 2" },
+                new SelectListItem { Value = "3", Text = "Tháng 3" },
+                new SelectListItem { Value = "4", Text = "Tháng 4" },
+                new SelectListItem { Value = "5", Text = "Tháng 5" },
+                new SelectListItem { Value = "6", Text = "Tháng 6" },
+                new SelectListItem { Value = "7", Text = "Tháng 7" },
+                new SelectListItem { Value = "8", Text = "Tháng 8" },
+                new SelectListItem { Value = "9", Text = "Tháng 9" },
+                new SelectListItem { Value = "10", Text = "Tháng 10" },
+                new SelectListItem { Value = "11", Text = "Tháng 11" },
+                new SelectListItem { Value = "12", Text = "Tháng 12" }
+            };
+            return Json(months);
         }
     }
 }
