@@ -1,83 +1,55 @@
 ﻿@model QuanLyNhanSu.Models.EmployeesModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Thông Tin Nhân Viên";
 }
 
-<h1>Thông Tin Nhân Viên</h1>
+<h1 class="text-primary text-center mt-4">@ViewData["Title"]</h1>
+<hr />
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.employee_id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.employee_id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.first_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.first_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.last_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.last_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.gender)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.gender)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.hire_date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.hire_date.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.expired_date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.expired_date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Positions.position_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Positions.position_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.departments.department_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.departments.department_name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Role.Role_Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Role.Role_Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <dl class="row mb-0">
+            <!-- Mã Nhân Viên -->
+            <dt class="col-sm-3 font-weight-bold">Mã Nhân Viên:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.employee_id)</dd>
+
+            <!-- Họ và Tên -->
+            <dt class="col-sm-3 font-weight-bold">Họ:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.first_name)</dd>
+            <dt class="col-sm-3 font-weight-bold">Tên:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.last_name)</dd>
+
+            <!-- Email và Số Điện Thoại -->
+            <dt class="col-sm-3 font-weight-bold">Email:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.email)</dd>
+            <dt class="col-sm-3 font-weight-bold">Số Điện Thoại:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.phone)</dd>
+
+            <!-- Giới Tính và Ngày Sinh -->
+            <dt class="col-sm-3 font-weight-bold">Giới Tính:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.gender)</dd>
+            <dt class="col-sm-3 font-weight-bold">Ngày Sinh:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.hire_date.Date)</dd>
+
+            <!-- Ngày Hết Hạn -->
+            <dt class="col-sm-3 font-weight-bold">Ngày Hết Hạn:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.expired_date)</dd>
+
+            <!-- Vị Trí và Phòng Ban -->
+            <dt class="col-sm-3 font-weight-bold">Vị Trí:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Positions.position_name)</dd>
+            <dt class="col-sm-3 font-weight-bold">Phòng Ban:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.departments.department_name)</dd>
+
+            <!-- Vai Trò -->
+            <dt class="col-sm-3 font-weight-bold">Vai Trò:</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Role.Role_Name)</dd>
+        </dl>
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="d-flex justify-content-center mt-4">
+        <a asp-action="Edit" class="btn btn-primary mx-3">Chỉnh Sửa</a>
+        <a asp-action="Index" class="btn btn-secondary mx-3">Quay Lại Danh Sách</a>
+    </div>

@@ -4,86 +4,60 @@
     ViewData["Title"] = "Tính Lương Nhân Viên";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2 class="text-center my-4">Tính Lương Nhân Viên</h2>
 
-<p>
-    <a asp-action="TinhLuong" class="btn btn-primary">Tính Lương</a>
-</p>
+<div class="container">
+    <!-- Nút tính lương -->
+    <div class="mb-4 text-center">
+        <a asp-action="TinhLuong" class="btn btn-primary">Tính Lương</a>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Salary_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Base_Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bonus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deduction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Total_Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Begin_Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.End_Date)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Salary_Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Employee_Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Base_Salary)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Bonus)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Deduction)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Total_Salary)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Begin_Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.End_Date)
-                </td>
-                <td>
-                    <!-- Dropdown menu -->
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Tùy chỉnh
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-success" href="@Url.Action("CapNhatLuongNhanSu", new { id = item.Salary_Id })">Cập nhật lương</a></li>
-                            <li><button class="dropdown-item text-danger" onclick="openDeleteModal('@item.Salary_Id')">Xóa</button></li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <!-- Bảng hiển thị lương nhân viên -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Salary_Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Employee_Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Base_Salary)</th>
+                    <th>@Html.DisplayNameFor(model => model.Bonus)</th>
+                    <th>@Html.DisplayNameFor(model => model.Deduction)</th>
+                    <th>@Html.DisplayNameFor(model => model.Total_Salary)</th>
+                    <th>@Html.DisplayNameFor(model => model.Begin_Date)</th>
+                    <th>@Html.DisplayNameFor(model => model.End_Date)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Salary_Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Employee_Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Base_Salary)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Bonus)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Deduction)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Total_Salary)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Begin_Date)</td>
+                        <td>@Html.DisplayFor(modelItem => item.End_Date)</td>
+                        <td>
+                            <!-- Dropdown menu -->
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Tùy chỉnh
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item text-success" href="@Url.Action("CapNhatLuongNhanSu", new { id = item.Salary_Id })">Cập nhật lương</a></li>
+                                    <li><button class="dropdown-item text-danger" onclick="openDeleteModal('@item.Salary_Id')">Xóa</button></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <!-- Modal xác nhận xoá -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
