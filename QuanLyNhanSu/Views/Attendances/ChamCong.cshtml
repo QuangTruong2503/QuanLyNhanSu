@@ -84,7 +84,7 @@
         .catch(error => console.error('Lỗi tạo mã mới:', error));
     }
     function generateQRCode() {
-        // Lấy verifyCode từ ViewBag và truyền vào URL
+        // Lấy verifyCode từ ViewBag và truyền vào URL Vaix CSSNumericArray nhai
         const verifyCode = document.getElementById("verifyCode").innerText; // Tham số verifyCode từ ViewBag
         const url = `https://quanlynhansu-772476565863.asia-southeast1.run.app/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
 

@@ -23,25 +23,35 @@ namespace QuanLyNhanSu.Controllers
         TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         public async Task<IActionResult> DanhSach()
         {
-            DateTime selectedDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
-            ViewData["AttendanceDate"] = selectedDateTime.ToString("dd-MM-yyyy");
-            var employees = await _context.employees.Where(e => e.employee_id != "admin" && e.expired_date == null).ToListAsync();
-            var attendances = await _context.attendances.Where(a => a.Attendance_Date.Date == selectedDateTime.Date).ToListAsync();
+            try
+            {
+                DateTime selectedDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
+                ViewData["AttendanceDate"] = selectedDateTime.ToString("dd-MM-yyyy");
+                var employees = await _context.employees.Where(e => e.employee_id != "admin" && e.expired_date == null).ToListAsync();
+                var attendances = await _context.attendances.Where(a => a.Attendance_Date.Date == selectedDateTime.Date).ToListAsync();
 
-            var viewModel = employees.Select(e => {
-                var attendance = attendances.FirstOrDefault(a => a.Employee_Id == e.employee_id);
-                return new AttendanceViewModel
+                var viewModel = employees.Select(e =>
                 {
-                    EmployeeId = e.employee_id,
-                    FullName = e.first_name + " " + e.last_name,
-                    IsPresent = attendance != null && attendance.status_id == 1,
-                    IsLate = attendance != null && attendance.status_id == 2,
-                    IsAbsent = attendance != null && attendance.status_id == 4,
-                    HasAttendanceData = attendance != null
-                };
-            }).ToList();
+                    var attendance = attendances.FirstOrDefault(a => a.Employee_Id == e.employee_id);
+                    return new AttendanceViewModel
+                    {
+                        EmployeeId = e.employee_id,
+                        FullName = e.first_name + " " + e.last_name,
+                        IsPresent = attendance != null && attendance.status_id == 1,
+                        IsLate = attendance != null && attendance.status_id == 2,
+                        IsAbsent = attendance != null && attendance.status_id == 4,
+                        HasAttendanceData = attendance != null
+                    };
+                }).ToList();
 
-            return View(viewModel);
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log và kiểm tra lỗi chi tiết
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Lỗi xử lý dữ liệu.");
+            }
         }
         //Cập nhật dữ liệu chấm công của nhân viên
         [HttpPost]
@@ -55,7 +65,7 @@ namespace QuanLyNhanSu.Controllers
             }
             else
             {
-                selectedDateTime = DateTime.Parse(attendanceDate);
+                selectedDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.Parse(attendanceDate), vietnamTimeZone);
                 ViewData["AttendanceDate"] = selectedDateTime.ToString("dd-MM-yyyy");
             }
             var employees = await _context.employees.Where(e => e.employee_id != "admin" && e.expired_date == null ).ToListAsync();
@@ -129,7 +139,7 @@ namespace QuanLyNhanSu.Controllers
 
                 // Lấy lại danh sách nhân viên và trạng thái chấm công để hiển thị trong view
                 var employees = await _context.employees.Where(e => e.employee_id != "admin" && e.expired_date == null).ToListAsync();
-                var attendances = await _context.attendances.Where(a => a.Attendance_Date.Date == attendanceDate.Date).ToListAsync();
+                var attendances = await _context.attendances.Where(a => a.Attendance_Date.Date == TimeZoneInfo.ConvertTimeFromUtc(attendanceDate, vietnamTimeZone).Date).ToListAsync();
 
                 var viewModel = employees.Select(e => {
                     var attendance = attendances.FirstOrDefault(a => a.Employee_Id == e.employee_id);
@@ -266,7 +276,7 @@ namespace QuanLyNhanSu.Controllers
         public async Task<IActionResult> KetThucChamCong()
         {
             // Lấy ngày hiện tại
-            DateTime today = DateTime.Today;
+            DateTime today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
             // Lấy tất cả employee_id từ bảng employees
             var allEmployees = await _context.employees.Where(m => m.employee_id != "admin").Select(m => m.employee_id).ToListAsync();
 
@@ -288,10 +298,11 @@ namespace QuanLyNhanSu.Controllers
                 };
                 //Thêm vào bảng Attendance
                 _context.attendances.Add(attendance);
-                await _context.SaveChangesAsync();
+                
             }
+            await _context.SaveChangesAsync();
             //Lấy dữ liệu chấm công ngày hôm nay
-            var attendancesList = await _context.attendances.Where(a => a.Attendance_Date == today).ToListAsync();
+            var attendancesList = await _context.attendances.Where(a => a.Attendance_Date.Date == today.Date).ToListAsync();
 
             foreach (var attendance in attendancesList)
             {
@@ -306,9 +317,9 @@ namespace QuanLyNhanSu.Controllers
                         Reason = "Đi trễ"
                     };
                     _context.deductions.Add(deduction);
-                    await _context.SaveChangesAsync();
                 }
             }
+            await _context.SaveChangesAsync();
             return RedirectToAction("DanhSach");
         }
 
