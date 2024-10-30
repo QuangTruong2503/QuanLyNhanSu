@@ -2,40 +2,62 @@
     ViewData["Title"] = "Tính Lương";
     var months = ViewBag.Months as List<SelectListItem>;
 }
-<h2>Tính Lương</h2>
+<h2 class="text-center my-4">@ViewData["Title"]</h2>
 
-<form asp-action="TinhLuong" method="post" class="col-md-6">
-    <div class="row">
-        <!-- Dropdown hiển thị danh sách tháng -->
-        <select  id="monthDropdown" class="form-control" name="month" required>
-            <option value="">Chọn tháng</option>
-        </select>
-    </div>
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
+<div class="d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg p-5 mb-5 bg-light rounded border-0">
+            <div class="card-body">
+                <h4 class="card-title text-center mb-4 text-primary">Chọn Tháng để Tính Lương</h4>
+
+                <form asp-action="TinhLuong" method="post">
+                    <!-- Month Dropdown with Arrow Icon -->
+                    <div class="mb-4">
+                        <label for="monthDropdown" class="form-label text-secondary">Chọn Tháng</label>
+                        <div class="input-group">
+                            <select id="monthDropdown" class="form-select custom-select-arrow" name="month" required>
+                                <option value="">Chọn tháng</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Success Message -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success text-center my-3">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    <!-- Validation Summary -->
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <!-- Submit and Back Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="submit" class="btn btn-primary px-4 py-2">Tính lương</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2">Quay lại</a>
+                    </div>
+                </form>
+            </div>
         </div>
-    }
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <button type="submit" class="btn btn-primary">Tính lương</button>
-    <a asp-action="Index">Quay lại</a>
-</form>
+    </div>
+</div>
 
+<!-- jQuery and AJAX Script for Month Dropdown -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        // Gọi AJAX để lấy danh sách tháng
+        // AJAX call to populate the month dropdown
         $.ajax({
-            url: '@Url.Action("GetMonths", "Salary")', // Đường dẫn tới action
+            url: '@Url.Action("GetMonths", "Salary")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                // Xóa các tùy chọn hiện có trong dropdown
+                // Clear existing options
                 $('#monthDropdown').empty();
                 $('#monthDropdown').append('<option value="">Chọn tháng</option>');
 
-                // Lặp qua dữ liệu và thêm vào dropdown
+                // Append options from data
                 $.each(data, function (index, item) {
                     $('#monthDropdown').append('<option value="' + item.value + '">' + item.text + '</option>');
                 });
@@ -46,3 +68,41 @@
         });
     });
 </script>
+
+<!-- Custom CSS for Enhanced Dropdown with Arrow -->
+<style>
+    /* Styling for the dropdown with arrow */
+    .custom-select-arrow {
+        appearance: none; /* Remove default styling */
+        background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"%3E%3Cpath fill="%23888888" d="M2 0L0 2h4z" /%3E%3C/svg%3E') no-repeat right 1.25rem center/8px 10px;
+        padding-right: 2.5rem; /* Spacing for the arrow */
+        border-radius: .25rem;
+        border: 1px solid #ced4da;
+        height: 2.5rem;
+    }
+
+    /* Styling for the card and other components */
+    .card {
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    .form-select, .btn {
+        border-radius: 0.5rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+    .btn-outline-secondary {
+        color: #6c757d;
+        border: 2px solid #6c757d;
+    }
+
+    .btn-primary:hover, .btn-outline-secondary:hover {
+        opacity: 0.9;
+    }
+</style>

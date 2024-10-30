@@ -4,48 +4,53 @@
     ViewData["Title"] = "Tạo mới khấu trừ lương";
 }
 
-<h1>Thêm Khấu Trừ Lương</h1>
-
+<h1 class="text-center">Thêm Khấu Trừ Lương</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div class="form-group">
-                <label asp-for="Employee_Id" class="control-label"></label>
-                <input asp-for="Employee_Id" class="form-control" />
-                <span asp-validation-for="Employee_Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Deduction_Amount" class="control-label"></label>
-                <input asp-for="Deduction_Amount" class="form-control" required/>
-                <span asp-validation-for="Deduction_Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Deduction_Date" class="control-label"></label>
-                <input asp-for="Deduction_Date" type="date" class="form-control" required />
-                <span asp-validation-for="Deduction_Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reason" class="control-label"></label>
-                <textarea asp-for="Reason" class="form-control" required></textarea>
-                <span asp-validation-for="Reason" class="text-danger"></span>
-            </div>
-            <div asp-validation-summary="All" class="text-danger"></div>
-            @if(TempData["Success"] != null)
-            {
-                <p class="alert alert-success">@TempData["Success"]</p>
-            }
-            <div class="form-group">
-                <input type="submit" value="Thêm Mới" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm rounded-3 p-4">
+            <form asp-action="Create">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label asp-for="Employee_Id" class="form-label">Mã Nhân Viên</label>
+                        <input asp-for="Employee_Id" class="form-control" placeholder="Nhập mã nhân viên" required />
+                        <span asp-validation-for="Employee_Id" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Deduction_Amount" class="form-label">Số Tiền Khấu Trừ</label>
+                        <input asp-for="Deduction_Amount" class="form-control" placeholder="Nhập số tiền khấu trừ" required />
+                        <span asp-validation-for="Deduction_Amount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label asp-for="Deduction_Date" class="form-label">Ngày Khấu Trừ</label>
+                        <input asp-for="Deduction_Date" type="date" class="form-control" required />
+                        <span asp-validation-for="Deduction_Date" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Reason" class="form-label">Lý Do</label>
+                    <textarea asp-for="Reason" class="form-control" placeholder="Nhập lý do" required></textarea>
+                    <span asp-validation-for="Reason" class="text-danger"></span>
+                </div>
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                @if (TempData["Success"] != null)
+
+                {
+                    <p class="alert alert-success text-center">@TempData["Success"]</p>
+                }
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+                    <input type="submit" value="Thêm Mới" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

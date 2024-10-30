@@ -4,53 +4,75 @@
     ViewData["Title"] = "Chỉnh sửa";
 }
 
-<h1>Chỉnh Sửa Lương Thưởng</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            
-            <div class="form-group">
-                <label asp-for="Bonus_Id" class="control-label"></label>
-                <input asp-for="Bonus_Id" class="form-control" readonly/>
-                <span asp-validation-for="Bonus_Id" class="text-danger"></span>
+<h1 class="text-center my-4">@ViewData["Title"]</h1>
+
+<div class="d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow p-4 mb-5 bg-white rounded">
+            <div class="card-body">
+                <form asp-action="Edit">
+                    <!-- Bonus ID (Readonly) -->
+                    <div class="mb-3">
+                        <label asp-for="Bonus_Id" class="form-label">Bonus ID</label>
+                        <input asp-for="Bonus_Id" class="form-control" readonly />
+                        <span asp-validation-for="Bonus_Id" class="text-danger"></span>
+                    </div>
+
+                    <!-- Employee ID -->
+                    <div class="mb-3">
+                        <label asp-for="Employee_Id" class="form-label">Employee ID</label>
+                        <input asp-for="Employee_Id" class="form-control" />
+                        <span asp-validation-for="Employee_Id" class="text-danger"></span>
+                    </div>
+
+                    <!-- Bonus Amount -->
+                    <div class="mb-3">
+                        <label asp-for="Bonus_Amount" class="form-label">Số Tiền Thưởng</label>
+                        <input asp-for="Bonus_Amount" class="form-control" type="text" />
+                        <span asp-validation-for="Bonus_Amount" class="text-danger"></span>
+                    </div>
+
+                    <!-- Bonus Date -->
+                    <div class="mb-3">
+                        <label asp-for="Bonus_Date" class="form-label">Ngày Thưởng</label>
+                        <input asp-for="Bonus_Date" class="form-control" type="date" />
+                        <span asp-validation-for="Bonus_Date" class="text-danger"></span>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="mb-3">
+                        <label asp-for="Reason" class="form-label">Lý Do</label>
+                        <textarea asp-for="Reason" class="form-control"></textarea>
+                        <span asp-validation-for="Reason" class="text-danger"></span>
+                    </div>
+
+                    <!-- Success Message -->
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success text-center mt-3">
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    <!-- Validation Summary -->
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Employee_Id" class="control-label"></label>
-                <input asp-for="Employee_Id" class="form-control" />
-                <span asp-validation-for="Employee_Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Bonus_Amount" class="control-label"></label>
-                <input asp-for="Bonus_Amount" class="form-control" type="text"/>
-                <span asp-validation-for="Bonus_Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Bonus_Date" class="control-label"></label>
-                <input asp-for="Bonus_Date" class="form-control" />
-                <span asp-validation-for="Bonus_Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reason" class="control-label"></label>
-                <textarea asp-for="Reason" class="form-control" ></textarea>
-                <span asp-validation-for="Reason" class="text-danger"></span>
-            </div>
-            <div asp-validation-summary="All" class="text-danger"></div>
-            @if(TempData["Success"] !=null)
-            {
-                <p class="alert alert-success">@TempData["Success"]</p>
-            }
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+        <!-- Back to List Link -->
+        <div class="text-center mt-3">
+            <a asp-action="Index" class="btn btn-link">Quay Lại Danh Sách</a>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
