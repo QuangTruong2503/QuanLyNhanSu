@@ -108,35 +108,42 @@ namespace QuanLyNhanSu.Controllers
                     var existingRecord = await _context.attendances
                         .FirstOrDefaultAsync(a => a.Employee_Id == item.EmployeeId && a.Attendance_Date.Date == attendanceDate.Date);
 
-                    if (existingRecord != null && status_id == null)
+                    if (existingRecord != null)
                     {
-                        // Nếu có bản ghi, và trạng thái là null thì xóa bản ghi
-                        _context.attendances .Remove(existingRecord);
-                    }
-                    else if (existingRecord != null && status_id != null)
-                    {
-                        // Nếu có bản ghi và có trạng thái chấm công thì cập nhật
-                        existingRecord.status_id = (int)status_id;
-                    }
-                    else if(existingRecord == null && status_id != null)
-                    {
-                        // Nếu không có và có trạng thái chấm công thì thêm mới
-                        _context.attendances.Add(new AttendanceModel
+                        if(status_id == null)
                         {
-                            Employee_Id = item.EmployeeId,
-                            Attendance_Date = attendanceDate,
-                            status_id = (int)status_id
-                        });
+                            // Nếu có bản ghi, và trạng thái là null thì xóa bản ghi
+                            _context.attendances.Remove(existingRecord);
+                        }
+                        else
+                        {
+                            // Nếu có bản ghi và có trạng thái chấm công thì cập nhật
+                            existingRecord.status_id = (int)status_id;
+                        }
+                        
                     }
-                    else
+                    if(existingRecord == null)
                     {
-                        continue;
+                        if (status_id != null)
+                        {
+                            // Nếu không có bản ghi và có trạng thái chấm công thì thêm mới
+                            _context.attendances.Add(new AttendanceModel
+                            {
+                                Employee_Id = item.EmployeeId,
+                                Attendance_Date = attendanceDate,
+                                status_id = (int)status_id
+                            });
+                        }
                     }
                 }
-
                 // Lưu thay đổi vào cơ sở dữ liệu
                 await _context.SaveChangesAsync();
 
+                //Kiểm tra ngày đã chọn có phải ngày hôm nay
+                if(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone).Date == attendanceDate.Date)
+                {
+                    return RedirectToAction("DanhSach");
+                }
                 // Lấy lại danh sách nhân viên và trạng thái chấm công để hiển thị trong view
                 var employees = await _context.employees.Where(e => e.employee_id != "admin" && e.expired_date == null).ToListAsync();
                 var attendances = await _context.attendances.Where(a => a.Attendance_Date.Date == TimeZoneInfo.ConvertTimeFromUtc(attendanceDate, vietnamTimeZone).Date).ToListAsync();
