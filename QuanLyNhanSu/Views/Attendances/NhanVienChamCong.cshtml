@@ -32,25 +32,73 @@
                     <i class="bi bi-qr-code-scan"></i>
                 </a>
             </div>
-            <div id="reader" class="d-flex justify-content-center my-3" style="width: 100%; max-height: 300px; display: none;"></div>
-            <a id="closeCameraBtn" class="btn btn-outline-danger" onclick="closeCamera()" style="display: none;">Tắt Camera</a>
+            <!-- Modal structure -->
+            <div id="cameraModal" class="modal">
+                <div class="modal-content">
+                    <div class="box-btn">
+                        <button class="close-btn" onclick="closeCamera()">Đóng</button>
+                    </div>
+                    <!-- Camera reader container -->
+                    <div id="reader"></div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
+<style>
+    /* Style for modal */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Style for modal content */
+    .modal-content {
+        position: relative;
+        background-color: white;
+        padding: 8px;
+        border-radius: 8px;
+        width: 100%;
+        text-align: center;
+        margin: 100px auto;
+    }
+
+    .box-btn{
+        display: flex;
+        justify-content: end;
+    }
+    /* Close button style */
+    .close-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        width: fit-content;
+        margin-bottom: 8px;
+    }
+</style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.2.1/html5-qrcode.min.js"></script>
 
     <script>
         let qrCodeReader;
         function startCamera() {
             qrCodeReader = new Html5Qrcode("reader");
-            document.getElementById("reader").style.display = "block";
-            document.getElementById("openCameraBtn").style.display = "none";
-            document.getElementById("closeCameraBtn").style.display = "block";
             qrCodeReader.start(
                 { facingMode: "environment" }, // Dùng camera sau nếu có
                 {
                     fps: 10,
-                    qrbox: { width: 250, height: 250 }
+                    qrbox: 500,
+                    aspectRatio: 1.777778
                 },
                 qrCodeMessage => {
                     // Khi quét thành công, điều hướng đến URL
@@ -64,11 +112,14 @@
             ).catch(err => {
                 console.log("Lỗi mở camera:", err);
             });
+            document.getElementById("cameraModal").style.display = "block";
+            document.getElementById("openCameraBtn").style.display = "none";
+            document.getElementById("closeCameraBtn").style.display = "block";
         }
         //Tắt camera
     function closeCamera() {
         // Ẩn khung hiển thị camera và thay đổi nút
-        document.getElementById("reader").style.display = "none";
+        document.getElementById("cameraModal").style.display = "none";
         document.getElementById("openCameraBtn").style.display = "block";
         document.getElementById("closeCameraBtn").style.display = "none";
         if (qrCodeReader) {

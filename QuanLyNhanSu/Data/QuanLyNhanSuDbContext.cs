@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Models;
 
 namespace QuanLyNhanSu.Data
