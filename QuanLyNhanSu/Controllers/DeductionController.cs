@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhanSu.Data;
 using QuanLyNhanSu.Models;
+using System.Drawing.Printing;
 
 namespace QuanLyNhanSu.Controllers
 {
@@ -14,15 +16,26 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: DeductionController
-        public async Task<IActionResult> Index(string? searchID = null)
+        public async Task<IActionResult> Index(string? searchID = null, int page = 1, int pageSize = 10)
         {
-            var deductions = new List<DeductionModel>();
-            if (searchID != null)
+            var deductions = await _context.deductions.ToListAsync();
+            if (!string.IsNullOrEmpty(searchID))
             {
-                deductions = await _context.deductions.Where(d => d.Employee_Id.Contains(searchID)).ToListAsync();
+                deductions = deductions.Where(d => d.Employee_Id.Contains(searchID)).ToList();
+                deductions = deductions
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+                ViewBag.TotalPages = (int)Math.Ceiling(deductions.Count() / (double)pageSize);
+                ViewBag.CurrentPage = page;
                 return View(deductions);
             }
-            deductions = await _context.deductions.ToListAsync();
+            deductions = deductions
+                .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+                .ToList();
+            ViewBag.TotalPages = (int)Math.Ceiling(await _context.deductions.CountAsync() / (double)pageSize);
+            ViewBag.CurrentPage = page;
             return View(deductions);
         }
 

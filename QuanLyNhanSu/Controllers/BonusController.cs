@@ -15,16 +15,27 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: BonusController
-        public async Task<ActionResult> Index(string? searchID = null)
+        public async Task<ActionResult> Index(string? searchID = null, int page = 1, int pageSize = 10)
         {
-            var listBonus = new List<BonusModel>();
-            if (searchID != null)
+            var bonuses = await _context.bonuses.ToListAsync();
+            if (!string.IsNullOrEmpty(searchID))
             {
-                listBonus = await _context.bonuses.Where(b => b.Employee_Id == searchID).ToListAsync();
-                return View(listBonus);
+                bonuses = bonuses.Where(d => d.Employee_Id.Contains(searchID)).ToList();
+                bonuses = bonuses
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+                ViewBag.TotalPages = (int)Math.Ceiling(bonuses.Count() / (double)pageSize);
+                ViewBag.CurrentPage = page;
+                return View(bonuses);
             }
-            listBonus = await _context.bonuses.ToListAsync();
-            return View(listBonus);
+            bonuses = bonuses
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            ViewBag.TotalPages = (int)Math.Ceiling(await _context.bonuses.CountAsync() / (double)pageSize);
+            ViewBag.CurrentPage = page;
+            return View(bonuses);
         }
 
         // GET: BonusController/Details/5
