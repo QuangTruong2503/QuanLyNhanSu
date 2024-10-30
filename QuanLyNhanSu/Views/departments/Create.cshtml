@@ -1,0 +1,41 @@
+﻿@model QuanLyNhanSu.Models.departmentsModel
+
+@{
+    ViewData["Title"] = "Tạo phòng ban mới";
+}
+
+<h1 class="text-primary">@ViewData["Title"]</h1>
+<hr />
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h4 class="card-title text-center mb-4">Nhập thông tin phòng ban</h4>
+
+            <form asp-action="Create">
+                <!-- Tên phòng ban -->
+                <div class="mb-3">
+                    <label asp-for="department_name" class="form-label">Tên phòng ban</label>
+                    <input asp-for="department_name" class="form-control" placeholder="Nhập tên phòng ban" />
+                    <span asp-validation-for="department_name" class="text-danger"></span>
+                </div>
+
+                <!-- Nút tạo mới -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Tạo mới</button>
+                </div>
+            </form>
+
+            <!-- Link quay lại danh sách -->
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="text-secondary">Quay lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -73,11 +73,13 @@ namespace QuanLyNhanSu.Controllers
                     //Thiết lập ngày bắt đầu làm việc
                     employees.hire_date = DateTime.Now;
                     //Thiết lập mật khẩu mặc định
-                    var defaultPassword = "123456";
-                    employees.hashed_password = PasswordHasher.HashPassword(defaultPassword);
+                    DateTime dateOfBirth = employees.date_of_birth;
+                    var defaultPassword = dateOfBirth.Day + "" + dateOfBirth.Month + "" + dateOfBirth.Year;
+                    employees.hashed_password = PasswordHasher.HashPassword(defaultPassword.ToString());
                     _context.Add(employees);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    TempData["SuccessMessage"] = "Đăng ký nhân viên thành công. Mật khẩu là ngày tháng năm sinh của nhân viên";
+                    return RedirectToAction(nameof(DangKyNhanVien));
                 }
                 return View(employees);
             }
@@ -94,11 +96,13 @@ namespace QuanLyNhanSu.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             var detail = await _context.employees.FindAsync(id);
-            
             if (detail == null)
             {
                 return NotFound();
             }
+            ViewData["DepartmentID"] = detail.department_id;
+            ViewData["PositionID"] = detail.position_id;
+            ViewData["RoleID"] = detail.role_id;
             return View(detail);
         }
 
@@ -143,7 +147,7 @@ namespace QuanLyNhanSu.Controllers
             }
         }
 
-        // GET: EmployeesController/Delete/5
+        [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
             try

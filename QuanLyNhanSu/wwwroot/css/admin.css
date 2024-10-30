@@ -2,6 +2,10 @@
     background-color: #eff1f3;
 }
 
+table{
+    min-height: 15rem;
+}
+
 .sidebar {
     background-color: #fff;
     min-height: 80vh;
@@ -52,4 +56,30 @@
 .main-content {
     background-color: #fff;
     border-radius: 6px;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+
+#qrcode img{
+    margin: 0 auto;
+}
+
+/* Sidebar Customization */
+
+    .sidebar .nav-link {
+        font-size: 0.95rem;
+        padding: 10px 15px;
+        border-radius: 5px;
+        color: #333333;
+    }
+
+.accordion-body {
+    padding-left: 20px;
+}
+side-bar{
+    padding: 0 20px;
+}
+.main-content {
+    padding: 20px;
 }

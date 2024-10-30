@@ -1,59 +1,106 @@
-﻿@model QuanLyNhanSu.Models.AttendanceModel
-@{
-    ViewBag.Title = "Chấm Công";
+﻿@{
+    string expirationConvert = @ViewBag.Expiration;
+    ViewData["Title"] = "Chấm Công Theo Ngày";
 }
+<div class="container my-5 p-4 bg-light shadow rounded">
+    <h3 class="text-center mb-4">Chấm Công Ngày @ViewBag.ToDay</h3>
 
-<h2>Chấm Công Ngày: @TempData["DateNow"]</h2>
-
-<form asp-action="ChamCongVao" method="post">
-    <div class="form-group col-md-4">
-        <label asp-for="Employee_Id" class="control-label">Nhập mã nhân viên</label>
-        <input asp-for="Employee_Id" class="form-control" required/>
-        <span asp-validation-for="Employee_Id" class="text-danger"></span>
-    </div>
-    <div class="form-group py-2">
-        <button type="submit" class="btn btn-primary">Chấm Công Vào</button>
-        
-    </div>
-</form>
-
-<form asp-action="ChamCongRa" method="post">
-    <div class="form-group col-md-4">
-        <label asp-for="Employee_Id" class="control-label">Nhập mã nhân viên</label>
-        <input asp-for="Employee_Id" class="form-control" required />
-        <span asp-validation-for="Employee_Id" class="text-danger"></span>
-    </div>
-    <div class="form-group py-2">
-        <button type="submit" class="btn btn-warning">Chấm Công Ra</button>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#KetThucModal">
-            Kết thúc chấm công
-        </button>
-    </div>
-</form>
-<div asp-validation-summary="All" class="text-danger"></div>
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Message"]
-    </div>
-}
-<!-- Kết thúc Modal -->
-<div class="modal fade" id="KetThucModal" tabindex="-1" aria-labelledby="KetThucModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="KetThucModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Có xác nhận kết thúc chấm công ngày @TempData["DateNow"] hay không?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <form asp-action="KetThucChamCong" method="post">
-                    <button type="submit" class="btn btn-danger">Kết thúc</button>
-                </form>
-            </div>
+    @if(ViewBag.VerifyCode != null)
+    {
+        <div class="alert alert-success text-center">
+            <div class="mb-3" id="qrcode"></div>
+            <h5>Mã số: <span class="text-primary font-weight-bold" id="verifyCode">@ViewBag.VerifyCode</span></h5>
+            <h5>Thời gian còn lại: <span class="text-danger font-weight-bold" id="countdown">00:00</span></h5>
         </div>
-    </div>
+            
+        <form method="post" asp-action="KetThucChamCong" class="text-center mt-4">
+            <button type="submit" class="btn btn-lg btn-danger px-5">Kết thúc</button>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-action="BatDauChamCong" class="text-center mt-4">
+            <button type="submit" class="btn btn-lg btn-primary px-5">Bắt đầu</button>
+        </form>
+    }
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    // Chuyển đổi ViewBag.Expiration thành đối tượng Date
+    let expirationTimeString ="@expirationConvert";
+    expirationTimeString = expirationTimeString.replace(' SA', ' AM').replace(' CH', ' PM');
+
+    // Kiểm tra nếu chuỗi có định dạng hợp lệ, nếu không thì báo lỗi
+    let expirationTime = new Date(expirationTimeString);
+
+    if (isNaN(expirationTime)) {
+        console.error("Định dạng thời gian không hợp lệ:", expirationTimeString);
+    } else {
+        //expirationTime = expirationTime.getTime();
+
+        // Hàm bắt đầu đếm ngược
+        function startCountdown() {
+            let countdownInterval = setInterval(() => {
+                let currentTime = new Date();
+                let timeRemaining = expirationTime - currentTime;
+
+                // Tính toán số giờ, phút, giây còn lại
+                let minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                let minutesPadStart = minutes.toString().padStart(2, '0');
+                let secondsPadStart = seconds.toString().padStart(2, '0');
+                // Hiển thị thời gian đếm ngược
+                if (timeRemaining > 0) {
+                    document.getElementById("countdown").innerText = `${minutesPadStart}:${secondsPadStart}`;
+                } else {
+                    //Khi hết thời gian, dừng đếm ngược và làm mới mã
+                    clearInterval(countdownInterval);
+                    refreshAttendanceToken();
+}
+            }, 1000); // Cập nhật mỗi giây
+        }
+
+        // Gọi hàm để bắt đầu đếm ngược
+        startCountdown();
+        generateQRCode(); //Tạo mã QRCode mới
+
+    }
+
+    function refreshAttendanceToken() {
+        fetch('/Attendances/RefreshAttendanceToken', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("verifyCode").innerText = data.code;
+            expirationTime = new Date(data.expiration).getTime();
+            startCountdown(); // Bắt đầu lại đếm ngược
+            generateQRCode(); //Tạo mã QRCode mới
+        })
+        .catch(error => console.error('Lỗi tạo mã mới:', error));
+    }
+    function generateQRCode() {
+        // Lấy verifyCode từ ViewBag và truyền vào URL Vaix CSSNumericArray nhai
+        const verifyCode = document.getElementById("verifyCode").innerText; // Tham số verifyCode từ ViewBag
+        const url = `https://quanlynhansu-772476565863.asia-southeast1.run.app/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
+
+        // Xóa tất cả các thẻ <canvas> và <img> bên trong thẻ div#qrcode
+        const qrCodeContainer = document.getElementById("qrcode");
+        while (qrCodeContainer.firstChild) {
+            qrCodeContainer.removeChild(qrCodeContainer.firstChild);
+        }
+
+        // Khởi tạo mã QR với URL trên
+        new QRCode(qrCodeContainer, {
+            text: url,
+            width: 200,
+            height: 200,
+        });
+    }
+
+
+</script>

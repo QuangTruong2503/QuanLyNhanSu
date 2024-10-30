@@ -1,0 +1,101 @@
+﻿@model QuanLyNhanSu.Models.SalaryModel
+
+@{
+    ViewData["Title"] = "Xem Chi Tiết Lương";
+    var bonuses = ViewData["Bonuses"] as IEnumerable<QuanLyNhanSu.Models.BonusModel>;
+    var deductions = ViewData["Deductions"] as IEnumerable<QuanLyNhanSu.Models.DeductionModel>;
+}
+
+<h1 class="text-center">Xem Chi Tiết Lương</h1>
+
+<div class="container mt-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin lương</h5>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-3">Mã lương</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Salary_Id)</dd>
+
+                <dt class="col-sm-3">Mã nhân viên</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Employee_Id)</dd>
+
+                <dt class="col-sm-3">Từ ngày</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Begin_Date)</dd>
+
+                <dt class="col-sm-3">Đến ngày</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.End_Date)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Tiền lương</h5>
+            <p><strong>Tiền lương cơ bản:</strong> @Html.DisplayFor(model => model.Base_Salary)</p>
+            <p><strong>Thưởng:</strong> @Html.DisplayFor(model => model.Bonus)</p>
+            <ul>
+                @if (bonuses != null)
+                {
+                    foreach (var bonus in bonuses)
+                    {
+                        <li>
+                            <p>Tiền thưởng: @bonus.Bonus_Amount.ToString("C")</p>
+                            <p>Ngày thưởng: @bonus.Bonus_Date</p>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Khấu trừ</h5>
+            <p><strong>Khấu trừ:</strong> @Html.DisplayFor(model => model.Deduction)</p>
+            <ul>
+                @if (deductions != null)
+                {
+                    foreach (var deduction in deductions)
+                    {
+                        <li>
+                            <p>Tiền khấu trừ: @deduction.Deduction_Amount.ToString("C")</p>
+                            <p>Ngày khấu trừ: @deduction.Deduction_Date</p>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Tổng kết</h5>
+            <p><strong>Số ngày đi làm:</strong> @ViewData["WorkingDays"] ngày.</p>
+            <p><strong>Lương của @ViewData["WorkingDays"] ngày làm:</strong> @ViewData["AmountWorkingDays"]</p>
+            <p><strong>Tổng tiền lương:</strong> @Html.DisplayFor(model => model.Total_Salary)</p>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <form asp-action="CapNhatLuongNhanSu" method="post">
+            <button type="submit" class="btn btn-success">Cập nhật</button>
+        </form>
+        <a asp-action="Index" class="btn btn-secondary mt-2">Back to List</a>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+    }
+    .card-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #333;
+    }
+    dl.row dt {
+        font-weight: bold;
+    }
+</style>

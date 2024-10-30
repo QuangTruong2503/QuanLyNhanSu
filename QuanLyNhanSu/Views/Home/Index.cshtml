@@ -1,17 +1,66 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    @if (ViewData["EmployeeName"] != null)
-    {
-        <p>Hello, @ViewData["EmployeeName"]!</p>
-        <form asp-controller="Login" asp-action="Logout" method="post">
-            <button type="submit" class="btn btn-danger">Đăng xuất</button>
-        </form>
-    }
-    
+<div class="container my-5">
+    <div class="row g-4">
+        <div class="col-sm-6 col-lg-4">
+            <a href="@Url.Action("TienThuong", "Details")" class="card-link">
+                <div class="card  h-100 border-0 rounded-lg card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary font-weight-bold">Tiền thưởng</h5>
+                        <p class="card-text">Xem chi tiết tiền thưởng của nhân viên trong quá trình làm việc.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a href="@Url.Action("KhauTru", "Details")" class="card-link">
+                <div class="card  h-100 border-0 rounded-lg card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary font-weight-bold">Tiền khấu trừ</h5>
+                        <p class="card-text">Xem chi tiết tiền khấu trừ của nhân viên trong quá trình làm việc.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a href="@Url.Action("TienLuong", "Details")" class="card-link">
+                <div class="card  h-100 border-0 rounded-lg card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary font-weight-bold">Tiền lương</h5>
+                        <p class="card-text">Xem chi tiết tiền lương của nhân viên trong quá trình làm việc.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <a href="@Url.Action("NhanVienChamCong", "Attendances")" class="card-link">
+                <div class="card  h-100 border-0 rounded-lg card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary font-weight-bold">Chấm Công</h5>
+                        <p class="card-text">Nhập mã xác nhận hoặc quét mã QR để chấm công theo ngày.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Xóa gạch chân khi hover */
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    .card-hover{
+        transition: all 0.3s ease-in;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2)
+    }
+    /* Hiệu ứng hover cho card */
+    .card-hover:hover {
+        transform: translateY(-5px);
+        ;
+    }
+</style>

@@ -1,12 +1,11 @@
 ﻿@model QuanLyNhanSu.Models.DeductionModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo mới khấu trừ lương";
 }
 
-<h1>Create</h1>
+<h1>Thêm Khấu Trừ Lương</h1>
 
-<h4>DeductionModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,12 +17,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Deduction_Amount" class="control-label"></label>
-                <input asp-for="Deduction_Amount" class="form-control" />
+                <input asp-for="Deduction_Amount" class="form-control" required/>
                 <span asp-validation-for="Deduction_Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Deduction_Date" class="control-label"></label>
+                <input asp-for="Deduction_Date" type="date" class="form-control" required />
+                <span asp-validation-for="Deduction_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Reason" class="control-label"></label>
-                <textarea asp-for="Reason" class="form-control" ></textarea>
+                <textarea asp-for="Reason" class="form-control" required></textarea>
                 <span asp-validation-for="Reason" class="text-danger"></span>
             </div>
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -32,7 +36,7 @@
                 <p class="alert alert-success">@TempData["Success"]</p>
             }
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Thêm Mới" class="btn btn-primary" />
             </div>
         </form>
     </div>

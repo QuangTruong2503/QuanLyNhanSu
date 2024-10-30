@@ -1,19 +1,20 @@
-﻿@model QuanLyNhanSu.Models.BonusModel
+﻿@model QuanLyNhanSu.Models.DeductionModel
 
 @{
-    ViewData["Title"] = "Chỉnh sửa";
+    ViewData["Title"] = "Chỉnh sửa khấu trừ lương";
 }
 
-<h1>Chỉnh Sửa Lương Thưởng</h1>
+<h1>Edit</h1>
+
+<h4>DeductionModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            
             <div class="form-group">
-                <label asp-for="Bonus_Id" class="control-label"></label>
-                <input asp-for="Bonus_Id" class="form-control" readonly/>
-                <span asp-validation-for="Bonus_Id" class="text-danger"></span>
+                <label asp-for="Deduction_Id" class="control-label"></label>
+                <input asp-for="Deduction_Id" class="form-control" readonly/>
+                <span asp-validation-for="Deduction_Id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Employee_Id" class="control-label"></label>
@@ -21,24 +22,24 @@
                 <span asp-validation-for="Employee_Id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bonus_Amount" class="control-label"></label>
-                <input asp-for="Bonus_Amount" class="form-control" type="text"/>
-                <span asp-validation-for="Bonus_Amount" class="text-danger"></span>
+                <label asp-for="Deduction_Amount" class="control-label"></label>
+                <input asp-for="Deduction_Amount" class="form-control" type="number"/>
+                <span asp-validation-for="Deduction_Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bonus_Date" class="control-label"></label>
-                <input asp-for="Bonus_Date" class="form-control" />
-                <span asp-validation-for="Bonus_Date" class="text-danger"></span>
+                <label asp-for="Deduction_Date" class="control-label"></label>
+                <input asp-for="Deduction_Date" class="form-control" />
+                <span asp-validation-for="Deduction_Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Reason" class="control-label"></label>
-                <textarea asp-for="Reason" class="form-control" ></textarea>
+                <input asp-for="Reason" class="form-control" />
                 <span asp-validation-for="Reason" class="text-danger"></span>
             </div>
             <div asp-validation-summary="All" class="text-danger"></div>
-            @if(TempData["Success"] !=null)
+            @if(TempData["SuccessMessage"] != null)
             {
-                <p class="alert alert-success">@TempData["Success"]</p>
+                <p class="alert alert-success">@TempData["SuccessMessage"]</p>
             }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

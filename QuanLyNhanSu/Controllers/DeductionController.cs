@@ -14,9 +14,15 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: DeductionController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchID = null)
         {
-            var deductions = await _context.deductions.ToListAsync();
+            var deductions = new List<DeductionModel>();
+            if (searchID != null)
+            {
+                deductions = await _context.deductions.Where(d => d.Employee_Id.Contains(searchID)).ToListAsync();
+                return View(deductions);
+            }
+            deductions = await _context.deductions.ToListAsync();
             return View(deductions);
         }
 
@@ -43,7 +49,6 @@ namespace QuanLyNhanSu.Controllers
             }
             try
             {
-                model.Deduction_Date = DateTime.Now;
                 _context.deductions.Add(model);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"Thêm dữ liệu khấu trừ thành công! NV: {model.Employee_Id}, Lý do: {model.Reason}";
@@ -57,27 +62,40 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: DeductionController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var deduction = await _context.deductions.FindAsync(id);
+            if (deduction == null) {
+                return NotFound();
+            }
+            return View(deduction);
         }
 
         // POST: DeductionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, DeductionModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             try
             {
-                return RedirectToAction(nameof(Index));
+                _context.deductions.Update(model);
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = $"Cập nhật dữ liệu thành công! NV: {model.Employee_Id}, Lý do: {model.Reason}";
+                return RedirectToAction(nameof(Edit));
             }
-            catch
+            catch (Exception ex)
             {
+                ModelState.AddModelError("", "Gặp lỗi: " + ex.Message);
                 return View();
             }
         }
 
         // GET: DeductionController/Delete/5
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var deduction = await _context.deductions.FindAsync(id);
@@ -89,19 +107,5 @@ namespace QuanLyNhanSu.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: DeductionController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

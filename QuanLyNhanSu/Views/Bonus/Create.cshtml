@@ -1,12 +1,11 @@
 ﻿@model QuanLyNhanSu.Models.BonusModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm mới lương thưởng";
 }
 
-<h1>Create</h1>
+<h1>Thêm Lương Thưởng</h1>
 
-<h4>BonusModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,6 +22,11 @@
                 <span asp-validation-for="Bonus_Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Bonus_Date" class="control-label"></label>
+                <input asp-for="Bonus_Date" type="date" class="form-control" required />
+                <span asp-validation-for="Bonus_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Reason" class="control-label"></label>
                 <textarea asp-for="Reason" class="form-control" ></textarea>
                 <span asp-validation-for="Reason" class="text-danger"></span>
@@ -33,7 +37,7 @@
                 <p class="text-success">@TempData["Success"]</p>
             }
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Tạo Mới" class="btn btn-primary" />
             </div>
         </form>
     </div>

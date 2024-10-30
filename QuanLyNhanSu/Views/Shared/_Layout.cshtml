@@ -16,60 +16,86 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - QuanLyNhanSu</title>
+    <!-- Thêm thư viện Bootstrap Icons từ CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuanLyNhanSu.styles.css" asp-append-version="true" />
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuanLyNhanSu</a>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3 py-3">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a class="navbar-brand d-flex align-items-center fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-user-friends me-2"></i> QuanLyNhanSu
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-user-shield me-1"></i> Privacy
+                            </a>
                         </li>
                     </ul>
-                    <!--Kiểm tra có dữ liệu người dùng đăng nhập hay không-->
+
+                    <!-- Kiểm tra có dữ liệu người dùng đăng nhập hay không -->
                     @if (employeeData != null)
                     {
-                        <!-- Example single danger button -->
                         <div class="btn-group">
-                            <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Xin chào @employeeConverted.last_name
+                            <button class="btn btn-primary dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i> Xin chào, @employeeConverted.last_name
                             </button>
-                            <ul class="dropdown-menu">
-                                @if(employeeConverted.role_id == 2)
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if (employeeConverted.role_id == 2)
                                 {
-                                    <li><a class="dropdown-item text-primary" href="@Url.Action("Index", "Admin")">Trang Quản Lý</a></li>
+                                    <li>
+                                        <a class="dropdown-item text-primary" href="@Url.Action("Index", "Admin")">
+                                            <i class="fas fa-tools me-1"></i> Trang Quản Lý
+                                        </a>
+                                    </li>
                                 }
-                                <li><a class="dropdown-item text-warning" href="@Url.Action("ChangePassword", "Login")">Đổi mật khẩu</a></li>
+                                <li>
+                                    <a class="dropdown-item text-black" href="@Url.Action("ThongTinTaiKhoan", "Details")">
+                                        <i class="fas fa-user me-1"></i> Tài khoản
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-black" href="@Url.Action("DoiMatKhau", "Details")">
+                                        <i class="fas fa-key me-1"></i> Đổi Mật Khẩu
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form asp-controller="Login" asp-action="Logout" method="post">
-                                        <button class="dropdown-item text-danger">Đăng xuất</button>
+                                        <button class="dropdown-item text-danger d-flex align-items-center">
+                                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+                                        </button>
                                     </form>
                                 </li>
                             </ul>
                         </div>
                     }
-                    <!--Hiện mục đăng nhập nếu không có dữ liệu người dùng-->
                     @if (employeeData == null)
                     {
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Login">Đăng nhập</a>
+                        <a class="nav-link text-dark fw-semibold d-flex align-items-center" asp-area="" asp-controller="Login" asp-action="Login">
+                            <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                        </a>
                     }
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -77,10 +103,11 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - QuanLyNhanSu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container d-flex justify-content-center align-items-center">
+            Nhóm 1A - QuanLyNhanSu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,59 +1,114 @@
 ﻿@model IEnumerable<QuanLyNhanSu.Models.BonusModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lương Thưởng";
 }
 
-<h1>Index</h1>
+<h2 class="text-center my-4">Danh Sách Lương Thưởng</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Bonus_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bonus_Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bonus_Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Reason)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bonus_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bonus_Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bonus_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Bonus_Id }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                <a class="text-danger" href="@Url.Action("Delete", new {id= item.Bonus_Id})">Xóa</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container">
+    <!-- Form tìm kiếm -->
+    <form asp-action="Index" method="get" class="row mb-4 align-items-center">
+        <label for="searchID" class="col-sm-2 col-form-label">Tìm mã nhân sự:</label>
+        <div class="col-sm-4">
+            <input type="search" id="searchID" name="searchID" class="form-control" placeholder="Nhập mã nhân sự" />
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">Xem</button>
+        </div>
+        <div class="col-sm-4 text-end">
+            <a asp-action="Create" class="btn btn-success">Thêm Lương Thưởng</a>
+        </div>
+    </form>
+
+    <!-- Bảng danh sách lương thưởng -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Bonus_Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Employee_Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Bonus_Amount)</th>
+                    <th>@Html.DisplayNameFor(model => model.Bonus_Date)</th>
+                    <th>@Html.DisplayNameFor(model => model.Reason)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Bonus_Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Employee_Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Bonus_Amount)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Bonus_Date)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Reason)</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Tùy chỉnh
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new { id = item.Bonus_Id })">Chỉnh sửa</a></li>
+                                    <li><a class="dropdown-item text-warning" href="@Url.Action("Details", new { id = item.Bonus_Id })">Chi tiết</a></li>
+                                    <li>
+                                        <button class="dropdown-item text-danger" onclick="openDeleteModal(@item.Bonus_Id)">Xóa</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal xác nhận xoá -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xoá khoản thưởng này? Sau khi xoá, thông tin này sẽ bị mất.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var bonusID;
+
+    function openDeleteModal(id) {
+        bonusID = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+        deleteBonus(bonusID);
+    });
+
+    function deleteBonus(id) {
+        $.ajax({
+            url: '/Bonus/Delete/' + id,
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function () {
+                $('#deleteModal').modal('hide');
+                location.reload();
+            },
+            error: function () {
+                alert('Xoá không thành công!');
+            }
+        });
+    }
+</script>

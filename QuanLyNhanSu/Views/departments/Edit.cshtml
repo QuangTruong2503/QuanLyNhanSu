@@ -1,0 +1,56 @@
+﻿@model QuanLyNhanSu.Models.departmentsModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa phòng ban";
+}
+
+<h1 class="text-primary">@ViewData["Title"]</h1>
+<hr />
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h4 class="card-title text-center mb-4">Thông tin phòng ban</h4>
+
+            <form asp-action="Edit">
+                <!-- Mã phòng ban (Readonly) -->
+                <div class="mb-3">
+                    <label asp-for="department_id" class="form-label">Mã phòng ban</label>
+                    <input asp-for="department_id" class="form-control" readonly />
+                    <span asp-validation-for="department_id" class="text-danger"></span>
+                </div>
+
+                <!-- Tên phòng ban -->
+                <div class="mb-3">
+                    <label asp-for="department_name" class="form-label">Tên phòng ban</label>
+                    <input asp-for="department_name" class="form-control" placeholder="Nhập tên phòng ban" />
+                    <span asp-validation-for="department_name" class="text-danger"></span>
+                </div>
+
+                <!-- Thông báo thành công -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                <!-- Nút lưu thay đổi -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Lưu thay đổi</button>
+                </div>
+            </form>
+
+            <!-- Link quay lại danh sách -->
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="text-secondary">Quay lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

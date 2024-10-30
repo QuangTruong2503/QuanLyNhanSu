@@ -1,17 +1,15 @@
-﻿<h2>Tính toán lương</h2>
+﻿@{
+    ViewData["Title"] = "Tính Lương";
+    var months = ViewBag.Months as List<SelectListItem>;
+}
+<h2>Tính Lương</h2>
 
-
-
-<form asp-action="TinhLuong" method="post">
+<form asp-action="TinhLuong" method="post" class="col-md-6">
     <div class="row">
-        <div class="form-group col-md-4">
-            <label for="fromDate">Từ ngày:</label>
-            <input type="date" id="fromDate" name="fromDate" class="form-control" required />
-        </div>
-        <div class="form-group col-md-4">
-            <label for="toDate">Đến ngày:</label>
-            <input type="date" id="toDate" name="toDate" class="form-control" required />
-        </div>
+        <!-- Dropdown hiển thị danh sách tháng -->
+        <select  id="monthDropdown" class="form-control" name="month" required>
+            <option value="">Chọn tháng</option>
+        </select>
     </div>
     @if (TempData["SuccessMessage"] != null)
     {
@@ -23,3 +21,28 @@
     <button type="submit" class="btn btn-primary">Tính lương</button>
     <a asp-action="Index">Quay lại</a>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Gọi AJAX để lấy danh sách tháng
+        $.ajax({
+            url: '@Url.Action("GetMonths", "Salary")', // Đường dẫn tới action
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Xóa các tùy chọn hiện có trong dropdown
+                $('#monthDropdown').empty();
+                $('#monthDropdown').append('<option value="">Chọn tháng</option>');
+
+                // Lặp qua dữ liệu và thêm vào dropdown
+                $.each(data, function (index, item) {
+                    $('#monthDropdown').append('<option value="' + item.value + '">' + item.text + '</option>');
+                });
+            },
+            error: function (xhr, status, error) {
+                alert("Đã có lỗi xảy ra: " + error);
+            }
+        });
+    });
+</script>

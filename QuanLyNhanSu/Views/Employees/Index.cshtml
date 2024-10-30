@@ -1,84 +1,104 @@
 ﻿@model IEnumerable<QuanLyNhanSu.Models.EmployeesModel>
 @{
-    ViewData["Title"] = "Danh sách Nhân Sự";
+    ViewData["Title"] = "Danh Sách Nhân Sự";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="DangKyNhanVien">Thêm nhân sự</a>
+    <a asp-action="DangKyNhanVien" class="btn btn-primary">Thêm Nhân Sự</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.employee_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.first_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.last_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.gender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.departments.department_name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.employee_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.first_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.last_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.gender)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role.Role_Name)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.departments.department_name)
-                </td>
-            <td>
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Tùy chỉnh
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new {id=item.employee_id})">Chỉnh sửa</a></li>
-                            <li><a class="dropdown-item text-warning" href="@Url.Action("Details", new {id=item.employee_id})">Chi tiết</a></li>
-                            <li><a class="dropdown-item text-danger" href="@Url.Action("Delete", new {id=item.employee_id})">Xóa</a></li>
-                            <li><a class="dropdown-item text-secondary" href="@Url.Action("ResetPassword", new {id=item.employee_id})">Đặt lại mật khẩu</a></li>
-                        </ul>
-                    </div>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.employee_id)</th>
+                <th>@Html.DisplayNameFor(model => model.first_name)</th>
+                <th>@Html.DisplayNameFor(model => model.last_name)</th>
+                <th>@Html.DisplayNameFor(model => model.email)</th>
+                <th>@Html.DisplayNameFor(model => model.phone)</th>
+                <th>@Html.DisplayNameFor(model => model.gender)</th>
+                <th>@Html.DisplayNameFor(model => model.Role)</th>
+                <th>@Html.DisplayNameFor(model => model.departments.department_name)</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.employee_id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.first_name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.last_name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.phone)</td>
+                    <td>@Html.DisplayFor(modelItem => item.gender)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Role.Role_Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.departments.department_name)</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Tùy chỉnh
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new { id = item.employee_id })">Chỉnh sửa</a></li>
+                                <li><a class="dropdown-item text-warning" href="@Url.Action("Details", new { id = item.employee_id })">Chi tiết</a></li>
+                                <li><button class="dropdown-item text-danger" onclick="openDeleteModal('@item.employee_id')">Xóa</button></li>
+                                <li><a class="dropdown-item text-secondary" href="@Url.Action("ResetPassword", new { id = item.employee_id })">Đặt lại mật khẩu</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal xác nhận xoá -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xoá nhân sự này? Sau khi xóa, các thông tin liên quan sẽ bị mất.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var employeeID;
+
+    function openDeleteModal(id) {
+        employeeID = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+        deleteEmployee(employeeID);
+    });
+
+    function deleteEmployee(id) {
+        $.ajax({
+            url: '/Employees/Delete/' + id,
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                alert('Xóa không thành công!');
+            }
+        });
+    }
+</script>

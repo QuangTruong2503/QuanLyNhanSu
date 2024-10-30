@@ -1,0 +1,62 @@
+﻿@model IEnumerable<QuanLyNhanSu.Models.BonusModel>
+
+@{
+    ViewData["Title"] = "Tiền thưởng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<a class="btn text-primary mb-2" href="@Url.Action("Index", "Home")">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+    </svg>
+    Trở về
+</a>
+<h1>Tiền Thưởng</h1>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Bonus_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bonus_Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bonus_Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reason)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bonus_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bonus_Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bonus_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reason)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

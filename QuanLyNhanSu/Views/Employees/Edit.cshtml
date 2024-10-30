@@ -1,86 +1,107 @@
 ﻿@model QuanLyNhanSu.Models.EmployeesModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa nhân sự";
 }
 
-<h1>Edit</h1>
-
-<h4>EmployeesModel</h4>
+<h1 class="text-primary text-center">@ViewData["Title"]</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="employee_id" class="control-label"></label>
-                <input asp-for="employee_id" class="form-control" readonly />
-                <span asp-validation-for="employee_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="first_name" class="control-label"></label>
-                <input asp-for="first_name" class="form-control" />
-                <span asp-validation-for="first_name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="last_name" class="control-label"></label>
-                <input asp-for="last_name" class="form-control" />
-                <span asp-validation-for="last_name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="email" class="control-label"></label>
-                <input asp-for="email" class="form-control" />
-                <span asp-validation-for="email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="phone" class="control-label"></label>
-                <input asp-for="phone" class="form-control" />
-                <span asp-validation-for="phone" class="text-danger"></span>
-            </div>
-            <div class="form-group" hidden>
-                <label asp-for="hashed_password" class="control-label"></label>
-                <input asp-for="hashed_password" class="form-control" />
-                <span asp-validation-for="hashed_password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="gender" class="control-label"></label>
-                <input asp-for="gender" class="form-control" />
-                <span asp-validation-for="gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="hire_date" class="control-label"></label>
-                <input asp-for="hire_date" class="form-control" />
-                <span asp-validation-for="hire_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="department_id" class="control-label" ></label>
-                <select asp-for="department_id" class="form-control" id="departmentSelect"></select>
-                <span asp-validation-for="department_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="position_id" class="control-label"></label>
-                <select asp-for="position_id" class="form-control" id="positionSelect"></select>
-                <span asp-validation-for="position_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="role_id" class="control-label"></label>
-                <select asp-for="role_id" class="form-control" id="roleSelect"></select>
-                <span asp-validation-for="role_id" class="text-danger"></span>
-            </div>
-           
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm p-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <!-- Họ và Tên -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="first_name" class="form-label">Họ</label>
+                        <input asp-for="first_name" class="form-control" placeholder="Nhập họ" />
+                        <span asp-validation-for="first_name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="last_name" class="form-label">Tên</label>
+                        <input asp-for="last_name" class="form-control" placeholder="Nhập tên" />
+                        <span asp-validation-for="last_name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Email và Số điện thoại -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="email" class="form-label">Email</label>
+                        <input asp-for="email" class="form-control" placeholder="Nhập email" />
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="phone" class="form-label">Số điện thoại</label>
+                        <input asp-for="phone" class="form-control" placeholder="Nhập số điện thoại" />
+                        <span asp-validation-for="phone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Ngày sinh và Giới tính -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="hire_date" class="form-label">Ngày sinh</label>
+                        <input asp-for="hire_date" class="form-control" placeholder="dd/mm/yyyy" />
+                        <span asp-validation-for="hire_date" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="gender" class="form-label">Giới tính</label>
+                        <select asp-for="gender" class="form-control">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                        <span asp-validation-for="gender" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Phòng ban và Vị trí -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="department_id" class="form-label">Phòng ban</label>
+                        <select asp-for="department_id" class="form-control" id="departmentSelect">
+                            <option value="">Chọn phòng ban</option>
+                        </select>
+                        <span asp-validation-for="department_id" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="position_id" class="form-label">Vị trí</label>
+                        <select asp-for="position_id" class="form-control" id="positionSelect">
+                            <option value="">Chọn vị trí</option>
+                        </select>
+                        <span asp-validation-for="position_id" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Vai trò -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="role_id" class="form-label">Vai trò</label>
+                        <select asp-for="role_id" class="form-control" id="roleSelect">
+                            <option value="">Chọn vai trò</option>
+                        </select>
+                        <span asp-validation-for="role_id" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Nút lưu và hủy -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Hủy bỏ</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
@@ -97,66 +118,56 @@
             url: '@Url.Action("GetDepartments", "Employees")',
             type: 'GET',
             success: function (response) {
-                // Reset the position dropdown
-                $('#departmentSelect').empty();
-                $('#departmentSelect').append('<option value="">Chọn phòng ban</option>');
-
-                // Add new positions to the dropdown
+                var dropdown = $('#departmentSelect');
+                dropdown.empty().append('<option value="">Chọn phòng ban</option>');
                 $.each(response, function (index, value) {
-                    $('#departmentSelect').append('<option value="' + value.value + '">' + value.text + '</option>');
+                    dropdown.append('<option value="' + value.value + '">' + value.text + '</option>');
                 });
+                dropdown.val(@ViewData["DepartmentID"]);
             },
             error: function () {
-                alert('Lỗi khi tải dữ liệu vị trí.');
+                alert('Lỗi khi tải dữ liệu phòng ban.');
             }
         });
-    };
-    function loadRoles(){
+    }
+    function loadRoles() {
         $.ajax({
             url: '@Url.Action("GetRoles", "Employees")',
             type: 'GET',
             success: function (response) {
-                // Reset the position dropdown
-                $('#roleSelect').empty();
-                $('#roleSelect').append('<option value="">Chọn vai trò</option>');
-
-                // Add new positions to the dropdown
+                var dropdown = $('#roleSelect');
+                dropdown.empty().append('<option value="">Chọn vai trò</option>');
                 $.each(response, function (index, value) {
-                    $('#roleSelect').append('<option value="' + value.value + '">' + value.text + '</option>');
+                    dropdown.append('<option value="' + value.value + '">' + value.text + '</option>');
                 });
+                dropdown.val(@ViewData["RoleID"]);
             },
             error: function () {
-                alert('Lỗi khi tải dữ liệu vị trí.');
+                alert('Lỗi khi tải dữ liệu vai trò.');
             }
         });
     }
-
     function loadPositions() {
-        var departmentId = $('#departmentSelect').val();
-
+        var departmentId = $('#departmentSelect').val() || @ViewData["DepartmentID"];
         if (departmentId) {
             $.ajax({
                 url: '@Url.Action("GetPositionsByDepartmentId", "Employees")',
                 type: 'GET',
                 data: { departmentId: departmentId },
                 success: function (response) {
-                    // Reset the position dropdown
-                    $('#positionSelect').empty();
-                    $('#positionSelect').append('<option value="">Chọn Vị trí</option>');
-
-                    // Add new positions to the dropdown
+                    var dropdown = $('#positionSelect');
+                    dropdown.empty().append('<option value="">Chọn vị trí</option>');
                     $.each(response, function (index, value) {
-                        $('#positionSelect').append('<option value="' + value.value + '">' + value.text + '</option>');
+                        dropdown.append('<option value="' + value.value + '">' + value.text + '</option>');
                     });
+                    dropdown.val(@ViewData["PositionID"]);
                 },
                 error: function () {
                     alert('Lỗi khi tải dữ liệu vị trí.');
                 }
             });
         } else {
-            // Reset dropdown if no department is selected
-            $('#positionSelect').empty();
-            $('#positionSelect').append('<option value="">Chọn Vị trí</option>');
+            $('#positionSelect').empty().append('<option value="">Chọn vị trí</option>');
         }
     }
 </script>

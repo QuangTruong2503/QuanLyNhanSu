@@ -4,67 +4,79 @@
     ViewData["Title"] = "ĐĂNG KÝ NHÂN SỰ MỚI";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
 <hr />
-<div class="row">
-        <form asp-action="DangKyNhanVien" class="row">
-            <div class="form-group col-md-4">
-                <label asp-for="first_name" class="control-label"></label>
-                <input asp-for="first_name" class="form-control" />
-                <span asp-validation-for="first_name" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="last_name" class="control-label"></label>
-                <input asp-for="last_name" class="form-control" />
-                <span asp-validation-for="last_name" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="email" class="control-label"></label>
-                <input asp-for="email" class="form-control" />
-                <span asp-validation-for="email" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="phone" class="control-label"></label>
-                <input asp-for="phone" class="form-control" />
-                <span asp-validation-for="phone" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="date_of_birth" class="control-label"></label>
-                <input asp-for="date_of_birth" class="form-control" type="date"/>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="gender"></label>
-                <select asp-for="gender" class="form-control">
-                    <option value="Nam">Nam</option>
-                    <option value="Nữ">Nữ</option>
-                    <option value="Khác">Khác</option>
-                </select>
 
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="department_id" class="control-label"></label>
-                <select asp-for="department_id" class="form-control" id="departmentSelect">
-                    <option value="">Chọn phòng ban</option>
-                </select>
-                <span asp-validation-for="department_id" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="position_id" class="control-label"></label>
-                <select id="positionSelect" asp-for="position_id" class="form-control">
-                    <option value="">Chọn Vị trí</option>
-                </select>
+<div class="container bg-light p-4 rounded shadow">
+    <form asp-action="DangKyNhanVien" class="row g-3">
+        <div class="form-group col-md-6">
+            <label asp-for="first_name" class="form-label fw-semibold">Họ</label>
+            <input asp-for="first_name" class="form-control" placeholder="Nguyễn Văn" />
+            <span asp-validation-for="first_name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="last_name" class="form-label fw-semibold">Tên</label>
+            <input asp-for="last_name" class="form-control" placeholder="A" />
+            <span asp-validation-for="last_name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="email" class="form-label fw-semibold">Email</label>
+            <input asp-for="email" class="form-control" placeholder="nva@gmail.com" />
+            <span asp-validation-for="email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="phone" class="form-label fw-semibold">Số điện thoại</label>
+            <input asp-for="phone" class="form-control" placeholder="Nhập số điện thoại" />
+            <span asp-validation-for="phone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="date_of_birth" class="form-label fw-semibold">Ngày sinh</label>
+            <input asp-for="date_of_birth" class="form-control" type="date" />
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="gender" class="form-label fw-semibold">Giới tính</label>
+            <select asp-for="gender" class="form-control">
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="department_id" class="form-label fw-semibold">Phòng ban</label>
+            <select asp-for="department_id" class="form-control" id="departmentSelect">
+                <option value="">Chọn phòng ban</option>
+            </select>
+            <span asp-validation-for="department_id" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="position_id" class="form-label fw-semibold">Vị trí</label>
+            <select asp-for="position_id" class="form-control" id="positionSelect">
+                <option value="">Chọn Vị trí</option>
+            </select>
             <span asp-validation-for="position_id" class="text-danger"></span>
-            </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group col-md-12">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-<div>
-    <a asp-action="Index">Back to List</a>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger col-12"></div>
+
+        <div class="col-12 d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+            <button type="submit" class="btn btn-primary">Tạo Mới</button>
+        </div>
+        @if(TempData["SuccessMessage"] != null)
+        {
+            <strong class="text-success">@TempData["SuccessMessage"]</strong>
+        }
+    </form>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

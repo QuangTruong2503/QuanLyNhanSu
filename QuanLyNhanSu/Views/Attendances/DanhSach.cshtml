@@ -1,116 +1,88 @@
-﻿@model IEnumerable<QuanLyNhanSu.Models.AttendanceModel>
+﻿@model List<QuanLyNhanSu.ViewModels.AttendanceViewModel>
 
 @{
     ViewData["Title"] = "Danh Sách Chấm Công";
+    DateTime? parseDate = ViewData["AttendanceDate"] != null
+        ? DateTime.Parse(ViewData["AttendanceDate"].ToString())
+        : (DateTime?)null;
 }
+<h2 class="text-center my-4">Danh Sách Chấm Công Ngày: @ViewData["AttendanceDate"]</h2>
 
-<h1>@ViewData["Title"] Ngày @ViewBag.SelectedDate</h1>
-
-<!-- Form chọn ngày -->
-<div class="row">
-    <form asp-action="DanhSach" method="get" class="col-md-6">
-        <div class="form-group col-md-4">
-            <label for="dateSelect">Chọn ngày:</label>
-            <input type="date" id="dateSelect" name="selectedDate" value="@ViewBag.SelectedDate" class="form-control" />
+<div class="container">
+    <!-- Form chọn ngày -->
+    <form method="post" asp-action="DanhSach" class="mb-4">
+        <div class="row mb-3 align-items-center">
+            <label for="attendanceDate" class="col-sm-2 col-form-label">Chọn ngày:</label>
+            <div class="col-sm-4">
+                <input type="date" id="attendanceDate" name="attendanceDate" class="form-control" value="@(parseDate.HasValue ? parseDate.Value.ToString("yyyy-MM-dd") : "")" required />
+            </div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary">Kiểm tra</button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Xem</button>
     </form>
-    <div class="col-md-4 form-group">
-        <label class="control-label" for="statusID">Chọn trạng thái</label>
-        <select class="form-control" id="statusID"></select>
-    </div>
+
+    <!-- Form chấm công -->
+    <form method="post" asp-action="SaveAttendance">
+        <div class="table-responsive">
+            <input type="hidden" name="attendanceDate" value="@ViewData["AttendanceDate"]" />
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Mã nhân viên</th>
+                        <th>Họ và Tên</th>
+                        <th>Có mặt</th>
+                        <th>Đến trễ</th>
+                        <th>Vắng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in Model)
+                    {
+                        <tr>
+                            <td>@employee.EmployeeId</td>
+                            <td>@employee.FullName</td>
+                             <!-- Hidden input để gửi EmployeeId -->
+                                <input type="hidden" name="model[@Model.IndexOf(employee)].EmployeeId" value="@employee.EmployeeId" />
+                            <td>
+                                <input type="checkbox" name="model[@Model.IndexOf(employee)].IsPresent" value="true"
+                                       class="form-check-input"
+                                @(employee.IsPresent ? "checked" : "") />
+                                <input type="hidden" name="model[@Model.IndexOf(employee)].IsPresent" value="false" />
+                            </td>
+                            <td>
+                                <input type="checkbox" name="model[@Model.IndexOf(employee)].IsLate" value="true"
+                                       class="form-check-input"
+                                @(employee.IsLate ? "checked" : "") />
+                                <input type="hidden" name="model[@Model.IndexOf(employee)].IsLate" value="false" />
+                            </td>
+                            <td>
+                                <input type="checkbox" name="model[@Model.IndexOf(employee)].IsAbsent" value="true"
+                                       class="form-check-input"
+                                @(employee.IsAbsent ? "checked" : "") />
+                                <input type="hidden" name="model[@Model.IndexOf(employee)].IsAbsent" value="false" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+        </div>
+    </form>
 </div>
-<table class="table attendanceTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Attendance_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee_Id)
-            </th>
-            <th>
-                Họ và tên
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Attendance_Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.status_id)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="attendanceTableBody">
-@foreach (var item in Model) {
-        <tr data-status-id="@item.AttendanceStatus.status_id">
-            <td>
-                @Html.DisplayFor(modelItem => item.Attendance_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee_Id)
-            </td>
-            <td>
-                @Html.Raw(item.Employee.first_name + " " + item.Employee.last_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Attendance_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AttendanceStatus.status_name)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
-    $(document).ready(function (){
-        loadAttendanceStatus();
-        $('#statusID').change(function () {
-            FilterDataByStatus();
-        })
-    })
-    function loadAttendanceStatus(){
-        $.ajax({
-            url: '@Url.Action("GetAttendanceStatus", "Attendances")',
-            type: 'GET',
-            success: function (response) {
-                // Reset the position dropdown
-                $('#statusID').empty();
-                $('#statusID').append('<option readonly value="">Tất cả</option>');
-
-                // Add new positions to the dropdown
-                $.each(response, function (index, value) {
-                    $('#statusID').append('<option value="' + value.value + '">' + value.text + '</option>');
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                const row = this.closest("tr");
+                row.querySelectorAll("input[type='checkbox']").forEach(cb => {
+                    if (cb !== this) cb.checked = false;
                 });
-            },
-            error: function () {
-                alert('Lỗi khi tải dữ liệu vị trí.');
-            }
+            });
         });
-    }
-    function FilterDataByStatus () {
-        var selectedStatusId = $('#statusID').val(); // Lấy giá trị status_id được chọn
-        // Lọc các hàng trong bảng theo status_id
-        $('#attendanceTableBody tr').each(function () {
-            var rowStatusId = $(this).data('status-id'); // Lấy giá trị status_id của từng hàng
-
-            if (selectedStatusId === "" || rowStatusId == selectedStatusId) {
-                $(this).show(); // Hiển thị hàng nếu phù hợp với status_id đã chọn
-            } else {
-                $(this).hide(); // Ẩn hàng nếu không phù hợp
-            }
-        });
-    }
+    });
 </script>

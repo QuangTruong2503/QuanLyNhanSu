@@ -1,77 +1,118 @@
 ﻿@model IEnumerable<QuanLyNhanSu.Models.SalaryModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh Sách Lương";
 }
 
-<h1>Index</h1>
+<h2 class="text-center my-4">@ViewData["Title"]</h2>
 
-<p>
-    <a asp-action="TinhLuong">Tính Lương</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Salary_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Base_Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bonus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deduction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Total_Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Begin_Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.End_Date)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salary_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Base_Salary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bonus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Total_Salary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Begin_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.End_Date)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container">
+    <!-- Nút tính lương -->
+    <div class="mb-4 text-center ">
+        <a asp-action="TinhLuong" class="btn btn-primary">Tính Lương</a>
+    </div>
+    <form method="get" asp-action="Index" class="row mb-4 align-items-center">
+        <label class="col-md-2" for="employeeId">Employee Id:</label>
+        <div class="col-sm-4">
+            <input type="text" id="employeeId" name="employeeId" class="form-control"
+                    placeholder="Nhập Employee Id" />
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
+        </div>
+    </form>
+    <!-- Bảng hiển thị lương nhân viên -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Salary_Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Employee_Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Base_Salary)</th>
+                    <th>@Html.DisplayNameFor(model => model.Bonus)</th>
+                    <th>@Html.DisplayNameFor(model => model.Deduction)</th>
+                    <th>@Html.DisplayNameFor(model => model.Total_Salary)</th>
+                    <th>@Html.DisplayNameFor(model => model.Begin_Date)</th>
+                    <th>@Html.DisplayNameFor(model => model.End_Date)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Salary_Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Employee_Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Base_Salary)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Bonus)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Deduction)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Total_Salary)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Begin_Date)</td>
+                        <td>@Html.DisplayFor(modelItem => item.End_Date)</td>
+                        <td>
+                            <!-- Dropdown menu -->
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Tùy chỉnh
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item text-success" href="@Url.Action("CapNhatLuongNhanSu", new { id = item.Salary_Id })">Cập nhật lương</a></li>
+                                    <li><button class="dropdown-item text-danger" onclick="openDeleteModal('@item.Salary_Id')">Xóa</button></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal xác nhận xoá -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xoá khoản lương này? Sau khi xoá, thông tin này sẽ bị mất.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var salaryID;
+
+    function openDeleteModal(id) {
+        salaryID = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+        deleteSalary(salaryID);
+    });
+
+    function deleteSalary(id) {
+        $.ajax({
+            url: '/Salary/Delete/' + id,
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Hỗ trợ AntiForgeryToken
+            },
+            success: function () {
+                $('#deleteModal').modal('hide'); // Ẩn modal sau khi xoá
+                location.reload(); // Làm mới trang sau khi xoá thành công
+            },
+            error: function () {
+                alert('Xoá không thành công!'); // Thông báo lỗi nếu có
+            }
+        });
+    }
+</script>
