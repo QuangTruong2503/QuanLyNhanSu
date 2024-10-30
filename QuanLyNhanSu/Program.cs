@@ -8,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 // Lấy chứng chỉ SSL từ biến môi trường
 var sslCaCert = Environment.GetEnvironmentVariable("SSL_CA_CERT");
+var serverName = Environment.GetEnvironmentVariable("MYSQL_SERVER_NAME");
+var dbName = Environment.GetEnvironmentVariable("MYSQL_DB_NAME");
+var userName = Environment.GetEnvironmentVariable("MYSQL_USER_NAME");
+var password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
 if (!string.IsNullOrEmpty(sslCaCert))
 {
     // Tạo file tạm thời chứa nội dung chứng chỉ
@@ -15,7 +19,7 @@ if (!string.IsNullOrEmpty(sslCaCert))
     System.IO.File.WriteAllText(caCertPath, sslCaCert);
 
     // Cập nhật chuỗi kết nối MySQL với đường dẫn chứng chỉ
-    string connectionString = $"Server=earphone-store-quangtruong2503-a8ea.h.aivencloud.com;Port=22588;Database=QuanLyNhanSu;User=avnadmin;Password=AVNS_fkmO9iJEsLBXaYqmoUF;SslMode=REQUIRED;SslCa={caCertPath};";
+    string connectionString = $"Server={serverName};Port=22588;Database={dbName};User={userName};Password={password};SslMode=REQUIRED;SslCa={caCertPath};";
 
     // Cấu hình DbContext với chuỗi kết nối MySQL
     builder.Services.AddDbContext<QuanLyNhanSuDbContext>(options =>

@@ -2,22 +2,31 @@
 
 @{
     ViewData["Title"] = "Danh sách khấu trừ lương";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages;
 }
 
 <h2 class="text-center my-4">Danh Sách Khấu Trừ Lương</h2>
 
 <div class="container">
     <!-- Form tìm kiếm và nút thêm khấu trừ lương -->
-    <form asp-action="Index" method="get" class="row mb-4 align-items-center">
-        <label for="searchID" class="col-sm-2 col-form-label">Tìm mã nhân sự:</label>
-        <div class="col-sm-4">
-            <input type="search" id="searchID" name="searchID" class="form-control" placeholder="Nhập mã nhân sự" />
+    <form asp-action="Index" method="get" class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex gap-1">
+            <div class="w-auto">
+                <input type="search" id="searchID" name="searchID" class="form-control" placeholder="Nhập mã nhân sự" />
+            </div>
+
+            <div class="w-auto">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
         </div>
-        <div class="col-sm-2">
-            <button type="submit" class="btn btn-primary">Xem</button>
-        </div>
-        <div class="col-sm-4 text-end">
-            <a asp-action="Create" class="btn btn-success">Thêm Khấu Trừ Lương</a>
+        <div class="d-flex gap-1">
+            <div class=" w-auto">
+                <a asp-action="Index" class="btn btn-light text-xl-center text-primary"><i class="bi bi-arrow-counterclockwise"></i> Tải lại</a>
+            </div>
+            <div class="w-auto">
+                <a asp-action="Create" class="btn btn-outline-success">Thêm <i class="bi bi-plus-lg"></i></a>
+            </div>
         </div>
     </form>
 
@@ -59,6 +68,42 @@
                 }
             </tbody>
         </table>
+
+        <!-- Hiển thị điều khiển phân trang -->
+        <nav class="Page navigation">
+            <ul class="pagination">
+                @if (currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, searchID = ViewBag.SearchID })">Previous</a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    if (i == currentPage)
+                    {
+                        <li class="page-item active" aria-curent="page">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i, searchID = ViewBag.SearchID })">@i</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i, searchID = ViewBag.SearchID })">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, searchID = ViewBag.SearchID })">Next</a>
+                    </li>
+                }
+            </ul>
+
+        </nav>
     </div>
 </div>
 

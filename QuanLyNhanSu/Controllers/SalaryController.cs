@@ -16,6 +16,9 @@ namespace QuanLyNhanSu.Controllers
         {
             _context = context;
         }
+        //Tạo time zone của Viet Nam
+        TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
         // GET: SalaryContronller
         public async Task<IActionResult> Index(string? employeeID = null)
         {
@@ -48,12 +51,24 @@ namespace QuanLyNhanSu.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> TinhLuong(int month)
         {
-            //Ngày bắt đầu lấy từ ngày 11 tháng trước
-            DateTime startDate = new DateTime(DateTime.Now.Year, month - 1, 11);
-            DateTime endDate = new DateTime(DateTime.Now.Year, month, 10);
+            var currentYear = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone).Year;
+            DateTime startDate;
+            DateTime endDate;
+            if (month != 1)
+            {
+                //Ngày bắt đầu lấy từ ngày 11 tháng trước
+                startDate = new DateTime(currentYear, month - 1, 11);
+                endDate = new DateTime(currentYear, month, 10);
+            }
+            else
+            {
+                //Ngày bắt đầu lấy từ ngày 11 tháng trước
+                startDate = new DateTime(currentYear - 1, 12, 11);
+                endDate = new DateTime(currentYear, month, 10);
+            }
             try
             {
-                // Tổng số ngày cần tính lương
+                // Tổng số ngày cần tính lương(số ngày phải đi làm trong tháng trừ chủ nhật)
                 int totalDays = CalculateWorkingDays(startDate, endDate);
                 // Lấy danh sách nhân viên
                 var employees = await _context.employees.Where(e => e.employee_id != "admin").ToListAsync();
@@ -86,8 +101,9 @@ namespace QuanLyNhanSu.Controllers
                         .Where(a => a.Employee_Id == employee.employee_id && a.Attendance_Date >= startDate 
                                 && a.Attendance_Date <= endDate && (a.status_id == 1 || a.status_id == 2))
                         .CountAsync();
+
                     //Số tiền nhận được dựa trên ngày đi làm
-                    var amountByWorkingDays = baseSalary / 26 * workingDays;
+                    var amountByWorkingDays = baseSalary / totalDays * workingDays;
                     //Tính tổng tiền thực nhận
                     var totalSalary = amountByWorkingDays + totalBonus - totalDeduction;
 
@@ -150,13 +166,18 @@ namespace QuanLyNhanSu.Controllers
                 && a.Attendance_Date >= salaryByID.Begin_Date && a.Attendance_Date <= salaryByID.End_Date
                 && (a.status_id == 1 || a.status_id == 2))
                 .CountAsync();
+
+            // Tổng số ngày cần tính lương(số ngày phải đi làm trong tháng trừ chủ nhật)
+            int totalDays = CalculateWorkingDays(salaryByID.Begin_Date, salaryByID.End_Date);
+
             //Số tiền nhận được dựa trên ngày đi làm
-            var amountByWorkingDays = baseSalary / 26 * workingDays;
+            var amountByWorkingDays = baseSalary / totalDays * workingDays;
             //Truyền dữ liệu vào ViewData
             ViewData["Bonuses"] = bonus;
             ViewData["Deductions"] = deduction;
             ViewData["WorkingDays"] = workingDays;
             ViewData["AmountWorkingDays"] = FormatHelpers.FormatCurrencyVND(amountByWorkingDays);
+            ViewData["TotalWorkingDays"] = totalDays;
             return View(salaryByID);
         }
 
@@ -195,8 +216,11 @@ namespace QuanLyNhanSu.Controllers
                                       where emp.employee_id == salaryByID.Employee_Id
                                       select pos.base_salary;
                 var baseSalary = await baseSalaryQuery.FirstOrDefaultAsync();
+
+                // Tổng số ngày cần tính lương(số ngày phải đi làm trong tháng trừ chủ nhật)
+                int totalDays = CalculateWorkingDays(salaryByID.Begin_Date, salaryByID.End_Date);
                 //Số tiền nhận được dựa trên ngày đi làm
-                var amountByWorkingDays = baseSalary / 26 * workingDays;
+                var amountByWorkingDays = baseSalary / totalDays * workingDays;
                 //Tính tổng tiền thực nhận
                 var totalSalary = amountByWorkingDays + totalBonuses - totalDeductions;
 

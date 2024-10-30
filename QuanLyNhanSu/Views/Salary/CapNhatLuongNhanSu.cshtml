@@ -25,23 +25,26 @@
 
                 <dt class="col-sm-3">Đến ngày</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.End_Date)</dd>
+
+                <dt class="col-sm-3">Lương cơ bản</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Base_Salary)</dd>
             </dl>
         </div>
     </div>
 
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <h5 class="card-title">Tiền lương</h5>
-            <p><strong>Tiền lương cơ bản:</strong> @Html.DisplayFor(model => model.Base_Salary)</p>
-            <p><strong>Thưởng:</strong> @Html.DisplayFor(model => model.Bonus)</p>
+            <h5 class="card-title">Tiền Thưởng</h5>
+            <hr />
             <ul>
                 @if (bonuses != null)
                 {
                     foreach (var bonus in bonuses)
                     {
                         <li>
-                            <p>Tiền thưởng: @bonus.Bonus_Amount.ToString("C")</p>
-                            <p>Ngày thưởng: @bonus.Bonus_Date</p>
+                            <p>Tiền: @bonus.Bonus_Amount.ToString("C")</p>
+                            <p>Ngày: @bonus.Bonus_Date</p>
+                            <p>Lý do: @bonus.Reason</p>
                         </li>
                     }
                 }
@@ -52,15 +55,15 @@
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <h5 class="card-title">Khấu trừ</h5>
-            <p><strong>Khấu trừ:</strong> @Html.DisplayFor(model => model.Deduction)</p>
             <ul>
                 @if (deductions != null)
                 {
                     foreach (var deduction in deductions)
                     {
                         <li>
-                            <p>Tiền khấu trừ: @deduction.Deduction_Amount.ToString("C")</p>
-                            <p>Ngày khấu trừ: @deduction.Deduction_Date</p>
+                            <p>Tiền: @deduction.Deduction_Amount.ToString("C")</p>
+                            <p>Ngày: @deduction.Deduction_Date</p>
+                            <p>Lý do: @deduction.Reason</p>
                         </li>
                     }
                 }
@@ -71,9 +74,11 @@
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <h5 class="card-title">Tổng kết</h5>
-            <p><strong>Số ngày đi làm:</strong> @ViewData["WorkingDays"] ngày.</p>
-            <p><strong>Lương của @ViewData["WorkingDays"] ngày làm:</strong> @ViewData["AmountWorkingDays"]</p>
-            <p><strong>Tổng tiền lương:</strong> @Html.DisplayFor(model => model.Total_Salary)</p>
+            <p><strong>Số ngày làm:</strong> @ViewData["WorkingDays"]/@ViewData["TotalWorkingDays"].</p>
+            <p><strong>Lương @ViewData["WorkingDays"]/@ViewData["TotalWorkingDays"] ngày:</strong> @ViewData["AmountWorkingDays"]</p>
+            <p><strong>Thưởng:</strong> @Html.DisplayFor(model => model.Bonus)</p>
+            <p><strong>Khấu trừ:</strong> @Html.DisplayFor(model => model.Deduction)</p>
+            <p><strong>Tổng lương:</strong> @Html.DisplayFor(model => model.Total_Salary)</p>
         </div>
     </div>
 
