@@ -72,9 +72,10 @@
 }
 <script>
     function togglePasswordVisibility() {
-        var passwordInputs = document.querySelectorAll("input[type='password']");
+        var passwordInputs = document.querySelectorAll("input[type='password'], input[type='text']");
         passwordInputs.forEach(function (input) {
             input.type = input.type === "password" ? "text" : "password";
+            
         });
     }
 </script>
