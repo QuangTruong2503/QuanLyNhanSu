@@ -12,51 +12,56 @@
     Trở về
 </a>
 
-<h1 class="text-center mb-4">Tiền Khấu Trừ</h1>
-<hr />
 <div class="container">
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered text-center align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.Deduction_Id)</th>
-                    <th>@Html.DisplayNameFor(model => model.Employee_Id)</th>
-                    <th>@Html.DisplayNameFor(model => model.Deduction_Amount)</th>
-                    <th>@Html.DisplayNameFor(model => model.Deduction_Date)</th>
-                    <th>@Html.DisplayNameFor(model => model.Reason)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Deduction_Id)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Employee_Id)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Deduction_Amount)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Deduction_Date)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Reason)</td>
-                        <td>
-                            <div class="dropdown dropstart">
-                                <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="actionMenu" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                                    Tùy chỉnh
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="actionMenu">
-                                    <li>
-                                        @Html.ActionLink("Edit", "Edit", new { id = item.Deduction_Id }, new { @class = "dropdown-item", style = "color: green;" })
-                                    </li>
-                                    <li>
-                                        @Html.ActionLink("Details", "Details", new { id = item.Deduction_Id }, new { @class = "dropdown-item", style = "color: orange;" })
-                                    </li>
-                                    <li>
-                                        @Html.ActionLink("Delete", "Delete", new { id = item.Deduction_Id }, new { @class = "dropdown-item text-danger" })
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="card shadow mb-5">
+        <div class="card-header text-center">
+            <h1 class="my-2">Tiền Khấu Trừ</h1>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered text-center align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Deduction_Id)</th>
+                            <th>@Html.DisplayNameFor(model => model.Employee_Id)</th>
+                            <th>@Html.DisplayNameFor(model => model.Deduction_Amount)</th>
+                            <th>@Html.DisplayNameFor(model => model.Deduction_Date)</th>
+                            <th>@Html.DisplayNameFor(model => model.Reason)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Deduction_Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Employee_Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Deduction_Amount)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Deduction_Date)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Reason)</td>
+                                <td>
+                                    <div class="dropdown dropstart">
+                                        <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="actionMenu" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                            Tùy chỉnh
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                            <li>
+                                                @Html.ActionLink("Edit", "Edit", new { id = item.Deduction_Id }, new { @class = "dropdown-item", style = "color: green;" })
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("Details", "Details", new { id = item.Deduction_Id }, new { @class = "dropdown-item", style = "color: orange;" })
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("Delete", "Delete", new { id = item.Deduction_Id }, new { @class = "dropdown-item text-danger" })
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>

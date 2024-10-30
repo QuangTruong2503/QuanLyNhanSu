@@ -3,12 +3,11 @@
 @{
     var employeeData = Context.Request.Cookies["EmployeeData"];
     var employeeConverted = new EmployeesModel();
-    if(employeeData != null)
+    if (employeeData != null)
     {
         // Chuyển đổi chuỗi JSON thành đối tượng Employee
         employeeConverted = JsonSerializer.Deserialize<EmployeesModel>(employeeData);
     }
-
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -21,29 +20,28 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuanLyNhanSu.styles.css" asp-append-version="true" />
-
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3 py-3">
-            <div class="container d-flex justify-content-between align-items-center">
-                <a class="navbar-brand d-flex align-items-center fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-user-friends me-2"></i> QuanLyNhanSu
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-warning" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-people-fill me-2"></i> QuanLyNhanSu
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home me-1"></i> Home
+                            <a class="nav-link text-light fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door-fill me-1"></i> Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="fas fa-user-shield me-1"></i> Privacy
+                            <a class="nav-link text-light fw-semibold" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <i class="bi bi-shield-lock-fill me-1"></i> Privacy
                             </a>
                         </li>
                     </ul>
@@ -52,33 +50,33 @@
                     @if (employeeData != null)
                     {
                         <div class="btn-group">
-                            <button class="btn btn-primary dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-1"></i> Xin chào, @employeeConverted.last_name
+                            <button class="btn btn-outline-warning dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-2"></i> Xin chào, @employeeConverted.last_name
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (employeeConverted.role_id == 2)
                                 {
                                     <li>
                                         <a class="dropdown-item text-primary" href="@Url.Action("Index", "Admin")">
-                                            <i class="fas fa-tools me-1"></i> Trang Quản Lý
+                                            <i class="bi bi-tools me-2"></i> Trang Quản Lý
                                         </a>
                                     </li>
                                 }
                                 <li>
-                                    <a class="dropdown-item text-black" href="@Url.Action("ThongTinTaiKhoan", "Details")">
-                                        <i class="fas fa-user me-1"></i> Tài khoản
+                                    <a class="dropdown-item text-dark" href="@Url.Action("ThongTinTaiKhoan", "Details")">
+                                        <i class="bi bi-person-fill me-2"></i> Tài khoản
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item text-black" href="@Url.Action("DoiMatKhau", "Details")">
-                                        <i class="fas fa-key me-1"></i> Đổi Mật Khẩu
+                                    <a class="dropdown-item text-dark" href="@Url.Action("DoiMatKhau", "Details")">
+                                        <i class="bi bi-key-fill me-2"></i> Đổi Mật Khẩu
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form asp-controller="Login" asp-action="Logout" method="post">
                                         <button class="dropdown-item text-danger d-flex align-items-center">
-                                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+                                            <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
                                         </button>
                                     </form>
                                 </li>
@@ -87,8 +85,8 @@
                     }
                     @if (employeeData == null)
                     {
-                        <a class="nav-link text-dark fw-semibold d-flex align-items-center" asp-area="" asp-controller="Login" asp-action="Login">
-                            <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                        <a class="btn btn-outline-warning fw-semibold d-flex align-items-center" asp-area="" asp-controller="Login" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập
                         </a>
                     }
                 </div>
@@ -96,15 +94,15 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container my-5">
+        <main role="main" class="pb-5">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container d-flex justify-content-center align-items-center">
-            Nhóm 1A - QuanLyNhanSu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer mt-auto py-3 bg-dark text-light">
+        <div class="container text-center">
+            <small>Nhóm 1A - QuanLyNhanSu - <a href="@Url.Action("Privacy", "Home")" class="text-warning">Privacy</a></small>
         </div>
     </footer>
 

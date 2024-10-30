@@ -5,76 +5,65 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Thông Tin Tài Khoản</h1>
+<div class="container my-5">
+    <a class="btn btn-outline-primary mb-4" href="@Url.Action("Index", "Home")">
+        <i class="bi bi-arrow-left"></i> Trở về
+    </a>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.employee_id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.employee_id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.first_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.first_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.last_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.last_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.gender)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.gender)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.hire_date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.hire_date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.expired_date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.expired_date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Positions.position_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Positions.position_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.departments.department_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.departments.department_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Role.Role_Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Role.Role_Name)
-        </dd>
-    </dl>
+    <div class="card shadow-lg">
+        <div class="card-header text-center bg-dark text-white">
+            <h3>Thông Tin Nhân Viên</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.employee_id):</strong>
+                    <span>@Html.DisplayFor(model => model.employee_id)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.first_name):</strong>
+                    <span>@Html.DisplayFor(model => model.first_name)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.last_name):</strong>
+                    <span>@Html.DisplayFor(model => model.last_name)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.email):</strong>
+                    <span>@Html.DisplayFor(model => model.email)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.phone):</strong>
+                    <span>@Html.DisplayFor(model => model.phone)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.gender):</strong>
+                    <span>@Html.DisplayFor(model => model.gender)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.hire_date):</strong>
+                    <span>@Html.DisplayFor(model => model.hire_date)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.expired_date):</strong>
+                    <span>@Html.DisplayFor(model => model.expired_date)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.Positions.position_name):</strong>
+                    <span>@Html.DisplayFor(model => model.Positions.position_name)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.departments.department_name):</strong>
+                    <span>@Html.DisplayFor(model => model.departments.department_name)</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>@Html.DisplayNameFor(model => model.Role.Role_Name):</strong>
+                    <span>@Html.DisplayFor(model => model.Role.Role_Name)</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <a class="btn btn-outline-secondary" href="@Url.Action("Edit", new { id = Model.employee_id })">Chỉnh sửa thông tin</a>
+        </div>
+    </div>
 </div>
