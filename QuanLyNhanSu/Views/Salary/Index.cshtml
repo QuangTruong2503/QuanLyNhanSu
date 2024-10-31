@@ -21,18 +21,17 @@
         <form method="get" asp-action="Index" class="row g-3 align-items-center mb-3">
             <div class="col-md-4">
                 <label class="form-label" for="employeeId">Employee Id:</label>
-                <input type="text" id="employeeId" name="employeeId" class="form-control" value="@employeeID"
+                <input type="text" id="employeeId" name="employeeId" class="form-control"
                        placeholder="Nhập Employee Id" />
             </div>
 
             <div class="col-md-4">
                 <label class="form-label" for="monthYear">Chọn tháng</label>
-                <input type="month" id="monthYear" name="monthYear" class="form-control" value="@monthYearConvert" />
+                <input type="month" id="monthYear" name="monthYear" class="form-control" />
             </div>
 
             <div class="col-md-8 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-outline-primary w-auto">Tìm kiếm</button>
-                <a class="btn btn-outline-success" href="@Url.Action("Index")"><i class="bi bi-arrow-counterclockwise"></i> Tải lại</a>
             </div>
         </form>
         <div class="mb-4 align-content-center">
