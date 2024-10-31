@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QuanLyNhanSu.Data;
 using QuanLyNhanSu.Helpers;
 using QuanLyNhanSu.Models;
@@ -20,17 +21,31 @@ namespace QuanLyNhanSu.Controllers
         TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
         // GET: SalaryContronller
-        public async Task<IActionResult> Index(string? employeeID = null)
+        public async Task<IActionResult> Index(string? employeeID = null, DateTime? monthYearYear = null)
         {
-            var salaryList = new List<SalaryModel>();
+            var salaryList = await _context.salaries.ToListAsync();
             if (!string.IsNullOrEmpty(employeeID))
             {
-                 salaryList = await _context.salaries
-                    .Where(s => s.Employee_Id == employeeID)
-                    .ToListAsync();
-                return View(salaryList);
+                 salaryList = salaryList.Where(s => s.Employee_Id == employeeID).ToList();
             };
-            salaryList = await _context.salaries.ToListAsync();
+            if (monthYearYear.HasValue)
+            {
+                var monthYear = monthYearYear.Value.Month;
+                var year = monthYearYear.Value.Year;
+                DateTime startDate;
+                DateTime endDate;
+                if (monthYear != 1)
+                {
+                    startDate = new DateTime(year, monthYear - 1, 11);
+                    endDate = new DateTime(year, monthYear, 10);
+                }
+                else
+                {
+                    startDate = new DateTime(year - 1, 12, 11);
+                    endDate = new DateTime(year, monthYear, 10);
+                }    
+                salaryList = salaryList.Where(s => s.Begin_Date.Date >= startDate.Date && s.End_Date.Date <= endDate.Date).ToList();
+            }
             return View(salaryList);
         }
 
@@ -49,22 +64,28 @@ namespace QuanLyNhanSu.Controllers
         // POST: SalaryContronller/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TinhLuong(int month)
+        public async Task<ActionResult> TinhLuong(DateTime? monthYear = null)
         {
-            var currentYear = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone).Year;
+            if (!monthYear.HasValue)
+            {
+                ModelState.AddModelError("", "Không có dữ liệu tháng");
+                return View();
+            }
+            var year = monthYear.Value.Year;
+            var month = monthYear.Value.Month;
             DateTime startDate;
             DateTime endDate;
             if (month != 1)
             {
                 //Ngày bắt đầu lấy từ ngày 11 tháng trước
-                startDate = new DateTime(currentYear, month - 1, 11);
-                endDate = new DateTime(currentYear, month, 10);
+                startDate = new DateTime(year, month - 1, 11);
+                endDate = new DateTime(year, month, 10);
             }
             else
             {
                 //Ngày bắt đầu lấy từ ngày 11 tháng trước
-                startDate = new DateTime(currentYear - 1, 12, 11);
-                endDate = new DateTime(currentYear, month, 10);
+                startDate = new DateTime(year - 1, 12, 11);
+                endDate = new DateTime(year, month, 10);
             }
             try
             {
@@ -278,27 +299,6 @@ namespace QuanLyNhanSu.Controllers
 
             return totalDays;
         }
-        //Tạo dữ liệu tháng theo danh sách
-        [HttpGet]
-        public JsonResult GetMonths()
-        {
-            // Tạo danh sách các tháng
-            var months = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "Tháng 1" },
-                new SelectListItem { Value = "2", Text = "Tháng 2" },
-                new SelectListItem { Value = "3", Text = "Tháng 3" },
-                new SelectListItem { Value = "4", Text = "Tháng 4" },
-                new SelectListItem { Value = "5", Text = "Tháng 5" },
-                new SelectListItem { Value = "6", Text = "Tháng 6" },
-                new SelectListItem { Value = "7", Text = "Tháng 7" },
-                new SelectListItem { Value = "8", Text = "Tháng 8" },
-                new SelectListItem { Value = "9", Text = "Tháng 9" },
-                new SelectListItem { Value = "10", Text = "Tháng 10" },
-                new SelectListItem { Value = "11", Text = "Tháng 11" },
-                new SelectListItem { Value = "12", Text = "Tháng 12" }
-            };
-            return Json(months);
-        }
+        
     }
 }

@@ -7,20 +7,28 @@
 <h2 class="text-center my-4">@ViewData["Title"]</h2>
 
 <div class="container">
-    <!-- Nút tính lương -->
-    <div class="mb-4 text-center ">
-        <a asp-action="TinhLuong" class="btn btn-primary">Tính Lương</a>
+    <div class=" d-flex justify-content-between">
+        <form method="get" asp-action="Index" class="row g-3 align-items-center mb-3">
+            <div class="col-md-4">
+                <label class="form-label" for="employeeId">Employee Id:</label>
+                <input type="text" id="employeeId" name="employeeId" class="form-control"
+                       placeholder="Nhập Employee Id" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label" for="monthYear">Chọn tháng</label>
+                <input type="month" id="monthYear" name="monthYear" class="form-control" />
+            </div>
+
+            <div class="col-md-8 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-outline-primary w-auto">Tìm kiếm</button>
+                <a class="btn btn-outline-success" href="@Url.Action("Index")"><i class="bi bi-arrow-counterclockwise"></i> Tải lại</a>
+            </div>
+        </form>
+        <div class="mb-4 align-content-center ">
+            <a asp-action="TinhLuong" class="btn btn-primary">Tính Lương</a>
+        </div>
     </div>
-    <form method="get" asp-action="Index" class="row mb-4 align-items-center">
-        <label class="col-md-2" for="employeeId">Employee Id:</label>
-        <div class="col-sm-4">
-            <input type="text" id="employeeId" name="employeeId" class="form-control"
-                    placeholder="Nhập Employee Id" />
-        </div>
-        <div class="col-sm-2">
-            <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
-        </div>
-    </form>
     <!-- Bảng hiển thị lương nhân viên -->
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
@@ -115,4 +123,5 @@
             }
         });
     }
+
 </script>

@@ -5,19 +5,15 @@
 <h2 class="text-center my-4">@ViewData["Title"]</h2>
 
 <div class="d-flex justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-10 col-lg-6">
         <div class="card shadow-lg p-5 mb-5 bg-light rounded border-0">
             <div class="card-body">
-                <h4 class="card-title text-center mb-4 text-primary">Chọn Tháng để Tính Lương</h4>
-
                 <form asp-action="TinhLuong" method="post">
                     <!-- Month Dropdown with Arrow Icon -->
                     <div class="mb-4">
-                        <label for="monthDropdown" class="form-label text-secondary">Chọn Tháng</label>
+                        <label for="monthYear" class="form-label text-secondary">Chọn Tháng</label>
                         <div class="input-group">
-                            <select id="monthDropdown" class="form-select custom-select-arrow" name="month" required>
-                                <option value="">Chọn tháng</option>
-                            </select>
+                            <input type="month" id="monthYear" name="monthYear" class="form-control" required/>
                         </div>
                     </div>
 
@@ -34,8 +30,8 @@
 
                     <!-- Submit and Back Buttons -->
                     <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-primary px-4 py-2">Tính lương</button>
                         <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2">Quay lại</a>
+                        <button type="submit" class="btn btn-primary px-4 py-2">Tính lương</button>
                     </div>
                 </form>
             </div>
@@ -43,31 +39,6 @@
     </div>
 </div>
 
-<!-- jQuery and AJAX Script for Month Dropdown -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        // AJAX call to populate the month dropdown
-        $.ajax({
-            url: '@Url.Action("GetMonths", "Salary")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                // Clear existing options
-                $('#monthDropdown').empty();
-                $('#monthDropdown').append('<option value="">Chọn tháng</option>');
-
-                // Append options from data
-                $.each(data, function (index, item) {
-                    $('#monthDropdown').append('<option value="' + item.value + '">' + item.text + '</option>');
-                });
-            },
-            error: function (xhr, status, error) {
-                alert("Đã có lỗi xảy ra: " + error);
-            }
-        });
-    });
-</script>
 
 <!-- Custom CSS for Enhanced Dropdown with Arrow -->
 <style>
