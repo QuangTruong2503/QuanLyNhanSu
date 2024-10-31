@@ -1,0 +1,51 @@
+﻿@model QuanLyNhanSu.Models.PositionModel
+
+@{
+    ViewData["Title"] = "Cập Nhật Phòng Ban";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div class="form-group">
+                <label asp-for="position_id" class="control-label"></label>
+                <input asp-for="position_id" class="form-control" />
+                <span asp-validation-for="position_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="position_name" class="control-label"></label>
+                <input asp-for="position_name" class="form-control" />
+                <span asp-validation-for="position_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="base_salary" class="control-label"></label>
+                <input asp-for="base_salary" class="form-control" />
+                <span asp-validation-for="base_salary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="department_id" class="control-label"></label>
+                <input asp-for="department_id" class="form-control" />
+                <span asp-validation-for="department_id" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @if(TempData["SuccessMessage"] != null)
+            {
+                <p class="alert alert-success">@TempData["SuccessMessage"] </p>
+            }
+            <div class="form-group">
+                <input type="submit" value="Lưu thay đổi" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ChucVu">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

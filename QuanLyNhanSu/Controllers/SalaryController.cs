@@ -21,33 +21,55 @@ namespace QuanLyNhanSu.Controllers
         TimeZoneInfo vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
         // GET: SalaryContronller
-        public async Task<IActionResult> Index(string? employeeID = null, DateTime? monthYearYear = null)
+        public async Task<IActionResult> Index(string? employeeID = null, DateTime? monthYear = null, int page = 1, int pageSize = 8)
         {
-            var salaryList = await _context.salaries.ToListAsync();
+            var salaryListQuery = _context.salaries.AsQueryable();
+
+            // Lọc theo employeeID nếu có
             if (!string.IsNullOrEmpty(employeeID))
             {
-                 salaryList = salaryList.Where(s => s.Employee_Id == employeeID).ToList();
-            };
-            if (monthYearYear.HasValue)
+                salaryListQuery = salaryListQuery.Where(s => s.Employee_Id == employeeID);
+                ViewBag.EmployeeID = employeeID;
+            }
+
+            // Lọc theo tháng và năm nếu có
+            if (monthYear.HasValue)
             {
-                var monthYear = monthYearYear.Value.Month;
-                var year = monthYearYear.Value.Year;
+                var month = monthYear.Value.Month;
+                var year = monthYear.Value.Year;
                 DateTime startDate;
                 DateTime endDate;
-                if (monthYear != 1)
+
+                if (month != 1)
                 {
-                    startDate = new DateTime(year, monthYear - 1, 11);
-                    endDate = new DateTime(year, monthYear, 10);
+                    startDate = new DateTime(year, month - 1, 11);
+                    endDate = new DateTime(year, month, 10);
                 }
                 else
                 {
                     startDate = new DateTime(year - 1, 12, 11);
-                    endDate = new DateTime(year, monthYear, 10);
-                }    
-                salaryList = salaryList.Where(s => s.Begin_Date.Date >= startDate.Date && s.End_Date.Date <= endDate.Date).ToList();
+                    endDate = new DateTime(year, month, 10);
+                }
+                salaryListQuery = salaryListQuery.Where(s => s.Begin_Date.Date >= startDate.Date && s.End_Date.Date <= endDate.Date);
+                ViewBag.MonthYear = monthYear;
             }
+
+            // Tổng số bản ghi sau khi lọc
+            var totalRecords = await salaryListQuery.CountAsync();
+
+            // Phân trang
+            var salaryList = await salaryListQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Tính tổng số trang dựa trên số bản ghi đã lọc
+            ViewBag.TotalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+            ViewBag.CurrentPage = page;
+
             return View(salaryList);
         }
+
 
         // GET: SalaryContronller/Details/5
         public ActionResult Details(int id)
