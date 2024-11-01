@@ -86,7 +86,7 @@
     function generateQRCode() {
         // Lấy verifyCode từ ViewBag và truyền vào URL Vaix CSSNumericArray nhai
         const verifyCode = document.getElementById("verifyCode").innerText; // Tham số verifyCode từ ViewBag
-        const url = `https://qlns.up.railway.app/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
+        const url = `https://quanlynhansu-latest.onrender.com/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
 
         // Xóa tất cả các thẻ <canvas> và <img> bên trong thẻ div#qrcode
         const qrCodeContainer = document.getElementById("qrcode");
