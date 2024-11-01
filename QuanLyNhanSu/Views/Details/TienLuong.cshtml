@@ -45,7 +45,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.Begin_Date)</td>
                                 <td>@Html.DisplayFor(modelItem => item.End_Date)</td>
                                 <td class="border-dark">
-                                    <a class="btn btn-outline-success btn-sm" href="@Url.Action("ChiTietLuong")">Chi tiết</a>
+                                    <a class="btn btn-outline-success btn-sm" href="@Url.Action("ChiTietLuong", new {id = item.Salary_Id})">Chi tiết</a>
                                 </td>
                             </tr>
                         }
