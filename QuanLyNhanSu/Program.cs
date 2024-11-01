@@ -8,23 +8,29 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 // Lấy chứng chỉ SSL từ biến môi trường
 var sslCaCert = Environment.GetEnvironmentVariable("SSL_CA_CERT");
-
 if (!string.IsNullOrEmpty(sslCaCert))
 {
-    var serverName = Environment.GetEnvironmentVariable("MYSQL_SERVER_NAME");
-    var dbName = Environment.GetEnvironmentVariable("MYSQL_DB_NAME");
-    var userName = Environment.GetEnvironmentVariable("MYSQL_USER_NAME");
-    var password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
-    // Tạo file tạm thời chứa nội dung chứng chỉ
-    var caCertPath = "/tmp/ca.pem";  // Đường dẫn tạm thời
-    System.IO.File.WriteAllText(caCertPath, sslCaCert);
+    try
+    {
+        var serverName = Environment.GetEnvironmentVariable("MYSQL_SERVER_NAME");
+        var dbName = Environment.GetEnvironmentVariable("MYSQL_DB_NAME");
+        var userName = Environment.GetEnvironmentVariable("MYSQL_USER_NAME");
+        var password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
+        // Tạo file tạm thời chứa nội dung chứng chỉ
+        var caCertPath = "/tmp/ca.pem";  // Đường dẫn tạm thời
+        System.IO.File.WriteAllText(caCertPath, sslCaCert);
 
-    // Cập nhật chuỗi kết nối MySQL với đường dẫn chứng chỉ
-    string connectionString = $"Server={serverName};Port=22588;Database={dbName};User={userName};Password={password};SslMode=REQUIRED;SslCa={caCertPath};";
+        // Cập nhật chuỗi kết nối MySQL với đường dẫn chứng chỉ
+        string connectionString = $"Server={serverName};Port=22588;Database={dbName};User={userName};Password={password};SslMode=REQUIRED;SslCa={caCertPath};";
 
-    // Cấu hình DbContext với chuỗi kết nối MySQL
-    builder.Services.AddDbContext<QuanLyNhanSuDbContext>(options =>
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+        // Cấu hình DbContext với chuỗi kết nối MySQL
+        builder.Services.AddDbContext<QuanLyNhanSuDbContext>(options =>
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Lỗi: " + ex.Message);
+    }
 }
 else
 {
