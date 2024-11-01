@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QuanLyNhanSu.Data;
 using QuanLyNhanSu.Helpers;
 using QuanLyNhanSu.Models;
+using System.IO.Compression;
+using System.Text;
 
 namespace QuanLyNhanSu.Controllers
 {
@@ -216,6 +218,7 @@ namespace QuanLyNhanSu.Controllers
             //Số tiền nhận được dựa trên ngày đi làm
             var amountByWorkingDays = baseSalary / totalDays * workingDays;
             //Truyền dữ liệu vào ViewData
+            ViewData["Data"] = salaryByID;
             ViewData["Bonuses"] = bonus;
             ViewData["Deductions"] = deduction;
             ViewData["WorkingDays"] = workingDays;
@@ -284,6 +287,158 @@ namespace QuanLyNhanSu.Controllers
                 return View();
             }
         }
+
+        //Xuất file lương
+        [HttpGet]
+        public ActionResult ExportSalaryFile()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExportSalaryFile(DateTime? date = null)
+        {
+            if (!date.HasValue)
+            {
+                ModelState.AddModelError("", "Vui lòng chọn ngày để xuất file lương");
+                return View();
+            }
+
+            var year = date.Value.Year;
+            var month = date.Value.Month;
+            DateTime startDate;
+            DateTime endDate;
+            if (month != 1)
+            {
+                // Ngày bắt đầu lấy từ ngày 11 tháng trước
+                startDate = new DateTime(year, month - 1, 11);
+                endDate = new DateTime(year, month, 10);
+            }
+            else
+            {
+                // Ngày bắt đầu lấy từ ngày 11 tháng 12 năm trước
+                startDate = new DateTime(year - 1, 12, 11);
+                endDate = new DateTime(year, month, 10);
+            }
+
+            // Lấy dữ liệu bảng lương theo startDate và endDate
+            var salaries = await _context.salaries
+                .Where(s => s.Begin_Date.Date == startDate.Date && s.End_Date.Date == endDate.Date)
+                .Include(s => s.Employee)
+                .ToListAsync();
+
+            if (!salaries.Any())
+            {
+                ModelState.AddModelError("", "Không có dữ liệu lương.");
+                return View();
+            }
+
+            string tempDirectory = Path.Combine(Path.GetTempPath(), "SalaryFiles");
+            if (!Directory.Exists(tempDirectory))
+            {
+                Directory.CreateDirectory(tempDirectory);
+            }
+
+            foreach (var salary in salaries)
+            {
+                var bonuses = await _context.bonuses
+                    .Where(b => b.Employee_Id == salary.Employee_Id && b.Bonus_Date >= startDate && b.Bonus_Date <= endDate)
+                    .ToListAsync();
+
+                var deductions = await _context.deductions
+                    .Where(d => d.Employee_Id == salary.Employee_Id && d.Deduction_Date >= startDate && d.Deduction_Date <= endDate)
+                    .ToListAsync();
+
+                //Tính số ngày nhân viên có đi làm trong tháng
+                var workedDays = await _context.attendances.Where(a => a.Employee_Id == salary.Employee_Id
+                    && a.Attendance_Date >= salary.Begin_Date && a.Attendance_Date <= salary.End_Date
+                    && (a.status_id == 1 || a.status_id == 2))
+                    .CountAsync();
+
+                // Tổng số ngày cần tính lương(số ngày phải đi làm trong tháng trừ chủ nhật)
+                int totalDays = CalculateWorkingDays(salary.Begin_Date, salary.End_Date);
+
+                // Tạo nội dung file cho mỗi nhân viên
+                StringBuilder content = new StringBuilder();
+                content.AppendLine("Thông tin lương");
+                content.AppendLine("----------------------");
+                content.AppendLine($"Mã lương: {salary.Salary_Id}");
+                content.AppendLine($"Mã nhân viên: {salary.Employee_Id}");
+                content.AppendLine($"Tên nhân viên: {salary.Employee.first_name} {salary.Employee.last_name}");
+                content.AppendLine($"Từ ngày: {salary.Begin_Date:dd/MM/yyyy}");
+                content.AppendLine($"Đến ngày: {salary.End_Date:dd/MM/yyyy}");
+                content.AppendLine($"Lương cơ bản: {salary.Base_Salary:C0}");
+                content.AppendLine();
+
+                content.AppendLine("Tiền Thưởng");
+                content.AppendLine("----------------------");
+                if (bonuses.Any())
+                {
+                    for (int i = 0; i < bonuses.Count; i++)
+                    {
+                        content.AppendLine($"Thưởng {i + 1}:");
+                        content.AppendLine($"- Tiền: {bonuses[i].Bonus_Amount:C0}");
+                        content.AppendLine($"- Ngày: {bonuses[i].Bonus_Date:dd/MM/yyyy}");
+                        content.AppendLine($"- Lý do: {bonuses[i].Reason}");
+                        content.AppendLine();
+                    }
+                }
+                else
+                {
+                    content.AppendLine("Không có thưởng.");
+                    content.AppendLine();
+                }
+
+                content.AppendLine("Khấu trừ");
+                content.AppendLine("----------------------");
+                if (deductions.Any())
+                {
+                    for (int i = 0; i < deductions.Count; i++)
+                    {
+                        content.AppendLine($"Khấu trừ {i + 1}:");
+                        content.AppendLine($"- Tiền: {deductions[i].Deduction_Amount:C0}");
+                        content.AppendLine($"- Ngày: {deductions[i].Deduction_Date:dd/MM/yyyy}");
+                        content.AppendLine($"- Lý do: {deductions[i].Reason}");
+                        content.AppendLine();
+                    }
+                }
+                else
+                {
+                    content.AppendLine("Không có khấu trừ.");
+                    content.AppendLine();
+                }
+
+                content.AppendLine("Tổng kết");
+                content.AppendLine("----------------------");
+                content.AppendLine($"Số ngày làm: {workedDays}/{totalDays}");
+                content.AppendLine($"Thưởng: {salary.Bonus:C0}");
+                content.AppendLine($"Khấu trừ: {salary.Deduction:C0}");
+                content.AppendLine($"Tổng lương: {salary.Total_Salary:C0}");
+                content.AppendLine();
+                content.AppendLine("==================================================");
+                content.AppendLine();
+
+                // Tạo tên file và lưu vào thư mục
+                string fileName = $"Thong_tin_luong_{salary.Employee_Id}_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}.txt";
+                string filePath = Path.Combine(tempDirectory, fileName);
+                await System.IO.File.WriteAllTextAsync(filePath, content.ToString(), Encoding.UTF8);
+            }
+
+            string zipFilePath = Path.Combine(Path.GetTempPath(), $"Thong_tin_luong_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}.zip");
+            if (System.IO.File.Exists(zipFilePath))
+            {
+                System.IO.File.Delete(zipFilePath);
+            }
+
+            ZipFile.CreateFromDirectory(tempDirectory, zipFilePath);
+
+            Directory.Delete(tempDirectory, true);
+
+            byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(zipFilePath);
+            return File(fileBytes, "application/zip", Path.GetFileName(zipFilePath));
+        }
+
 
         // GET: SalaryContronller/Delete/5
         public ActionResult Delete(int id)

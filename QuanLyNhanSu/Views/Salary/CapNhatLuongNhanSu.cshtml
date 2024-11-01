@@ -4,6 +4,10 @@
     ViewData["Title"] = "Xem Chi Tiết Lương";
     var bonuses = ViewData["Bonuses"] as IEnumerable<QuanLyNhanSu.Models.BonusModel>;
     var deductions = ViewData["Deductions"] as IEnumerable<QuanLyNhanSu.Models.DeductionModel>;
+    var data = ViewData["Data"] as IEnumerable<QuanLyNhanSu.Models.SalaryModel>;
+    var workingDays = ViewData["WorkingDays"];
+    var totalWorkingDays = ViewData["TotalWorkingDays"];
+    var amountWorking = ViewData["AmountWorkingDays"];
 }
 
 <h1 class="text-center">Xem Chi Tiết Lương</h1>
@@ -74,8 +78,8 @@
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <h5 class="card-title">Tổng kết</h5>
-            <p><strong>Số ngày làm:</strong> @ViewData["WorkingDays"]/@ViewData["TotalWorkingDays"].</p>
-            <p><strong>Lương @ViewData["WorkingDays"]/@ViewData["TotalWorkingDays"] ngày:</strong> @ViewData["AmountWorkingDays"]</p>
+            <p><strong>Số ngày làm:</strong> @workingDays/@totalWorkingDays</p>
+            <p><strong>Lương @workingDays/@totalWorkingDays ngày:</strong> @amountWorking<p>
             <p><strong>Thưởng:</strong> @Html.DisplayFor(model => model.Bonus)</p>
             <p><strong>Khấu trừ:</strong> @Html.DisplayFor(model => model.Deduction)</p>
             <p><strong>Tổng lương:</strong> @Html.DisplayFor(model => model.Total_Salary)</p>

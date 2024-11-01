@@ -16,25 +16,39 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: DeductionController
-        public async Task<IActionResult> Index(string? searchID = null, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? searchID = null, DateTime? date = null, int page = 1, int pageSize = 10)
         {
             var deductions = await _context.deductions.ToListAsync();
             if (!string.IsNullOrEmpty(searchID))
             {
+                ViewBag.SearchID = searchID;
                 deductions = deductions.Where(d => d.Employee_Id.Contains(searchID)).ToList();
-                deductions = deductions
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-                ViewBag.TotalPages = (int)Math.Ceiling(deductions.Count() / (double)pageSize);
-                ViewBag.CurrentPage = page;
-                return View(deductions);
             }
+            if (date.HasValue)
+            {
+                var month = date.Value.Month;
+                var year = date.Value.Year;
+                DateTime startDate;
+                DateTime endDate;
+                if (month != 1)
+                {
+                    startDate = new DateTime(year, month - 1, 11);
+                    endDate = new DateTime(year, month, 10);
+                }
+                else
+                {
+                    startDate = new DateTime(year - 1, 12, 11);
+                    endDate = new DateTime(year, month, 10);
+                }
+                ViewBag.Date = date.Value.ToString("yyyy-MM");
+                deductions = deductions.Where(b => b.Deduction_Date.Date >= startDate.Date && b.Deduction_Date.Date <= endDate.Date).ToList();
+            }
+            var counts = deductions.Count;
             deductions = deductions
                 .Skip((page - 1) * pageSize)
             .Take(pageSize)
                 .ToList();
-            ViewBag.TotalPages = (int)Math.Ceiling(await _context.deductions.CountAsync() / (double)pageSize);
+            ViewBag.TotalPages = (int)Math.Ceiling(counts / (double)pageSize);
             ViewBag.CurrentPage = page;
             return View(deductions);
         }
