@@ -304,9 +304,9 @@ namespace QuanLyNhanSu.Controllers
                 ModelState.AddModelError("", "Vui lòng chọn ngày để xuất file lương");
                 return View();
             }
-
-            var year = date.Value.Year;
-            var month = date.Value.Month;
+            DateTime dateConvert = TimeZoneInfo.ConvertTimeFromUtc(date.Value.Date, vietnamTimeZone);
+            var year = dateConvert.Year;
+            var month = dateConvert.Month;
             DateTime startDate;
             DateTime endDate;
             if (month != 1)
