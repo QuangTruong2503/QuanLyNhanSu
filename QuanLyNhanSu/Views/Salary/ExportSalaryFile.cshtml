@@ -7,9 +7,6 @@
     <div class="col-md-10 col-lg-6 col-10">
         <div class="card shadow-lg p-5 mb-5 bg-light rounded border-0">
             <div class="card-body">
-                <div class="mb-3">
-                    <a asp-action="Index" class="text-primary text-decoration-none w-auto"><i class="bi bi-arrow-left"></i> Quay lại</a>
-                </div>
                 <form asp-action="ExportSalaryFile" method="post">
                     <div class="mb-4">
                         <label for="date" class="form-label text-secondary">Chọn Tháng</label>
@@ -30,7 +27,7 @@
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <!-- Submit and Back Buttons -->
                     <div class="d-flex justify-content-center mt-4">
-                        <button type="submit" class="btn btn-outline-primary px-4 py-2 w-auto">Xuất Bill <i class="bi bi-file-text"></i></button>
+                        <button type="submit" class="btn btn-outline-primary px-4 py-2 w-auto">Xuất File<i class="bi bi-file-text"></i></button>
                     </div>
                 </form>
             </div>
