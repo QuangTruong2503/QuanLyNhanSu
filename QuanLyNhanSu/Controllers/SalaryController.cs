@@ -152,19 +152,38 @@ namespace QuanLyNhanSu.Controllers
                     //Tính tổng tiền thực nhận
                     var totalSalary = amountByWorkingDays + totalBonus - totalDeduction;
 
-                    //Tạo bản ghi Salary mới
-                    SalaryModel salary = new SalaryModel
+                    //Kiểm tra đã có lương của nhân viên trong tháng này chưa
+                    var salaryExists = await _context.salaries
+                        .FirstOrDefaultAsync(s => s.Employee_Id == employee.employee_id && s.Begin_Date.Date == startDate.Date
+                        && s.End_Date.Date == endDate.Date);
+                    if (salaryExists != null)
                     {
-                        Employee_Id = employee.employee_id,
-                        Base_Salary = baseSalary,
-                        Bonus = totalBonus,
-                        Deduction = totalDeduction,
-                        Total_Salary = totalSalary,
-                        Begin_Date = startDate,
-                        End_Date = endDate
-                    };
-                    //Thêm vào bảng Salary
-                    _context.salaries.Add(salary);
+                        salaryExists.Employee_Id = employee.employee_id;
+                        salaryExists.Base_Salary = baseSalary;
+                        salaryExists.Bonus = totalBonus;
+                        salaryExists.Deduction = totalDeduction;
+                        salaryExists.Total_Salary = totalSalary;
+                        salaryExists.Begin_Date = startDate;
+                        salaryExists.End_Date = endDate;
+                        //Cập nhật dữ liệu
+                        _context.salaries.Update(salaryExists);
+                    }
+                    else
+                    {
+                        //Tạo bản ghi Salary mới
+                        SalaryModel salary = new SalaryModel
+                        {
+                            Employee_Id = employee.employee_id,
+                            Base_Salary = baseSalary,
+                            Bonus = totalBonus,
+                            Deduction = totalDeduction,
+                            Total_Salary = totalSalary,
+                            Begin_Date = startDate,
+                            End_Date = endDate
+                        };
+                        //Thêm vào bảng Salary
+                        _context.salaries.Add(salary);
+                    }
                 }
                 //Lưu thay đổi vào database
                 await _context.SaveChangesAsync();
@@ -440,24 +459,25 @@ namespace QuanLyNhanSu.Controllers
         }
 
 
-        // GET: SalaryContronller/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
         // POST: SalaryContronller/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id)
         {
+            var salary = await _context.salaries.FirstOrDefaultAsync(s => s.Salary_Id == id);
+            if (salary == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             try
             {
+                _context.Remove(salary);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction(nameof(Index));
             }
         }
         //Tính toán số ngày cần tính lương ngoại trừ Chủ Nhật

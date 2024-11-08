@@ -70,10 +70,16 @@ namespace QuanLyNhanSu.Controllers
         public async Task<IActionResult> ChiTietLuong(int id)
         {
             var salaryByID = await _context.salaries.FirstOrDefaultAsync(s => s.Salary_Id == id);
+            var employee = KiemTraDangNhap();
             if (salaryByID == null)
             {
                 ModelState.AddModelError("", "Không tìm thấy lương của nhân viên này");
-                return View();
+                return RedirectToAction(nameof(TienLuong));
+            }
+            if (employee.employee_id != salaryByID.Employee_Id)
+            {
+                ModelState.AddModelError("", "Bạn không có quyền xem bảng lương này");
+                return RedirectToAction(nameof(TienLuong));
             }
             //Lấy dữ liệu lương cơ bản của nhân viên
             var baseSalaryQuery = from salary in _context.salaries
