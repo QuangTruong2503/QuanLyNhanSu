@@ -1,13 +1,29 @@
 ﻿@model IEnumerable<QuanLyNhanSu.Models.EmployeesModel>
 @{
     ViewData["Title"] = "Danh Sách Nhân Sự";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages;
+    string? NameOrID = ViewBag.NameOrID;
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="DangKyNhanVien" class="btn btn-primary">Thêm Nhân Sự</a>
-</p>
+<div class=" d-flex justify-content-between">
+    <form method="get" asp-action="Index" class="row g-3 align-items-center mb-3">
+        <div class="col-md-10">
+            <label class="form-label" for="nameOrID">Employee Id:</label>
+            <input type="search" id="nameOrID" name="nameOrID" class="form-control" value="@NameOrID"
+                   placeholder="Nhập Employee Id" />
+        </div>
+        <div class="col-md-8 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-outline-primary w-auto">Tìm kiếm</button>
+            <a class="btn btn-outline-success" href="@Url.Action("Index")"><i class="bi bi-arrow-counterclockwise"></i> Tải lại</a>
+        </div>
+    </form>
+    <div class="mb-4 align-content-end">
+        <a asp-action="DangKyNhanVien" class="btn btn-primary ">Đăng Ký <i class="bi bi-plus-lg"></i></a>
+    </div>
+</div>
 
 <div class="table-responsive">
     <table class="table table-bordered">
@@ -19,7 +35,6 @@
                 <th>@Html.DisplayNameFor(model => model.email)</th>
                 <th>@Html.DisplayNameFor(model => model.phone)</th>
                 <th>@Html.DisplayNameFor(model => model.gender)</th>
-                <th>@Html.DisplayNameFor(model => model.Role)</th>
                 <th>@Html.DisplayNameFor(model => model.departments.department_name)</th>
                 <th>Thao Tác</th>
             </tr>
@@ -34,7 +49,6 @@
                     <td>@Html.DisplayFor(modelItem => item.email)</td>
                     <td>@Html.DisplayFor(modelItem => item.phone)</td>
                     <td>@Html.DisplayFor(modelItem => item.gender)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Role.Role_Name)</td>
                     <td>@Html.DisplayFor(modelItem => item.departments.department_name)</td>
                     <td>
                         <div class="dropdown">
@@ -53,6 +67,42 @@
             }
         </tbody>
     </table>
+
+    <!-- Hiển thị điều khiển phân trang -->
+    <nav class="Page navigation">
+        <ul class="pagination">
+            @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, searchID = ViewBag.SearchID })">Previous</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                if (i == currentPage)
+                {
+                    <li class="page-item active" aria-curent="page">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i, searchID = ViewBag.SearchID })">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i, searchID = ViewBag.SearchID })">@i</a>
+                    </li>
+                }
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, searchID = ViewBag.SearchID })">Next</a>
+                </li>
+            }
+        </ul>
+
+    </nav>
 </div>
 
 <!-- Modal xác nhận xoá -->

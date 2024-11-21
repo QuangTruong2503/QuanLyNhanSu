@@ -15,25 +15,44 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: BonusController
-        public async Task<ActionResult> Index(string? searchID = null, int page = 1, int pageSize = 10)
+        public async Task<ActionResult> Index(string? searchID = null, DateTime? date = null, int page = 1, int pageSize = 8)
         {
             var bonuses = await _context.bonuses.ToListAsync();
+            if (bonuses == null)
+            {
+                return View();
+            }
             if (!string.IsNullOrEmpty(searchID))
             {
+                ViewBag.SearchID = searchID;
                 bonuses = bonuses.Where(d => d.Employee_Id.Contains(searchID)).ToList();
-                bonuses = bonuses
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-                ViewBag.TotalPages = (int)Math.Ceiling(bonuses.Count() / (double)pageSize);
-                ViewBag.CurrentPage = page;
-                return View(bonuses);
             }
+            if (date.HasValue)
+            {
+                var month = date.Value.Month;
+                var year = date.Value.Year;
+                DateTime startDate;
+                DateTime endDate;
+                if (month != 1)
+                {
+                    startDate = new DateTime(year, month - 1, 11);
+                    endDate = new DateTime(year, month, 10);
+                }
+                else
+                {
+                    startDate = new DateTime(year - 1, 12, 11);
+                    endDate = new DateTime(year, month, 10);
+                }
+                ViewBag.Date = date.Value.ToString("yyyy-MM");
+                bonuses = bonuses.Where(b => b.Bonus_Date.Date >= startDate.Date && b.Bonus_Date.Date <= endDate.Date).ToList();
+            }
+            //Đếm dữ liệu hiện có để phân trang
+            var counts = bonuses.Count;
             bonuses = bonuses
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-            ViewBag.TotalPages = (int)Math.Ceiling(await _context.bonuses.CountAsync() / (double)pageSize);
+            ViewBag.TotalPages = (int)Math.Ceiling(counts / (double)pageSize);
             ViewBag.CurrentPage = page;
             return View(bonuses);
         }

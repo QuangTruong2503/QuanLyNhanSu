@@ -4,50 +4,100 @@
     ViewData["Title"] = "ChucVu";
 }
 
-<h1>Danh Sách Chức Vụ</h1>
+<div class="container my-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h2 class="mb-0">Danh Sách Chức Vụ</h2>
+        </div>
+        <div class="card-body">
+            <div class="text-end mb-3">
+                <a asp-action="ThemMoiChucVu" class="btn btn-outline-success">
+                    <i class="bi bi-plus-circle"></i> Thêm Chức Vụ
+                </a>
+            </div>
 
-<p>
-    <a asp-action="ThemMoiChucVu">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.position_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.position_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.base_salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.department_name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.position_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.position_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.base_salary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.department_name)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.position_id)</th>
+                        <th>@Html.DisplayNameFor(model => model.position_name)</th>
+                        <th>@Html.DisplayNameFor(model => model.base_salary)</th>
+                        <th>@Html.DisplayNameFor(model => model.department_name)</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.position_id)</td>
+                            <td>@Html.DisplayFor(modelItem => item.position_name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.base_salary)</td>
+                            <td>@Html.DisplayFor(modelItem => item.department_name)</td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Tùy chỉnh
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item text-success" href="@Url.Action("Edit", new { id = item.position_id })">Chi tiết</a></li>
+                                        <li><button class="dropdown-item text-danger" onclick="openDeleteModal('@item.position_id')">Xóa</button></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xác nhận xoá -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="fs-5">Bạn có chắc chắn muốn xoá phòng ban này?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var deleteCategoryId;
+
+    function openDeleteModal(id) {
+        deleteCategoryId = id;
+        $('#deleteModal').modal('show');
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+        deleteCategory(deleteCategoryId);
+    });
+
+    function deleteCategory(id) {
+        $.ajax({
+            url: '/Position/Delete/' + id,
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function () {
+                $('#deleteModal').modal('hide');
+                location.reload();
+            },
+            error: function () {
+                alert('Xoá không thành công!');
+            }
+        });
+    }
+</script>

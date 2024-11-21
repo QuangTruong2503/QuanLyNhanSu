@@ -2,89 +2,93 @@
     ViewData["Title"] = "Bảng Điều Khiển";
 }
 
-<div class="container mt-4">
-    <h1 class="text-center text-primary">@ViewData["Title"]</h1>
+<div class="container mt-5 p-4 bg-light rounded shadow">
+    <h1 class="text-center text-primary mb-4">@ViewData["Title"]</h1>
     <hr />
 
     <!-- Thẻ Công Việc -->
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-lg mb-3">
+            <div class="card border-0 shadow rounded-lg h-100">
                 <div class="card-body">
                     <h5 class="card-title d-flex justify-content-between align-items-center">
                         Google <span class="badge bg-danger">Ưu Tiên Cao</span>
                     </h5>
                     <p class="text-muted">Google Inc.</p>
-                    <div class="progress mb-2" style="height: 6px;">
+                    <div class="progress mb-3" style="height: 8px;">
                         <div class="progress-bar bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="50"></div>
                     </div>
                     <small class="text-muted">Công Việc Hoàn Thành: 25/50</small>
-                    <div class="mt-3">
-                        <button class="btn btn-sm btn-outline-primary me-2">Ứng Dụng iOS</button>
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-sm btn-outline-primary">Ứng Dụng iOS</button>
                         <button class="btn btn-sm btn-outline-secondary">UI/UX</button>
                     </div>
-                    <p class="mt-3 mb-0 text-secondary"><strong>Hạn Chót:</strong> 20 Tháng Sáu</p>
+                    <p class="mt-4 text-secondary"><strong>Hạn Chót:</strong> 20 Tháng Sáu</p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-lg mb-3">
+            <div class="card border-0 shadow rounded-lg h-100">
                 <div class="card-body">
                     <h5 class="card-title d-flex justify-content-between align-items-center">
                         Slack <span class="badge bg-warning text-dark">Ưu Tiên Trung Bình</span>
                     </h5>
                     <p class="text-muted">Slack Corporation</p>
-                    <div class="progress mb-2" style="height: 6px;">
+                    <div class="progress mb-3" style="height: 8px;">
                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="30"></div>
                     </div>
                     <small class="text-muted">Công Việc Hoàn Thành: 30/30</small>
-                    <div class="mt-3">
-                        <button class="btn btn-sm btn-outline-primary me-2">Ứng Dụng iOS</button>
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-sm btn-outline-primary">Ứng Dụng iOS</button>
                         <button class="btn btn-sm btn-outline-secondary">Android</button>
                     </div>
-                    <p class="mt-3 mb-0 text-secondary"><strong>Hạn Chót:</strong> 20 Tháng Sáu</p>
+                    <p class="mt-4 text-secondary"><strong>Hạn Chót:</strong> 20 Tháng Sáu</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Danh Sách Công Việc và Tin Nhắn -->
-    <div class="row">
-        <div class="col-md-6">
-            <h5 class="text-primary">Công Việc Của Tôi (05)</h5>
-            <ul class="list-group shadow-sm rounded-lg">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Tạo Khung Sườn
-                    <span class="badge bg-success rounded-pill">✔</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Thiết Kế Logo Slack
-                    <span class="badge bg-secondary rounded-pill">3</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Thiết Kế Bảng Điều Khiển
-                    <span class="badge bg-secondary rounded-pill">5</span>
-                </li>
-            </ul>
+    <div class="row align-items-stretch">
+        <div class="col-md-6 mb-4">
+            <div class="p-3 bg-white rounded shadow h-100">
+                <h5 class="text-primary mb-3">Công Việc Của Tôi (05)</h5>
+                <ul class="list-group shadow-sm rounded-lg">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Tạo Khung Sườn
+                        <span class="badge bg-success rounded-pill">✔</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Thiết Kế Logo Slack
+                        <span class="badge bg-secondary rounded-pill">3</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Thiết Kế Bảng Điều Khiển
+                        <span class="badge bg-secondary rounded-pill">5</span>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div class="col-md-6">
-            <h5 class="text-primary">Tin Nhắn</h5>
-            <ul class="list-group shadow-sm rounded-lg">
-                <li class="list-group-item">
-                    <strong>Tuấn kiệt</strong>: Xin chào Gia Bảo! Bạn khỏe không?
-                </li>
-                <li class="list-group-item">
-                    <strong>Gia Bảo</strong>: Bạn có cần thiết kế đó không?
-                </li>
-                <li class="list-group-item">
-                    <strong>Tuấn Kiệt</strong>: Giá theo giờ là bao nhiêu...
-                </li>
-                <li class="list-group-item">
-                    <strong>Gia Bảo</strong>: Tuyệt vời!!
-                </li>
-            </ul>
+        <div class="col-md-6 mb-4">
+            <div class="p-3 bg-white rounded shadow h-100">
+                <h5 class="text-primary mb-3">Tin Nhắn</h5>
+                <ul class="list-group shadow-sm rounded-lg">
+                    <li class="list-group-item">
+                        <strong>Tuấn Kiệt</strong>: Xin chào Gia Bảo! Bạn khỏe không?
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Gia Bảo</strong>: Bạn có cần thiết kế đó không?
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Tuấn Kiệt</strong>: Giá theo giờ là bao nhiêu...
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Gia Bảo</strong>: Tuyệt vời!!
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
