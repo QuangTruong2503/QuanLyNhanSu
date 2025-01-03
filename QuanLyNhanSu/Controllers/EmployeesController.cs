@@ -19,12 +19,25 @@ namespace QuanLyNhanSu.Controllers
             _context = context;
         }
         // GET: EmployeesController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? nameOrID = null, int page = 1, int pageSize = 8)
         {
             var employees = await _context.employees
                                   .Include(e => e.Role)       // Include Role
                                   .Include(e => e.departments) // Include Department
                                   .ToListAsync();
+            if(!string.IsNullOrEmpty(nameOrID))
+            {
+                employees = employees.Where(e => e.employee_id.Contains(nameOrID) 
+                || e.first_name.Contains(nameOrID) 
+                || e.last_name.Contains(nameOrID)).ToList();
+                ViewBag.NameOrID = nameOrID;
+            }
+            var counts = employees.Count();
+
+            //Phân trang
+            employees = employees.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            ViewBag.TotalPages =(int)Math.Ceiling(counts / (double)pageSize);
+            ViewBag.CurrentPage = page;
             return View(employees);
         }
 

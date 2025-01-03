@@ -86,7 +86,7 @@
     function generateQRCode() {
         // Lấy verifyCode từ ViewBag và truyền vào URL Vaix CSSNumericArray nhai
         const verifyCode = document.getElementById("verifyCode").innerText; // Tham số verifyCode từ ViewBag
-        const url = `https://quanlynhansu-772476565863.asia-southeast1.run.app/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
+        const url = `https://quanlynhansu-latest.onrender.com/Attendances/XacNhanChamCong?verifyCode=${verifyCode}`;
 
         // Xóa tất cả các thẻ <canvas> và <img> bên trong thẻ div#qrcode
         const qrCodeContainer = document.getElementById("qrcode");
@@ -94,11 +94,12 @@
             qrCodeContainer.removeChild(qrCodeContainer.firstChild);
         }
 
-        // Khởi tạo mã QR với URL trên
         new QRCode(qrCodeContainer, {
             text: url,
-            width: 200,
-            height: 200,
+            width: 300,
+            height: 300,
+            colorDark: "#000000", // Màu mã QR
+            colorLight: "#ffffff", // Màu nền
         });
     }
 

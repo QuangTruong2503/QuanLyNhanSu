@@ -4,11 +4,9 @@
     var employeeConverted = new EmployeesModel();
     if (employeeData != null)
     {
-        // Chuyển đổi chuỗi JSON thành đối tượng Employee
         employeeConverted = JsonSerializer.Deserialize<EmployeesModel>(employeeData);
         var roleID = employeeConverted.role_id;
     }
-
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -19,37 +17,23 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/QuanLyNhanSu.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 </head>
-<body>
+<body class="bg-light">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3 py-3">
-            <div class="container d-flex justify-content-between align-items-center">
-                <a class="navbar-brand d-flex align-items-center fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-user-friends me-2"></i> QuanLyNhanSu
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm mb-4">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-primary d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-people-fill me-2"></i> QuanLyNhanSu
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home me-1"></i> Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="fas fa-user-shield me-1"></i> Privacy
-                            </a>
-                        </li>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                    <ul class="navbar-nav">
                     </ul>
-                    <!--Kiểm tra có dữ liệu người dùng đăng nhập hay không-->
                     @if (employeeData != null)
                     {
-                        <!-- Example single danger button -->
                         <div class="btn-group">
                             <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 Xin chào @employeeConverted.last_name
@@ -65,10 +49,9 @@
                             </ul>
                         </div>
                     }
-                    <!--Hiện mục đăng nhập nếu không có dữ liệu người dùng-->
-                    @if (employeeData == null)
+                    else
                     {
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Login">Đăng nhập</a>
+                        <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="Login" asp-action="Login">Đăng nhập</a>
                     }
                 </div>
             </div>
@@ -77,152 +60,164 @@
 
     <div class="container-fluid">
         <div class="row justify-content-evenly">
-            <!-- Sidebar Cho Chế Độ Di Động -->
-            <div class="row">
-                <!-- Nút Menu Cho Chế Độ Di Động -->
-                <div class="mb-3">
-                    <button class="btn btn-outline-primary d-md-none mt-2 ms-2 d-flex justify-content-center align-items-center w-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
-                        <i class="bi bi-list"></i> Menu
-                    </button>
+            <!-- Nút Menu Cho Chế Độ Di Động -->
+            <div class="mb-3">
+                <button class="btn btn-outline-primary d-md-none mt-2 ms-2 d-flex justify-content-center align-items-center w-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                    <i class="bi bi-list"></i> Menu
+                </button>
+            </div>
+            <!-- Sidebar Offcanvas Dành cho Di Động -->
+            <div class="offcanvas offcanvas-start sidebar " tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+                <div class="offcanvas-header">
+                    <h4 class="offcanvas-title" id="offcanvasSidebarLabel">Dashboard</h4>
+                    <button type="button" class="btn-close btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-                <!-- Sidebar Offcanvas -->
-                <div class="offcanvas offcanvas-start sidebar " tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
-                    <div class="offcanvas-header">
-                        <h4 class="offcanvas-title" id="offcanvasSidebarLabel">Dashboard</h4>
-                        <button type="button" class="btn-close btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body p-3">
-                        <ul class="nav flex-column">
-                            <li class="nav-item mb-2">
-                                <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "Home")">
-                                    <i class="bi bi-house-door-fill me-2"></i> Trang chủ
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "departments")">
-                                    <i class="bi bi-building me-2"></i> Phòng ban
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "Employees")">
-                                    <i class="bi bi-person-lines-fill me-2"></i> Nhân sự
-                                </a>
-                            </li>
+                <div class="offcanvas-body p-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "Home")">
+                                <i class="bi bi-house-door-fill me-2"></i> Trang chủ
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "departments")">
+                                <i class="bi bi-building me-2"></i> Phòng ban
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link  d-flex align-items-center" href="@Url.Action("ChucVu", "Position")">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-p-circle me-2" viewBox="0 0 16 16">
+                                    <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.5 4.002h2.962C10.045 4.002 11 5.104 11 6.586c0 1.494-.967 2.578-2.55 2.578H6.784V12H5.5zm2.77 4.072c.893 0 1.419-.545 1.419-1.488s-.526-1.482-1.42-1.482H6.778v2.97z" />
+                                </svg> Chức vụ
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "Employees")">
+                                <i class="bi bi-person-lines-fill me-2"></i> Nhân sự
+                            </a>
+                        </li>
 
-                            <li class="nav-item mb-2">
-                                <div class="accordion accordion-flush" id="accordionChamCong">
-                                    <!-- Chấm Công Menu -->
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                                Chấm Công
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
-                                            <div class="accordion-body ">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item mb-2">
-                                                        <a class="nav-link " href="@Url.Action("ChamCong", "Attendances")">Chấm Công</a>
-                                                    </li>
-                                                    <li class="nav-item mb-2">
-                                                        <a class="nav-link " href="@Url.Action("DanhSach", "Attendances")">Danh Sách</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Lương Thưởng Menu -->
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                                Lương Thưởng
-                                            </button>
-                                        </h2>
-                                        <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
-                                            <div class="accordion-body ">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item mb-2">
-                                                        <a class="nav-link " href="@Url.Action("Index", "Bonus")">Tiền Thưởng</a>
-                                                    </li>
-                                                    <li class="nav-item mb-2">
-                                                        <a class="nav-link " href="@Url.Action("Index", "Deduction")">Tiền Khấu Trừ</a>
-                                                    </li>
-                                                    <li class="nav-item mb-2">
-                                                        <a class="nav-link " href="@Url.Action("Index", "Salary")">Tính Lương</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                        <li class="nav-item mb-2">
+                            <div class="accordion accordion-flush" id="accordionChamCong">
+                                <!-- Chấm Công Menu -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                            Chấm Công
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
+                                        <div class="accordion-body ">
+                                            <ul class="nav flex-column">
+                                                <li class="nav-item mb-2">
+                                                    <a class="nav-link " href="@Url.Action("ChamCong", "Attendances")">Chấm Công</a>
+                                                </li>
+                                                <li class="nav-item mb-2">
+                                                    <a class="nav-link " href="@Url.Action("DanhSach", "Attendances")">Danh Sách</a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
-                            </li>
-                        </ul>
-                    </div>
+
+                                <!-- Lương Thưởng Menu -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                            Lương Thưởng
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
+                                        <div class="accordion-body ">
+                                            <ul class="nav flex-column">
+                                                <li class="nav-item mb-2">
+                                                    <a class="nav-link " href="@Url.Action("Index", "Bonus")">Tiền Thưởng</a>
+                                                </li>
+                                                <li class="nav-item mb-2">
+                                                    <a class="nav-link " href="@Url.Action("Index", "Deduction")">Tiền Khấu Trừ</a>
+                                                </li>
+                                                <li class="nav-item mb-2">
+                                                    <a class="nav-link " href="@Url.Action("Index", "Salary")">Danh Sách Lương</a>
+                                                </li>
+                                                <li class="nav-item mb-2">
+                                                    <a class="nav-link " href="@Url.Action("ExportSalaryFile", "Salary")">Xuất File Lương</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <!---->
-            <!-- Sidebar dành cho máy tính -->
-            <nav class="col-md-3 col-lg-2 sidebar p-3 d-none d-md-block">
-                <h4 class="mb-4">Dashboard</h4>
-                <ul class="nav flex-column">
+            <!--SliedBar Dành Cho máy tính-->
+            <div class="col-md-3 col-lg-2 sidebar p-3 d-none d-md-block">
+                <h4 class="p-3 border-bottom">Dashboard</h4>
+                <ul class="nav flex-column p-2">
                     <li class="nav-item mb-2">
-                        <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "Home")">
+                        <a class="nav-link d-flex align-items-center text-dark" href="@Url.Action("Index", "Home")">
                             <i class="bi bi-house-door-fill me-2"></i> Trang chủ
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "departments")">
+                        <a class="nav-link d-flex align-items-center text-dark" href="@Url.Action("Index", "departments")">
                             <i class="bi bi-building me-2"></i> Phòng ban
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link  d-flex align-items-center" href="@Url.Action("Index", "Employees")">
+                        <a class="nav-link  d-flex align-items-center" href="@Url.Action("ChucVu", "Position")">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-p-circle me-2" viewBox="0 0 16 16">
+                              <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.5 4.002h2.962C10.045 4.002 11 5.104 11 6.586c0 1.494-.967 2.578-2.55 2.578H6.784V12H5.5zm2.77 4.072c.893 0 1.419-.545 1.419-1.488s-.526-1.482-1.42-1.482H6.778v2.97z"/>
+                            </svg> Chức vụ
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link d-flex align-items-center text-dark" href="@Url.Action("Index", "Employees")">
                             <i class="bi bi-person-lines-fill me-2"></i> Nhân sự
                         </a>
                     </li>
-
                     <li class="nav-item mb-2">
-                        <div class="accordion accordion-flush" id="accordionChamCong">
-                            <!-- Chấm Công Menu -->
+                        <div class="accordion accordion-flush" id="accordionExample">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                        Chấm Công
+                                    <button class="accordion-button collapsed text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#attendanceCollapse" aria-expanded="false" aria-controls="attendanceCollapse">
+                                        <i class="bi bi-calendar-check me-2"></i> Chấm Công
                                     </button>
                                 </h2>
-                                <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
-                                    <div class="accordion-body ">
+                                <div id="attendanceCollapse" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
                                         <ul class="nav flex-column">
                                             <li class="nav-item mb-2">
-                                                <a class="nav-link " href="@Url.Action("ChamCong", "Attendances")">Chấm Công</a>
+                                                <a class="nav-link" href="@Url.Action("ChamCong", "Attendances")">Chấm Công</a>
                                             </li>
                                             <li class="nav-item mb-2">
-                                                <a class="nav-link " href="@Url.Action("DanhSach", "Attendances")">Danh Sách</a>
+                                                <a class="nav-link" href="@Url.Action("DanhSach", "Attendances")">Danh Sách</a>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Lương Thưởng Menu -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                        Lương Thưởng
+                                    <button class="accordion-button collapsed text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#salaryCollapse" aria-expanded="false" aria-controls="salaryCollapse">
+                                        <i class="bi bi-currency-exchange me-2"></i> Tiền Lương
                                     </button>
                                 </h2>
-                                <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionChamCong">
-                                    <div class="accordion-body ">
+                                <div id="salaryCollapse" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
                                         <ul class="nav flex-column">
                                             <li class="nav-item mb-2">
-                                                <a class="nav-link " href="@Url.Action("Index", "Bonus")">Tiền Thưởng</a>
+                                                <a class="nav-link" href="@Url.Action("Index", "Bonus")">Tiền Thưởng</a>
                                             </li>
                                             <li class="nav-item mb-2">
-                                                <a class="nav-link " href="@Url.Action("Index", "Deduction")">Tiền Khấu Trừ</a>
+                                                <a class="nav-link" href="@Url.Action("Index", "Deduction")">Tiền Khấu Trừ</a>
                                             </li>
                                             <li class="nav-item mb-2">
-                                                <a class="nav-link " href="@Url.Action("Index", "Salary")">Tính Lương</a>
+                                                <a class="nav-link" href="@Url.Action("Index", "Salary")">Danh Sách Lương</a>
+                                            </li>
+                                            <li class="nav-item mb-2">
+                                                <a class="nav-link " href="@Url.Action("ExportSalaryFile", "Salary")">Xuất File Lương</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -231,33 +226,30 @@
                         </div>
                     </li>
                 </ul>
-            </nav>
-            <!-- Main Content -->
+            </div>
+
             <main class="col-md-8 col-lg-9 px-md-4 main-content">
                 @RenderBody()
             </main>
         </div>
     </div>
 
-
-    <footer class="border-top footer text-muted">
-        <div class="container d-flex justify-content-center align-items-center">
+    <footer class="border-top footer text-muted bg-white py-3 mt-4">
+        <div class="container text-center">
             Nhóm 1A - QuanLyNhanSu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/formatCurrency.js"></script>
     <script type="text/javascript">
-        var roleID = '@employeeConverted.role_id'; // Lấy role_id từ Model
+        var roleID = '@employeeConverted.role_id';
         if (roleID != 2) {
-            window.location.href = '/Home/Index'; // Chuyển hướng đến trang khác
+            window.location.href = '/Home/Index';
         }
     </script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

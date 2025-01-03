@@ -80,45 +80,52 @@ namespace QuanLyNhanSu.Controllers
         }
 
         // GET: PositionController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var positionn = await _context.positions.FindAsync(id);
+            if (positionn == null)
+            {
+                return NotFound();
+            }
+            return View(positionn);
         }
 
         // POST: PositionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, PositionModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             try
             {
-                return RedirectToAction(nameof(Index));
+                _context.Update(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Cập nhật thành công";
+                return RedirectToAction(nameof(Edit));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", "Cập nhật thất bại: " + ex.Message);
+                return View(model);
             }
         }
 
-        // GET: PositionController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PositionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id)
         {
-            try
+            var item = await _context.positions.FindAsync(id);
+            if (item == null)
             {
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", $"Không tìm thấy dữ liệu mã phòng ban = {id}"); 
+                return RedirectToAction("ChucVu");
             }
-            catch
-            {
-                return View();
-            }
+            _context.positions.Remove(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ChucVu");
         }
     }
 }

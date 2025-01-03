@@ -1,0 +1,55 @@
+﻿@model QuanLyNhanSu.Models.PositionModel
+
+@{
+    ViewData["Title"] = "Cập Nhật Phòng Ban";
+}
+
+<h1 class="text-center my-4">@ViewData["Title"]</h1>
+
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <form asp-action="Edit" class="p-4 border rounded shadow-sm bg-light">
+            <div class="mb-3">
+                <label asp-for="position_id" class="form-label fw-bold"></label>
+                <input asp-for="position_id" class="form-control" />
+                <span asp-validation-for="position_id" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="position_name" class="form-label fw-bold"></label>
+                <input asp-for="position_name" class="form-control" />
+                <span asp-validation-for="position_name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="base_salary" class="form-label fw-bold"></label>
+                <input asp-for="base_salary" class="form-control" />
+                <span asp-validation-for="base_salary" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="department_id" class="form-label fw-bold"></label>
+                <input asp-for="department_id" class="form-control" />
+                <span asp-validation-for="department_id" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            <div class="d-grid">
+                <input type="submit" value="Lưu thay đổi" class="btn btn-primary btn-lg" />
+            </div>
+        </form>
+        <div class="text-center mt-3">
+            <a asp-action="ChucVu" class="btn btn-outline-secondary">Quay Lại</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

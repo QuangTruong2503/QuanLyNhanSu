@@ -4,69 +4,54 @@
     ViewData["Title"] = "Tiền lương";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<a class="btn text-primary mb-2" href="@Url.Action("Index", "Home")">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
-    </svg>
-    Trở về
-</a>
-<h1>Tiền Lương</h1>
-<hr />
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Salary_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee_Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bonus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deduction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Total_Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Begin_Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.End_Date)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salary_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee_Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bonus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deduction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Total_Salary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Begin_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.End_Date)
-            </td>
-            <td>
-                <a class="btn btn-outline-success" href="@Url.Action("ChiTietLuong")">Chi tiết</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="container my-4">
+    <a class="btn btn-outline-primary mb-3" href="@Url.Action("Index", "Home")">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+        </svg>
+        Trở về
+    </a>
+    <div asp-validation-summary="All"></div>
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h1 class="mb-0 text-center">Tiền Lương</h1>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle text-center mb-0">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Salary_Id)</th>
+                            <th>@Html.DisplayNameFor(model => model.Employee_Id)</th>
+                            <th>@Html.DisplayNameFor(model => model.Bonus)</th>
+                            <th>@Html.DisplayNameFor(model => model.Deduction)</th>
+                            <th>@Html.DisplayNameFor(model => model.Total_Salary)</th>
+                            <th>@Html.DisplayNameFor(model => model.Begin_Date)</th>
+                            <th>@Html.DisplayNameFor(model => model.End_Date)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Salary_Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Employee_Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Bonus)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Deduction)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Total_Salary)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Begin_Date)</td>
+                                <td>@Html.DisplayFor(modelItem => item.End_Date)</td>
+                                <td class="border-dark">
+                                    <a class="btn btn-outline-success btn-sm" href="@Url.Action("ChiTietLuong", new {id = item.Salary_Id})">Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,44 +3,66 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<div class="container my-5">
-    <div class="row g-4">
-        <div class="col-sm-6 col-lg-4">
+<div class="container my-5 p-4 bg-light rounded shadow">
+    <h1 class="text-center text-primary mb-4">@ViewData["Title"]</h1>
+    <hr />
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        <!-- Card Tiền Thưởng -->
+        <div class="col">
             <a href="@Url.Action("TienThuong", "Details")" class="card-link">
-                <div class="card  h-100 border-0 rounded-lg card-hover">
-                    <div class="card-body">
+                <div class="card h-100 border-0 shadow-sm rounded-lg card-hover">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="mb-3 text-primary">
+                            <i class="bi bi-cash-stack display-4"></i>
+                        </div>
                         <h5 class="card-title text-primary font-weight-bold">Tiền thưởng</h5>
-                        <p class="card-text">Xem chi tiết tiền thưởng của nhân viên trong quá trình làm việc.</p>
+                        <p class="card-text text-center">Xem chi tiết tiền thưởng của nhân viên trong quá trình làm việc.</p>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-sm-6 col-lg-4">
+
+        <!-- Card Tiền Khấu Trừ -->
+        <div class="col">
             <a href="@Url.Action("KhauTru", "Details")" class="card-link">
-                <div class="card  h-100 border-0 rounded-lg card-hover">
-                    <div class="card-body">
+                <div class="card h-100 border-0 shadow-sm rounded-lg card-hover">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="mb-3 text-danger">
+                            <i class="bi bi-journal-minus display-4"></i>
+                        </div>
                         <h5 class="card-title text-primary font-weight-bold">Tiền khấu trừ</h5>
-                        <p class="card-text">Xem chi tiết tiền khấu trừ của nhân viên trong quá trình làm việc.</p>
+                        <p class="card-text text-center">Xem chi tiết tiền khấu trừ của nhân viên trong quá trình làm việc.</p>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-sm-6 col-lg-4">
+
+        <!-- Card Tiền Lương -->
+        <div class="col">
             <a href="@Url.Action("TienLuong", "Details")" class="card-link">
-                <div class="card  h-100 border-0 rounded-lg card-hover">
-                    <div class="card-body">
+                <div class="card h-100 border-0 shadow-sm rounded-lg card-hover">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="mb-3 text-success">
+                            <i class="bi bi-wallet2 display-4"></i>
+                        </div>
                         <h5 class="card-title text-primary font-weight-bold">Tiền lương</h5>
-                        <p class="card-text">Xem chi tiết tiền lương của nhân viên trong quá trình làm việc.</p>
+                        <p class="card-text text-center">Xem chi tiết tiền lương của nhân viên trong quá trình làm việc.</p>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-sm-6 col-lg-4">
+
+        <!-- Card Chấm Công -->
+        <div class="col">
             <a href="@Url.Action("NhanVienChamCong", "Attendances")" class="card-link">
-                <div class="card  h-100 border-0 rounded-lg card-hover">
-                    <div class="card-body">
+                <div class="card h-100 border-0 shadow-sm rounded-lg card-hover">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="mb-3 text-warning">
+                            <i class="bi bi-calendar-check display-4"></i>
+                        </div>
                         <h5 class="card-title text-primary font-weight-bold">Chấm Công</h5>
-                        <p class="card-text">Nhập mã xác nhận hoặc quét mã QR để chấm công theo ngày.</p>
+                        <p class="card-text text-center">Nhập mã xác nhận hoặc quét mã QR để chấm công theo ngày.</p>
                     </div>
                 </div>
             </a>
@@ -54,13 +76,14 @@
         text-decoration: none;
         color: inherit;
     }
-    .card-hover{
-        transition: all 0.3s ease-in;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2)
+
+    /* Hiệu ứng hover và bóng đổ cho card */
+    .card-hover {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
-    /* Hiệu ứng hover cho card */
-    .card-hover:hover {
-        transform: translateY(-5px);
-        ;
-    }
+
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
 </style>
