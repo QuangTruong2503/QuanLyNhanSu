@@ -4,6 +4,8 @@
     ViewData["Title"] = "Danh sách khấu trừ lương";
     int currentPage = ViewBag.CurrentPage ?? 1;
     int totalPages = ViewBag.TotalPages;
+    string? date = ViewBag.Date;
+    string? searchID = ViewBag.SearchID;
 }
 
 <h2 class="text-center my-4">Danh Sách Khấu Trừ Lương</h2>
@@ -11,11 +13,14 @@
 <div class="container">
     <!-- Form tìm kiếm và nút thêm khấu trừ lương -->
     <form asp-action="Index" method="get" class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex gap-1">
+        <div class="d-flex gap-3 align-items-end">
             <div class="w-auto">
-                <input type="search" id="searchID" name="searchID" class="form-control" placeholder="Nhập mã nhân sự" />
+                <input type="search" id="searchID" name="searchID" value="@searchID" class="form-control" placeholder="Nhập mã nhân sự" />
             </div>
-
+            <div class="w-auto">
+                <label for="date">Chọn tháng</label>
+                <input type="month" id="date" name="date" class="form-control" value="@date" />
+            </div>
             <div class="w-auto">
                 <button type="submit" class="btn btn-primary">Tìm kiếm</button>
             </div>

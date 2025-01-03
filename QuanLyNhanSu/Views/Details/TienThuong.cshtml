@@ -24,7 +24,6 @@
                             <th>@Html.DisplayNameFor(model => model.Bonus_Amount)</th>
                             <th>@Html.DisplayNameFor(model => model.Bonus_Date)</th>
                             <th>@Html.DisplayNameFor(model => model.Reason)</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,24 +35,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.Bonus_Amount)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Bonus_Date)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Reason)</td>
-                                <td>
-                                    <div class="dropdown dropstart">
-                                        <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Tùy chỉnh
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="actionMenu">
-                                            <li>
-                                                @Html.ActionLink("Edit", "Edit", new { id = item.Bonus_Id }, new { @class = "dropdown-item", style = "color: green;" })
-                                            </li>
-                                            <li>
-                                                @Html.ActionLink("Details", "Details", new { id = item.Bonus_Id }, new { @class = "dropdown-item", style = "color: orange;" })
-                                            </li>
-                                            <li>
-                                                @Html.ActionLink("Delete", "Delete", new { id = item.Bonus_Id }, new { @class = "dropdown-item", style = "color: red;" })
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
+                                
                             </tr>
                         }
                     </tbody>

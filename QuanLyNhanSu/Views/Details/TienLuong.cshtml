@@ -12,7 +12,7 @@
         </svg>
         Trở về
     </a>
-
+    <div asp-validation-summary="All"></div>
     <div class="card shadow-sm">
         <div class="card-header bg-light">
             <h1 class="mb-0 text-center">Tiền Lương</h1>
@@ -45,7 +45,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.Begin_Date)</td>
                                 <td>@Html.DisplayFor(modelItem => item.End_Date)</td>
                                 <td class="border-dark">
-                                    <a class="btn btn-outline-success btn-sm" href="@Url.Action("ChiTietLuong")">Chi tiết</a>
+                                    <a class="btn btn-outline-success btn-sm" href="@Url.Action("ChiTietLuong", new {id = item.Salary_Id})">Chi tiết</a>
                                 </td>
                             </tr>
                         }
