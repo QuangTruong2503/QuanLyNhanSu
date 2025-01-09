@@ -247,7 +247,7 @@ namespace QuanLyNhanSu.Controllers
                 //Nếu mã OTP hợp lệ và còn thời hạn
                 if(token != null && token.Verify_Code == verifyCode && token.Expiration > DateTime.Now)
                 {
-                    var today = DateTime.Today;
+                    var today = DateTime.UtcNow;
                     var existsAttendance = await _context.attendances.FirstOrDefaultAsync(a => a.Employee_Id == employee.employee_id && a.Attendance_Date.Date == today.Date);
                     //Kiểm tra nhân viên đã chấm công hay chưa
                     if(existsAttendance != null)
